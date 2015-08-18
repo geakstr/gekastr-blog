@@ -1,33 +1,37 @@
 {% extends "base.html" %}
 
-{% block headlink %}
-{{ SITESUBTITLE }}
+{% block header_link %}
+{% if articles_page.has_previous() %}<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>{% else %}{{ SITESUBTITLE }}{% endif %}
 {% endblock %}
 
 {% block content %}
 <section id="content">
-{% block content_title %}{% endblock %}
+<h3 class="title"><em>О разработке и всём таком</em></h3>
 
 {% for article in articles_page.object_list %}
-<article class="hentry">
-        <header>
-            <h2 class="entry-title">
-                <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark" title="Permalink to {{ article.title|striptags }}">{{ article.title }}</a>
-            </h2>
-        </header>
-        <div class="entry-content"> {{ article.content }}</div>
-        <footer class="post-info">
-            <abbr class="published" title="{{ article.date.isoformat() }}">{{ article.locale_date }}</abbr>
-            {% if article.tags %}
-                {% for tag in article.tags %}
-                    <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>
-                {% endfor %}
-            {% endif %}
-        </footer>
+<article class="post">
+    <header class="header">
+        <h2 class="title">
+            <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark">{{ article.title }}</a>
+        </h2>
+        {% import 'translations.html' as translations with context %}
+        {{ translations.translations_for(article) }}
+    </header>
+    <div class="body">{{ article.content }}</div>
+    <footer class="meta">
+        <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time>
+        {% if article.tags %}
+        <span class="tags">
+        {% for tag in article.tags %}
+          <a class="tag" href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>
+        {% endfor %}
+        </span>
+      {% endif %}
+    </footer>
 </article>
 {% endfor %}
 {% if articles_page.has_other_pages() %}
-    {% include 'pagination.html' %}
+{% include 'pagination.html' %}
 {% endif %}
-</section><!-- /#content -->
+</section>
 {% endblock content %}

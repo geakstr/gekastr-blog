@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+
 {% block head %}
   {{ super() }}
   {% for keyword in article.keywords %}
@@ -12,28 +13,33 @@
   {% for tag in article.tags %}
     <meta name="tags" content="{{tag}}" />
   {% endfor %}
-
 {% endblock %}
 
-{% block headlink %}
-<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>
-{% endblock %}
+{% block title %}{{ article.title }} • {{ SITESUBTITLE }} • {{ SITENAME }}{% endblock title %}
+
+{% block header_link %}<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>{% endblock %}
 
 {% block content %}
-<section id="content" class="body">
-  <header>
-    <h2 class="entry-title">{{ article.title }}</a>
- {% import 'translations.html' as translations with context %}
- {{ translations.translations_for(article) }}
-  </header>
-  <div class="entry-content">{{ article.content }}</div>
-  <footer class="post-info">
-    <abbr class="published" title="{{ article.date.isoformat() }}">{{ article.locale_date }}</abbr>
-    {% if article.tags %}
+<section id="content">
+  <article class="post">
+    <header class="header">
+      <h2 class="title"><em>{{ article.title }}</em></h2>
+      {% import 'translations.html' as translations with context %}
+      {{ translations.translations_for(article) }}
+    </header>
+    <div class="body">{{ article.content }}</div>
+    <footer class="meta">
+      <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time>
+      {% if article.tags %}
+        <span class="tags">
         {% for tag in article.tags %}
-            <a href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>
+          <a class="tag" href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>
         {% endfor %}
-    {% endif %}
-  </footer>
+        </span>
+      {% endif %}
+    </footer>
+  </article>
 </section>
 {% endblock %}
+
+{% block footer_year %}{{ article.date.year }}{% endblock %}

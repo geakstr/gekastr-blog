@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8" />
-    <title>Блог • Дмитрий Харитонов</title>
+      <meta charset="utf-8" />
+    <title>Синхронизируем уведомления CI с Telegram • Блог • Дмитрий Харитонов</title>
     <link rel="stylesheet" href="/theme/css/style.css" />
+
+
+
+    <meta name="tags" content="telegram" />
+    <meta name="tags" content="api" />
 </head>
 <body>
 
@@ -11,52 +16,27 @@
     <h1 id="logo">
         <a href="http://dkharitonov.me">Дмитрий Харитонов</a>
         <span class="muted">•</span>
-        <em>Блог</em>
+        <em><a href="/">Блог</a></em>
     </h1>
 </header>
 
 <section id="content">
-<h3 class="title"><em>О разработке и всём таком</em></h3>
-
-<article class="post">
+  <article class="post">
     <header class="header">
-        <h2 class="title">
-            <a href="/bayes-morpheus" rel="bookmark">Байес и задача про Морфеуса</a>
-        </h2>
-        
-    </header>
-    <div class="body"><p>Больше года назад, 17 апреля 2014, на Хабре появилась эта статья (ко дню смерти Томаса Байеса). Там было много всего интересного, но, как обычно, большая часть обсуждений в комментариях свелась к задачке, которая была лишь эпиграфом. Тогда я проглядел статью по диагонали, а задачу и вовсе проигнорировал.</p>
-<p>А зря…</p></div>
-    <footer class="meta">
-        <time datetime="2015-08-18T11:30:00+03:00">18 августа 2015</time>
-        <span class="tags">
-          <a class="tag" href="/tag/math/">math</a>
-          <a class="tag" href="/tag/matrix/">matrix</a>
-        </span>
-    </footer>
-</article>
-<article class="post">
-    <header class="header">
-        <h2 class="title">
-            <a href="/ci-telegram" rel="bookmark">Синхронизируем уведомления CI с Telegram</a>
-        </h2>
-        
+      <h2 class="title"><em>Синхронизируем уведомления CI с Telegram</em></h2>
+      
     </header>
     <div class="body"><p>Cегодня я хотел бы поделиться своим опытом синхронизации уведомлений Continuous Integration серверов (Bamboo, Jenkins, TeamCity и тп.) с бесплатным мессенджером от Павла Дурова — Telegram.</p>
 <p>Данную проблему захотелось решить из-за того, что программисты на нашем проекте не реагировали на уведомления, присылаемые на почту, а телеграмм у нас корпоративный мессенджер. Подопытным CI является наш корпоративный Bamboo, с которого и должны приходить эти самые уведомления.</p>
 <p>Для организации данной синхронизации мы будем использовать BOT API от телеграмма, Gmail API от Google, а также наш ubuntu сервер на Digital Ocean.</p></div>
     <footer class="meta">
-        <time datetime="2015-06-30T09:12:00+03:00">30 июня 2015</time>
+      <time datetime="2015-06-30T09:12:00+03:00">30 июня 2015</time>
         <span class="tags">
           <a class="tag" href="/tag/telegram/">telegram</a>
           <a class="tag" href="/tag/api/">api</a>
         </span>
     </footer>
-</article>
-<p class="paginator">
-    <span class="counter">Страница 1 из 2</span>
-        <a class="nodecor old" href="/page/2/"><u>Туда</u> →</a>
-</p>
+  </article>
 </section>
 
 <footer id="footer">

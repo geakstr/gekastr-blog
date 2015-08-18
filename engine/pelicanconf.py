@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+import datetime
 
 AUTHOR = u'Дмитрий Харитонов'
 SITENAME = u'Дмитрий Харитонов'
@@ -15,24 +16,34 @@ DISPLAY_CATEGORIES_ON_MENU = False
 DELETE_OUTPUT_DIRECTORY = True
 SLUGIFY_SOURCE = 'title'
 
-DEFAULT_PAGINATION = 15
-DEFAULT_ORPHANS = 5
+DEFAULT_PAGINATION = 2
+DEFAULT_ORPHANS = 0
+PAGINATION_PATTERNS = (
+    (1, '{base_name}/', '{base_name}/index.html'),
+    (2, '{base_name}/page/{number}/', '{base_name}/page/{number}/index.html'),
+)
 
 DATE_FORMATS = {
-    'en': ('en_US', '%a, %d %b %Y'),
-    'ru': ('ru_RU', '%d %B %Y'),
+    'en': ('en_US', '%B %-d, %Y'),
+    'ru': ('ru_RU', '%-d %B %Y'),
 }
 
 PATH = '../content'
 OUTPUT_PATH = '../output'
 ARTICLE_PATHS = ['./articles']
 PAGE_PATHS = ['./pages']
-STATIC_PATHS = ['images', 'extra/CNAME']
-EXTRA_PATH_METADATA = {'extra/CNAME': {'path': 'CNAME'},}
+STATIC_PATHS = ['images']
 OUTPUT_RETENTION = [".git", ".gitignore"]
 
+CURRENT_YEAR = datetime.datetime.utcnow().strftime("%Y")
+
+DIRECT_TEMPLATES = ['index']
+PAGINATED_DIRECT_TEMPLATES = ['index']
+
 THEME = './theme'
-TYPOGRIFY = True
+THEME_STATIC_PATHS = ['static']
+CSS_FILE = 'style.css'
+TYPOGRIFY = False
 
 MD_EXTENSIONS = ['extra']
 
@@ -53,10 +64,15 @@ LINKS = (('You can modify those links in your config file', '#'),)
 SOCIAL = (('You can add links in your config file', '#'),)
 
 
-ARTICLE_URL = '{slug}.html'
-ARTICLE_SAVE_AS = '{slug}.html'
-ARTICLE_LANG_URL = '{slug}-{lang}.html'
-ARTICLE_LANG_SAVE_AS = '{slug}-{lang}.html'
+ARTICLE_URL = '{slug}'
+ARTICLE_SAVE_AS = '{slug}/index.html'
+ARTICLE_LANG_URL = '{slug}-{lang}'
+ARTICLE_LANG_SAVE_AS = '{slug}-{lang}/index.html'
 
-TAG_URL = 'tag/{slug}.html'
-TAG_SAVE_AS = 'tag/{slug}.html'
+TAG_URL = 'tag/{slug}/'
+TAG_SAVE_AS = 'tag/{slug}/index.html'
+
+AUTHOR_SAVE_AS = ''
+AUTHORS_SAVE_AS = ''
+CATEGORY_SAVE_AS = ''
+CATEGORYS_SAVE_AS = ''

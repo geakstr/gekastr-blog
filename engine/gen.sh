@@ -1,1 +1,1 @@
-pelican -s pelicanconf.py
+pelican --verbose -s pelicanconf.py

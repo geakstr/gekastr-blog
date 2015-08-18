@@ -1,0 +1,165 @@
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after, q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+body {
+  max-width: 800px;
+  margin: 0 2% 0 7%;
+  background: #fff;
+  color: #333;
+  font-size: 16px;
+  line-height: 1;
+  font-family: 'Cochin', 'Baskerville', 'Georgia', 'Times', 'Times New Roman', serif;
+}
+a {
+  text-decoration: none;
+  border-bottom: 1px solid;
+}
+a:link {
+  color: #3F51B5;
+}
+a:visited {
+  color: #7090b0;
+}
+a:hover, a:active, a:focus {
+  color: #A40000;
+}
+a.nodecor {
+  border-bottom: none;
+}
+a.nodecor u {
+  text-decoration: none;
+  border-bottom: 1px solid;
+}
+b, strong {
+  font-weight: 700;
+}
+i, em {
+  font-style: italic;
+}
+ul, ol {
+  list-style-position: outside;
+}
+ol li {
+  list-style-type: decimal;
+}
+.muted {
+  color: #999;
+}
+#header {
+  margin-top: 1em;
+  margin-bottom: 2.75em;
+}
+#header #logo {
+  font-size: 1.25em;
+}
+#header #logo a {
+  color: #3F51B5;
+}
+#header #logo a:hover {
+  color: #A40000;
+}
+#content > .title {
+  margin-bottom: 1.25em;
+  font-size: 1.25em;
+}
+.post {
+  margin-bottom: 2.33em;
+}
+.post:last-child {
+  margin-bottom: 0;
+}
+.posts-list li {
+  margin-bottom: 1em;
+}
+.post .header {
+  margin-bottom: 1em;
+}
+.posts-list .post .header {
+  margin-bottom: 0.5em;
+}
+.post .header .title {
+  font-size: 1.5em;
+}
+.posts-list .post .header .title {
+  font-size: 1.25em;
+}
+.post .header .title a {
+  color: #111;
+}
+.post .header .title a:hover {
+  color: #A40000;
+}
+.post .body {
+  font-size: 1.125em;
+  line-height: 1.333;
+}
+.post .body p {
+  margin-bottom: 0.66em;
+}
+.post .body p:last-child {
+  margin-bottom: 0;
+}
+.post .meta {
+  margin-top: 1em;
+  color: #666;
+}
+.posts-list .post .meta {
+  margin-top: 0.5em;
+}
+.post .meta .tags {
+  margin-left: 0.5em;
+}
+.post .meta .tags .tag {
+  margin-left: 0.33em;
+}
+.post .meta .tags a.tag {
+  color: #666;
+}
+.post .meta .tags a.tag:hover {
+  color: #444;
+}
+.paginator .new {
+  margin-right: 0.5em;
+}
+.paginator .old {
+  margin-left: 0.5em;
+}
+#footer {
+  margin-top: 3em;
+  margin-bottom: 1em;
+  color: #999;
+  font-style: italic;
+}
+#footer a {
+  color: #999;
+}
+#footer a:hover {
+  color: #444;
+}
