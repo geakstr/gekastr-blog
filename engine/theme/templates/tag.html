@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block header_link %}<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>{% endblock %}
-
-{% block title %}Заметки с тегом «{{ tag | escape }}» • {{ SITENAME }}{% endblock %}
+{% block title %}Заметки с тегом «{{ tag | escape }}» ⋅ {{ SITENAME }}{% endblock %}
+{% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
+{% block header_blog_link %}<em><a href="{{ SITEURL }}/blog">{{ SITESUBTITLE }}</a></em>{% endblock %}
 
 {% block content %}
 <section id="content">
@@ -24,9 +24,9 @@
         <span class="tags">
         {% for tag_entry in article.tags %}
           {% if tag_entry == tag %}
-          <em class="tag">{{ tag_entry | escape }}</em>
+          <span class="tag">#{{ tag_entry | escape }}</span>
           {% else %}
-          <a class="tag" href="{{ SITEURL }}/{{ tag_entry.url }}">{{ tag_entry | escape }}</a>
+          <a class="tag nodecor" href="{{ SITEURL }}/{{ tag_entry.url }}">#<u>{{ tag_entry | escape }}</u></a>
           {% endif %}
         {% endfor %}
         </span>

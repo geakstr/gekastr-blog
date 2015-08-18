@@ -30,7 +30,8 @@ table {
 }
 body {
   max-width: 800px;
-  margin: 0 2% 0 7%;
+  margin: 0 auto;
+  padding: 0 1.5em;
   background: #fff;
   color: #333;
   font-size: 16px;
@@ -41,11 +42,8 @@ a {
   text-decoration: none;
   border-bottom: 1px solid;
 }
-a:link {
+a:link, a:visited {
   color: #3F51B5;
-}
-a:visited {
-  color: #7090b0;
 }
 a:hover, a:active, a:focus {
   color: #A40000;
@@ -72,18 +70,31 @@ ol li {
 .muted {
   color: #999;
 }
+.outer {
+  display: inline-block;
+  margin-left: -1.5em;
+  width: 1.5em;
+  text-align: center;
+}
 #header {
-  margin-top: 1em;
-  margin-bottom: 2.75em;
+  border-top: 1px solid #A40000;
+  padding-top: 1em;
+  margin-bottom: 2em;
 }
-#header #logo {
-  font-size: 1.25em;
+#header h1 {
+  font-size: 1.125em;
 }
-#header #logo a {
+#header h1 a {
   color: #3F51B5;
 }
-#header #logo a:hover {
+#header h1 a:hover {
   color: #A40000;
+}
+#header #logo {
+  color: #A40000;
+}
+#header #logo:hover {
+  color: #9D1300;
 }
 #content > .title {
   margin-bottom: 1.25em;
@@ -99,13 +110,14 @@ ol li {
   margin-bottom: 1em;
 }
 .post .header {
-  margin-bottom: 1em;
+  margin-bottom: 0.8em;
 }
 .posts-list .post .header {
-  margin-bottom: 0.5em;
+  margin-bottom: 0;
 }
 .post .header .title {
   font-size: 1.5em;
+  line-height: 1.2;
 }
 .posts-list .post .header .title {
   font-size: 1.25em;
@@ -126,6 +138,9 @@ ol li {
 .post .body p:last-child {
   margin-bottom: 0;
 }
+.post .body a:visited {
+  color: #7090b0;
+}
 .post .meta {
   margin-top: 1em;
   color: #666;
@@ -136,14 +151,27 @@ ol li {
 .post .meta .tags {
   margin-left: 0.5em;
 }
+.post .meta .tags:first-child {
+  margin-left: 0;
+}
 .post .meta .tags .tag {
+  color: #999;
   margin-left: 0.33em;
 }
+.post .meta .tags:first-child .tag:first-child {
+  margin-left: 0;
+}
 .post .meta .tags a.tag {
-  color: #666;
+  color: #999;
 }
 .post .meta .tags a.tag:hover {
-  color: #444;
+  color: #666;
+}
+.post .meta .tags a.tag u {
+  color: #666;
+}
+.post .meta .tags a.tag:hover u {
+  color: #333;
 }
 .paginator .new {
   margin-right: 0.5em;
@@ -152,14 +180,19 @@ ol li {
   margin-left: 0.5em;
 }
 #footer {
-  margin-top: 3em;
+  margin-top: 2em;
   margin-bottom: 1em;
   color: #999;
-  font-style: italic;
+}
+.article-page-content + #footer {
+  margin-top: 1em;
 }
 #footer a {
   color: #999;
 }
 #footer a:hover {
   color: #444;
+}
+#footer .outer {
+  color: #ccc;
 }

@@ -16,11 +16,11 @@ DISPLAY_CATEGORIES_ON_MENU = False
 DELETE_OUTPUT_DIRECTORY = True
 SLUGIFY_SOURCE = 'title'
 
-DEFAULT_PAGINATION = 2
-DEFAULT_ORPHANS = 0
+DEFAULT_PAGINATION = 10
+DEFAULT_ORPHANS = 3
 PAGINATION_PATTERNS = (
-    (1, '{base_name}/', '{base_name}/index.html'),
-    (2, '{base_name}/page/{number}/', '{base_name}/page/{number}/index.html'),
+    (1, '{base_name}/{name}', 'blog/{name}.html'),
+    (2, '{base_name}/{name}/page/{number}', 'blog/{name}/page/{number}/index.html'),
 )
 
 DATE_FORMATS = {
@@ -64,13 +64,13 @@ LINKS = (('You can modify those links in your config file', '#'),)
 SOCIAL = (('You can add links in your config file', '#'),)
 
 
-ARTICLE_URL = '{slug}'
-ARTICLE_SAVE_AS = '{slug}/index.html'
-ARTICLE_LANG_URL = '{slug}-{lang}'
-ARTICLE_LANG_SAVE_AS = '{slug}-{lang}/index.html'
+ARTICLE_URL = 'blog/{slug}'
+ARTICLE_SAVE_AS = 'blog/{slug}.html'
+ARTICLE_LANG_URL = 'blog/{slug}-{lang}'
+ARTICLE_LANG_SAVE_AS = 'blog/{slug}-{lang}.html'
 
-TAG_URL = 'tag/{slug}/'
-TAG_SAVE_AS = 'tag/{slug}/index.html'
+TAG_URL = 'blog/tags/{slug}'
+TAG_SAVE_AS = 'tags/{slug}.html'
 
 AUTHOR_SAVE_AS = ''
 AUTHORS_SAVE_AS = ''

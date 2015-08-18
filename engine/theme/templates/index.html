@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
-{% block header_link %}
-{% if articles_page.has_previous() %}<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>{% else %}{{ SITESUBTITLE }}{% endif %}
+{% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
+{% block header_blog_link %}
+<em>{% if articles_page.has_previous() %}<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>{% else %}{{ SITESUBTITLE }}{% endif %}</em>
 {% endblock %}
 
 {% block content %}
@@ -23,7 +24,7 @@
         {% if article.tags %}
         <span class="tags">
         {% for tag in article.tags %}
-          <a class="tag" href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>
+          <a class="tag nodecor" href="{{ SITEURL }}/{{ tag.url }}">#<u>{{ tag | escape }}</u></a>
         {% endfor %}
         </span>
       {% endif %}

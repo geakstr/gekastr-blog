@@ -15,12 +15,12 @@
   {% endfor %}
 {% endblock %}
 
-{% block title %}{{ article.title }} • {{ SITESUBTITLE }} • {{ SITENAME }}{% endblock title %}
-
-{% block header_link %}<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>{% endblock %}
+{% block title %}{{ article.title }} ⋅ {{ SITESUBTITLE }} ⋅ {{ SITENAME }}{% endblock title %}
+{% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
+{% block header_blog_link %}<em><a href="{{ SITEURL }}/blog">{{ SITESUBTITLE }}</a></em>{% endblock %}
 
 {% block content %}
-<section id="content">
+<section id="content" class="article-page-content">
   <article class="post">
     <header class="header">
       <h2 class="title"><em>{{ article.title }}</em></h2>
@@ -29,11 +29,10 @@
     </header>
     <div class="body">{{ article.content }}</div>
     <footer class="meta">
-      <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time>
       {% if article.tags %}
         <span class="tags">
         {% for tag in article.tags %}
-          <a class="tag" href="{{ SITEURL }}/{{ tag.url }}">{{ tag | escape }}</a>
+          <a class="tag nodecor" href="{{ SITEURL }}/{{ tag.url }}">#<u>{{ tag | escape }}</u></a>
         {% endfor %}
         </span>
       {% endif %}
@@ -42,4 +41,4 @@
 </section>
 {% endblock %}
 
-{% block footer_year %}{{ article.date.year }}{% endblock %}
+{% block footer_year %}{{ article.locale_date }}{% endblock %}
