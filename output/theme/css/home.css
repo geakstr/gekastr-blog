@@ -29,7 +29,7 @@ body > div > div:first-child, body > div > div:last-child {
 
 /* Actually, styles */
 #content {
-  min-width: 640px;
+  max-width: 640px;
 }
 #content #menu {
   margin-bottom: 0.75em;
