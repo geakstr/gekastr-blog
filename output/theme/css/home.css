@@ -1,16 +1,6 @@
-/* Centering content */
-body > button {
-  position: absolute;
-  top: 0;
-  left: 0;
+html, body {
   width: 100%;
-  height: 80%;
-  background: transparent;
-  outline: none;
-  border: none;
-  margin: 0;
-  padding: 0;
-  font-size: 1em;
+  height: 100%;
 }
 
 /* Actually, styles */
