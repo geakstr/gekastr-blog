@@ -16,7 +16,7 @@ body > button {
 /* Actually, styles */
 #content {
   max-width: 640px;
-  margin: 0 auto;
+  margin: 22px auto;
   font-family: 'Lucida Grande', 'Ubuntu', 'Verdana', 'Helvetica Neue', 'Helvetica', 'Trebuchet MS', 'Arial', sans-serif;
 }
 #content #menu {

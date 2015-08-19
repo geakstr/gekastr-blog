@@ -172,6 +172,7 @@ tfoot .icon {
 @media only screen and (max-width:800px) {
   body {
     margin: 0 22px;
+    padding: 0;
   }
   body > header > nav {
     float: right;
