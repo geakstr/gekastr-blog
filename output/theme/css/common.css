@@ -1,0 +1,69 @@
+body {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 1.5em;
+  background: #fff;
+  color: #333;
+  font-size: 16px;
+  line-height: 1;
+  font-family: 'Cochin', 'Baskerville', 'Georgia', 'Times', 'Times New Roman', serif;
+}
+a {
+  text-decoration: none;
+  border-bottom: 1px solid;
+}
+a:link, a:visited {
+  color: #3F51B5;
+}
+a:hover, a:active, a:focus {
+  color: #A40000;
+}
+a.nodecor {
+  border-bottom: none;
+}
+a.nodecor u {
+  text-decoration: none;
+  border-bottom: 1px solid;
+}
+b, strong {
+  font-weight: 700;
+}
+i, em {
+  font-style: italic;
+}
+ul, ol {
+  list-style-position: outside;
+}
+ol li {
+  list-style-type: decimal;
+}
+.muted {
+  color: #999;
+}
+.outer {
+  display: inline-block;
+  margin-left: -1.5em;
+  width: 1.5em;
+  text-align: center;
+}
+#footer {
+  position: relative;
+  color: #999;
+}
+#footer a {
+  color: #999;
+}
+#footer a:hover {
+  color: #444;
+}
+#footer .fork-bomb {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 200px;
+  margin-left: -100px;
+  text-align: center;
+  font-size: 0.75em;
+  line-height: 1.5;
+  font-family: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
