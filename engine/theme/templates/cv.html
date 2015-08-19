@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width"/>
+  <title>Dmitry Kharitonov</title>
+  <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/reset.css" />
+  <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/common.css" />
+  <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/cv.css" />
+  <link rel="shortcut icon" href="/favicon.ico"/>
+  <link rel="alternate" href="{{filename}}/pdfs/Dmitry_Kharitonov_CV_en.pdf" hreflang="en" type="application/pdf" title="Dmitry Kharitonov">
+  <link rel="alternate" href="{{filename}}/pdfs/Dmitry_Kharitonov_CV_ru.pdf" hreflang="ru" type="application/pdf" title="Дмитрий Харитонов">
+</head>
+<body>
+{% include 'ya_metrika.html' %}
+
+<header class="cf">  
+  <div class="cv-download-pdf-wrapper">
+    <a id="cv-download-pdf-link"
+       href="{{filename}}/pdfs/Dmitry_Kharitonov_CV_en.pdf"
+       data-entext="As PDF"
+       data-rutext="В PDF"
+       data-enlink="{{filename}}/pdfs/Dmitry_Kharitonov_CV_en.pdf"
+       data-rulink="{{filename}}/pdfs/Dmitry_Kharitonov_CV_ru.pdf"></a>
+  </div>
+  <nav class="cf"> 
+    <a href="#en" id="cv-en-toggler" class="nodecor -action" style="border-right: 1px solid #ccc;">
+      <u>In English</u>
+    </a>
+    <a href="#ru" id="cv-ru-toggler" class="nodecor -action">
+      <u>По-русски</u>
+    </a>
+    <a href="#highlight" id="cv-highlighter" class="nodecor -action -dotted" data-entext="Highlight" data-rutext="Подсветить"><u></u> <i class="sprite sprite-light"></i></a>
+  </nav>
+</header>
+
+<!-- OMG! Yes, this CV markup as table ¯\_(ツ)_/¯ -->
+<table id="cv-en" class="vcard h-card cv" lang="en"> 
+  <thead>
+    <tr>
+      <td><h1 class="p-name fn"><a href="/" rel="me">Dmitry Kharitonov</a></h1></td>
+      <td>
+        <p>I'm developing <mark class="essence">web-services</mark> and <mark class="essence">apps</mark>. Interested in development for <mark class="essence">mobile platforms</mark>. I like <mark class="essence">clarity</mark> and <mark class="essence">minimalism</mark> in design of code, things and products. My <a href="https://github.com/geakstr" class="nodecor" rel="me"><nobr><u>github.com/<span class="p-nickname nickname">geakstr</span></u> <i class="sprite sprite-github"></i></nobr></a></p>
+        <p>I'm <span class="my-info -age">22</span>, live in <span class="p-adr h-adr adr"><span class="p-country-name country-name">Russia</span>, <span class="p-locality locality">Astrakhan</span></span>. Love music, play guitar and ride a bike.</p>
+        <p>My email <a href="mailto:geakstr@me.com" class="u-email email">geakstr@me.com</a> and <a href="https://www.facebook.com/geakstr" rel="me">facebook.com/geakstr</a> for contacting.</p>
+      </td>
+    </tr>
+  </thead>
+  <tbody>    
+    <tr>
+      <td><h2>Skills</h2></td>
+      <td>
+        <ul>
+          <li><mark class="essence">Java</mark> as main tool. In my practice, usually, I use <mark class="essence">Spring Boot</mark> Framework with <mark class="essence">JPA</mark> (Hibernate) and <mark class="essence">Thymeleaf</mark> template engine</li>
+          <li>Experience on Front-End Development with <mark class="essence">HTML5</mark>, <mark class="essence">CSS3</mark> and <mark class="essence">JavaScript</mark> using modern tools</li>
+          <li>Working with <mark class="essence">Node.js</mark> and writing <mark class="essence">real-time systems</mark> (with <mark class="essence">Socket.IO</mark>)</li>
+          <li>Mobile app development under <mark class="essence">Android</mark> platform</li>
+          <li><mark class="essence">OpenGL</mark> for game development (I use LWJGL)</li>
+          <li>I worked with <mark class="essence">SQL</mark> in OracleDB, MySQL, SQLite and PostgreSQL. I have some experience with <mark class="essence">NoSQL</mark> (MongoDB)</li>
+          <li>Some skills of development on <mark class="essence">PHP</mark>, <mark class="essence">C#</mark>, <mark class="essence">Ruby</mark> and <mark class="essence">Python</mark></li>
+          <li>Also I have some experience in working with frameworks for testing: <mark class="essence">JUnit</mark>, <mark class="essence">Mocha</mark> and <mark class="essence">Selenium WebDriver</mark></li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><h2>Tools</h2></td>
+      <td>
+        <ul>
+          <li><mark class="essence">Git</mark></li>
+          <li><mark class="essence">UNIX</mark>-like OS</li>
+          <li>Writing scripts on <mark class="essence">Bash</mark></li>
+          <li>Automation tools (<mark class="essence">gulp</mark>, <mark class="essence">gradle</mark>)</li>
+          <li>I'm also very interested in <mark class="essence">UI</mark>, <mark class="essence">UX</mark>, <mark class="essence">typography</mark> and <mark class="essence">design</mark></mark></li>
+          <li>Basic knowledge of <mark class="essence">Scrum</mark> and other project management methodologies</li>
+          <li>Using <mark class="essence">IntelliJ IDEA</mark> and <mark class="essence">Sublime Text</mark> for development and <mark class="essence">Sketch.app</mark> for drawing simple graphics</li> 
+        </ul>
+      </td>
+    </tr>
+    <tr class="-condensed">
+      <td><h2>Projects</h2></td>
+      <td>
+        <ul>
+          <li>I start to develop <a href="https://github.com/geakstr/write.ninja" rel="details">app for time management</a> like TaskPaper, but with extended features and web client</li>
+          <li>From time to time I come back to developing my own <a href="https://github.com/geakstr/voxel-moxel" rel="details">voxel-based game</a> just for fun</li>
+          <li>For the experiment I developed client-server Android app for dating with users in VK social network. App allows finding new people, chatting with them and view photos. On Back-End I use Spring Boot/PostgreSQL. In Android for REST were used Retrofit and Robospice; Picasso — for working with images; ACRA — for crash report system; Flurry/Google Analytics — for analyse. For chatting and push notifications was used Google Cloud Messaging</li>
+          <li>At work at the university I developed system for agile collecting and reporting statistics; service for synchronizing data between accounting of university and bank</li>
+        </ul>
+      </td>
+    </tr>
+    <tr class="-condensed">
+      <td><h2>Education</h2></td>
+      <td></td>
+    </tr>
+    <tr class="-condensed">
+      <td>2010–2014</td>
+      <td>Astrakhan State University, Bachelor of Information Systems</td>
+    </tr>
+    <tr class="-condensed">
+      <td>2014–now</td>
+      <td>Astrakhan State University, Master of Information Systems</td>
+    </tr>
+    <tr class="-condensed">
+      <td></td>
+      <td class="-separated">Participated in <mark class="essence">ACM ICPC</mark> in 2011–2013</td>
+    </tr>
+    <tr class="-condensed">
+      <td><h2>Work</h2></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>2013–now</td>
+      <td>Astrakhan State University, <span class="p-job-title title">Software Engineer</span></td>
+    </tr>    
+    <tr class="-condensed">
+      <td><h2>Plans</h2></td>
+      <td>I'm interested in working with <mark class="essence">Big Data</mark> in mobile and web services (I think geo data and personalization in services is a very interesting theme)</td>
+    </tr>    
+  </tbody>
+  <tfoot>
+    <tr>
+      <td></td>
+      <td>
+        <p><small style="position: relative; top: -1px;">©</small> <span class="meta -current-year">{{ CURRENT_YEAR }}</span></p>
+        <p>This page made with love <i class="sprite sprite-heart"></i> and works on my Raspberry Pi <i class="sprite sprite-pi"></i></p>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<table id="cv-ru" class="vcard h-card cv" lang="ru">
+  <thead>
+    <tr>
+      <td><h1 class="p-name fn"><a href="/" rel="me">Дмитрий Харитонов</a></h1></td>
+      <td>
+        <p>Разрабатываю <mark class="essence">приложения</mark> и <mark class="essence">веб-сервисы</mark>, интересуюсь разработкой под <mark class="essence">мобильные платформы</mark>. Ценю <mark class="essence">ясность</mark> и <mark class="essence">минималистичность</mark> в дизайне кода, вещей, продуктов и вообще. Мой <a href="https://github.com/geakstr" class="nodecor" rel="me"><nobr><u>github.com/<span class="p-nickname nickname">geakstr</span></u> <i class="sprite sprite-github"></i></nobr></a></p>
+        <p>Мне <span class="my-info -age">22</span>, живу в <span class="p-adr h-adr adr"><span class="p-locality locality">Астрахани</span>, <span class="p-country-name country-name">Россия</span></span>. Люблю музыку, играю на гитаре и катаюсь на велосипеде. Иногда пишу в <a href="https://twitter.com/geakstr" rel="me">twitter.com/geakstr</a>.</p>
+        <p>Почта <a href="mailto:geakstr@me.com" class="u-email email"><span class="p-nickname nickname">geakstr</span>@me.com</a>, <a href="https://www.facebook.com/geakstr" rel="me">facebook.com/geakstr</a> и <a href="http://vk.com/geakstr" rel="me">vk.com/geakstr</a> для связи.</p>
+      </td>
+    </tr>
+  </thead>
+  <tbody>    
+    <tr>
+      <td><h2>Навыки</h2></td>
+      <td>
+        <ul>
+          <li><mark class="essence">Java</mark> как основной инструмент. В моей практике обычно использую <mark class="essence">Spring Boot</mark> с <mark class="essence">JPA</mark> (Hibernate) и <mark class="essence">Thymeleaf</mark> в качестве шаблонизатора</li>
+          <li>Опыт разработки на фронтенде с <mark class="essence">HTML5</mark>, <mark class="essence">CSS3</mark> и <mark class="essence">JavaScript</mark>, используя современные инструменты</li>
+          <li>Работаю с <mark class="essence">Node.js</mark>; нравится писать <mark class="essence">системы, работающие в реальном времени</mark> (с <mark class="essence">Socket.IO</mark>)</li>
+          <li>Есть опыт программирования под <mark class="essence">андроид</mark></li>
+          <li><mark class="essence">OpenGL</mark> для разработки игрушек (использую LWJGL)</li>
+          <li>Работал с <mark class="essence">SQL</mark> в OracleDB, MySQL, SQLite и PostgreSQL. Имею небольшой опыт общения с <mark class="essence">NoSQL</mark> (MongoDB)</li>
+          <li>Иногда пишу на <mark class="essence">PHP</mark>, <mark class="essence">C#</mark>, <mark class="essence">Ruby</mark> и <mark class="essence">Python</mark></li>
+          <li>Также имею некоторый опыт работы с фреймворками для тестирования: <mark class="essence">JUnit</mark>, <mark class="essence">Mocha</mark> и <mark class="essence">Selenium WebDriver</mark><mark class="essence"></li></mark>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td><h2>Инструменты</h2></td>
+      <td>
+        <ul>
+          <li><mark class="essence">Git</mark></li>
+          <li><mark class="essence">UNIX</mark>-подобные ОС</li>
+          <li><mark class="essence">Bash</mark> для скриптов</li>
+          <li>Средства автоматизации задач (<mark class="essence">gulp</mark>, <mark class="essence">gradle</mark>)</li>
+          <li>Много читаю об <mark class="essence">UI</mark>, <mark class="essence">UX</mark>, <mark class="essence">типографике</mark> и <mark class="essence">дизайне</mark> в целом</li>
+          <li>Знаком с основами <mark class="essence">Scrum</mark> и другими методологиями разработки проектов</li>
+          <li>Использую <mark class="essence">IntelliJ IDEA</mark> и <mark class="essence">Sublime Text</mark> для разработки и <mark class="essence">Sketch.app</mark> для рисования простой графики</li> 
+        </ul>
+      </td>
+    </tr>
+    <tr class="-condensed">
+      <td><h2>Проекты</h2></td>
+      <td>
+        <ul>
+          <li>Начал разрабатывать <a href="https://github.com/geakstr/write.ninja" rel="details">приложение для тайм-менеджемента и хранения заметок</a>, идеологически похожее на TaskPaper, но с расширенными функциями и идеями</li>
+          <li>Время от времени пишу свою <a href="https://github.com/geakstr/voxel-moxel" rel="details">игру типа майнкрафта</a> (just for fun)</li>
+          <li>Ради эксперимента и набора опыта написал приложение под Андроид для знакомства с людьми из ВКонтакте (по-сути — Tinder). Приложение позволяет анонимно находить себе пару, чатиться и смотреть фоточки. На сервере использовал Spring Boot/PostgreSQL. На клиенте для REST взаимодействия были использованы Retrofit и Robospice; Picasso — для работы с картинками; ACRA — для отсылки крашей; Flurry/Google Analytics — для аналитики. Чат и уведомления реализованы с помощью Google Cloud Messaging</li>
+          <li>На работе в университете разработал систему для гибкого сбора и отображения статистики о студентах; сервис для синхронизации данных между бухгалтерией и банком</li>
+        </ul>
+      </td>
+    </tr>
+    <tr class="-condensed">
+      <td><h2>Образование</h2></td>
+      <td></td>
+    </tr>
+    <tr class="-condensed">
+      <td>2010–2014</td>
+      <td>Астраханский ГУ, Бакалавр информационных систем</td>
+    </tr>
+    <tr class="-condensed">
+      <td>2014–н.в.</td>
+      <td>Астраханский ГУ, Магистр информационных систем</td>
+    </tr>
+    <tr class="-condensed">
+      <td></td>
+      <td class="-separated">Принимал участие в <mark class="essence">ACM ICPC</mark> в 2011–2013</td>
+    </tr>
+    <tr class="-condensed">
+      <td><h2>Работа</h2></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>2013–н.в.</td>
+      <td>Астраханский ГУ, <span class="p-job-title title">Разработчик</span></td>
+    </tr>    
+    <tr class="-condensed">
+      <td><h2>Планы</h2></td>
+      <td>Заинтересован в работе с <mark class="essence">Большими Данными</mark> в мобильных и веб-сервисах (думаю, гео-данные и персонализация в сервисах — очень интересная тема)</td>
+    </tr>    
+  </tbody>
+  <tfoot>
+    <tr>
+      <td></td>
+      <td>
+        <p><small style="position: relative; top: -1px;">©</small> <span class="meta -current-year">{{ CURRENT_YEAR }}</span></p>
+        <p>Страница сделана с любовью <i class="sprite sprite-heart"></i> и работает на моём Raspberry Pi <i class="sprite sprite-pi"></i></p>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+<script src="/{{ THEME_STATIC_DIR }}/js/cv.js" async></script>
+
+</body>
+</html>

@@ -1,0 +1,55 @@
+html {
+  height: 100%;
+}
+body {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Lucida Grande', 'Ubuntu', 'Verdana', 'Helvetica Neue', 'Helvetica', 'Trebuchet MS', 'Arial', sans-serif;
+}
+
+/* Centering content */
+body {
+  display: table;
+  height: 80%;
+}
+body > div {
+  display: none;
+}
+body > div:first-child {
+  display: table-row;
+}
+body > div > div {
+  display: table-cell;
+  vertical-align: middle;
+}
+body > div > div:first-child, body > div > div:last-child {
+  width: 50%;
+}
+
+/* Actually, styles */
+#content {
+  min-width: 640px;
+}
+#content #menu {
+  margin-bottom: 0.75em;
+  padding: 0 0.5em 0.75em 0.5em;
+  border-bottom: 1px solid #efefef;
+  text-align: center;
+}
+#content #menu li {
+  display: inline-block;
+}
+#content h1 {
+  color: #A40000;
+}
+#text {
+  padding: 0 0.5em 0 0.5em;
+  line-height: 1.5;
+}
+#text p {
+  margin-bottom: 1em;
+}
+#footer {
+  margin-top: 1em;
+}

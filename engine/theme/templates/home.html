@@ -1,13 +1,40 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="{{ DEFAULT_LANG }}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width"/>
+    <title>{{ SITENAME }}</title>
+    <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/reset.css" />
+    <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/common.css" />
+    <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/home.css" />
+</head>
+<body><div><div></div>
 
-{% block title %}{{ page.title }}{%endblock%}
-{% block header_logo %}<span id="logo">{{ SITENAME }}</span>{% endblock %}
-{% block header_blog_link %}<a href="{{ SITEURL }}/blog">{{ SITESUBTITLE }}</a>{% endblock %}
+<div id="content">
+<nav id="menu"><ul>
+  <li><h1>{{ SITENAME }}</h1></li>
+  <li><span class="muted">⋅</span></li>
+  <li><a href="/blog" rel="me">Блог</a></li>
+</ul></nav>
 
-{% block content %}
-    <h1>{{ page.title }}</h1>
-    {% import 'translations.html' as translations with context %}
-    {{ translations.translations_for(page) }}
+<div id="text" class="vcard h-card">
+<p>Разрабатываю приложения и веб-сервисы, интересуюсь разработкой под мобильные платформы. 
+Ценю ясность и минималистичность в дизайне кода, вещей, продуктов и вообще. 
+Мой <a href="https://github.com/geakstr" rel="me">github.com/geakstr</a> и развернутое <a href="/cv#ru" rel="me">CV</a>.</p>
+<p>Мне 22, люблю музыку, играю на гитаре и катаюсь на велосипеде. 
+Иногда пишу в <a href="https://twitter.com/geakstr">twitter.com/geakstr</a>.</p>
+<p>Почта <a href="mailto:geakstr@me.com" class="u-email email" rel="me">geakstr@me.com</a>, 
+<a href="https://www.facebook.com/geakstr" rel="me">facebook.com/geakstr</a> и 
+<a href="http://vk.com/geakstr" rel="me">vk.com/geakstr</a> для связи.</p>
+</div>
 
-    {{ page.content }}
-{% endblock %}
+<footer id="footer">
+  <p class="fork-bomb">:(){ :|:& };:</p>
+</footer>
+
+</div>
+
+<div></div></div>
+{% include 'ya_metrika.html' %}
+</body>
+</html>

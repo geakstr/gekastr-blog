@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}Заметки с тегом «{{ tag | escape }}» ⋅ {{ SITENAME }}{% endblock %}
+{% block title %}Заметки с тегом #{{ tag | escape }} ⋅ Блог ⋅ {{ SITENAME }}{% endblock %}
 {% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
 {% block header_blog_link %}<em><a href="{{ SITEURL }}/blog">{{ SITESUBTITLE }}</a></em>{% endblock %}
 
 {% block content %}
 <section id="content">
-<h3 class="title"><em>Заметки с тегом <strong>{{ tag }}</strong>:</em></h3>
+<h3 class="title"><em>Заметки с тегом <strong>#{{ tag }}</strong>:</em></h3>
 <ol class="posts-list" reversed>
 {% for article in articles %}
 <li>

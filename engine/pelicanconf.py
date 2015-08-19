@@ -32,7 +32,7 @@ PATH = '../content'
 OUTPUT_PATH = '../output'
 ARTICLE_PATHS = ['./articles']
 PAGE_PATHS = ['./pages']
-STATIC_PATHS = ['images']
+STATIC_PATHS = ['imgs', 'pdfs']
 OUTPUT_RETENTION = [".git", ".gitignore"]
 
 CURRENT_YEAR = datetime.datetime.utcnow().strftime("%Y")
