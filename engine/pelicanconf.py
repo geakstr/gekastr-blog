@@ -48,21 +48,15 @@ TYPOGRIFY = False
 MD_EXTENSIONS = ['extra']
 
 PLUGIN_PATHS = ["plugins"]
-PLUGINS = ["slugcollision"]
+PLUGINS = []
 
-# Feed generation is usually not desired when developing
+FEED_RSS =  'feeds/rss.xml'
+FEED_ATOM =  'feeds/atom.xml'
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None
 AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
-
-# Blogroll
-LINKS = (('You can modify those links in your config file', '#'),)
-
-# Social widget
-SOCIAL = (('You can add links in your config file', '#'),)
-
 
 ARTICLE_URL = 'blog/{slug}'
 ARTICLE_SAVE_AS = 'blog/{slug}.html'
