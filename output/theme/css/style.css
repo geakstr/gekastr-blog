@@ -72,12 +72,21 @@
   margin-bottom: 0.66em;
 }
 .post .body p:last-child,
+.post .body h2:last-child,
 .post .body .codehilite:last-child,
 .post .body .codehilitetable:last-child {
   margin-bottom: 0;
 }
 .post .body a:visited {
   color: #7090b0;
+}
+
+.post .body h2 {
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+  font-size: 1.125em;
+  line-height: 1.2;
+  font-weight: 700;
 }
 
 /* Code in post */

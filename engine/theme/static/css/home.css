@@ -19,6 +19,7 @@ html, body {
   display: inline-block;
 }
 #content h1 {
+  font-weight: 700;
   color: #A40000;
 }
 #text {
