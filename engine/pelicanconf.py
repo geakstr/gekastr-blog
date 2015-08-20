@@ -51,7 +51,7 @@ PLUGIN_PATHS = ["plugins"]
 PLUGINS = []
 
 FEED_RSS =  'feeds/rss.xml'
-FEED_ATOM =  'feeds/atom.xml'
+FEED_ATOM =  None
 FEED_ALL_ATOM = None
 CATEGORY_FEED_ATOM = None
 TRANSLATION_FEED_ATOM = None

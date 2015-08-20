@@ -81,7 +81,7 @@
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;p&gt;Наша цель — абстрагироваться от работы с DOM и иметь дело только с нашей моделью данных. Чтобы осуществлять вставку и удаление в массиве хорошо подойдет стандартный метод &lt;a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/splice"&gt;splice&lt;/a&gt;.
+&lt;p&gt;Наша цель — абстрагироваться от работы с DOM и иметь дело только с моделью данных. Чтобы осуществлять вставку и удаление в массиве хорошо подойдет стандартный метод &lt;a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/splice"&gt;splice&lt;/a&gt;.
 Но есть проблема: нам всё-таки нужно воздействовать на DOM, чтобы изменения были видны &lt;nobr&gt;визуально :)&lt;/nobr&gt; Давайте &lt;em&gt;подправим&lt;/em&gt; метод &lt;code&gt;splice&lt;/code&gt;, но только для массива &lt;code&gt;blocks&lt;/code&gt;:&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
