@@ -6,8 +6,8 @@ html, body {
 /* Actually, styles */
 #content {
   max-width: 640px;
-  margin: 22px auto;
-  font-family: 'Lucida Grande', 'Ubuntu', 'Verdana', 'Helvetica Neue', 'Helvetica', 'Trebuchet MS', 'Arial', sans-serif;
+  margin: 22px auto 44px auto;
+  font-size: 1.125em;
 }
 #content #menu {
   margin-bottom: 0.75em;
@@ -31,4 +31,14 @@ html, body {
 }
 #footer {
   margin-top: 1em;
+}
+@media only screen and (max-width:800px) {
+  #content #menu {
+    text-align: left;
+  }
+  #footer .fork-bomb {
+    left: 0;
+    width: auto;
+    margin-left: 0.5em;
+  }
 }
