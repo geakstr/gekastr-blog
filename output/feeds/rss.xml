@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Дмитрий Харитонов</title><link>/</link><description>Блог</description><atom:link href="/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 20 Aug 2015 12:51:00 +0300</lastBuildDate><item><title>Хороший JavaScript. Vol. 1 «Pimp your code»</title><link>/blog/good-js-vol-1</link><description>&lt;p&gt;Как известно, JavaScript — язык-ошибка, язык-неочевидное поведение, язык-недоразумение.
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Дмитрий Харитонов</title><link>/</link><description>Блог</description><atom:link href="/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 20 Aug 2015 12:51:00 +0300</lastBuildDate><item><title>Хороший JavaScript. Vol. 1 «Pimp your code»</title><link>/blog/nice-js-vol-1</link><description>&lt;p&gt;Как известно, JavaScript — язык-ошибка, язык-неочевидное поведение, язык-недоразумение.
 Причиной этому являлась необходимость в середине 90 в жесткие сроки получить мощный язык,
 позволяющий придать страницам больше возможностей. И получили.
 Все проблемы (повсеместные глобальные переменные, область видимости переменных, неочевидные и нелогичные приведения типов)
@@ -165,4 +165,4 @@
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;p&gt;В следующей статье мы продолжим работать с прототипами и посмотрим на способы реализации наследования в JavaScript.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Thu, 20 Aug 2015 12:51:00 +0300</pubDate><guid>tag:,2015-08-20:blog/good-js-vol-1</guid><category>js</category><category>series</category></item></channel></rss>
+&lt;p&gt;В следующей статье мы продолжим работать с прототипами и посмотрим на способы реализации наследования в JavaScript.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Thu, 20 Aug 2015 12:51:00 +0300</pubDate><guid>tag:,2015-08-20:blog/nice-js-vol-1</guid><category>js</category><category>series</category></item></channel></rss>
