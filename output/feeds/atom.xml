@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Дмитрий Харитонов</title><link href="/" rel="alternate"></link><link href="/feeds/atom.xml" rel="self"></link><id>/</id><updated>2015-08-20T11:05:18Z</updated></feed>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Дмитрий Харитонов</title><link href="/" rel="alternate"></link><link href="/feeds/atom.xml" rel="self"></link><id>/</id><updated>2015-08-20T12:51:00+03:00</updated><entry><title>Подсветка синтаксиса</title><link href="/blog/syntax" rel="alternate"></link><updated>2015-08-20T12:51:00+03:00</updated><author><name>Дмитрий Харитонов</name></author><id>tag:,2015-08-20:blog/syntax</id><summary type="html"></summary><category term="js"></category></entry></feed>

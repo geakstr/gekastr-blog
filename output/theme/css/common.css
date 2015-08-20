@@ -1,12 +1,14 @@
 body {
   max-width: 800px;
+  width: 95%;
   margin: 0 auto;
-  padding: 0 1.5em;
   background: #fff;
   color: #333;
   font-size: 16px;
   line-height: 1;
   font-family: 'Cochin', 'Baskerville', 'Georgia', 'Times', 'Times New Roman', serif;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
 }
 a {
   text-decoration: none;
@@ -36,6 +38,19 @@ ul, ol {
 }
 ol li {
   list-style-type: decimal;
+}
+pre, code {
+  font-family: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+.cf:before, .cf:after {
+  content: " ";
+  display: table;
+}
+.cf:after {
+  clear: both;
+}
+.cf {
+  *zoom: 1;
 }
 .muted {
   color: #999;

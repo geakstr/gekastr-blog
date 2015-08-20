@@ -7,6 +7,7 @@
     <title>{% block title %}{{ SITESUBTITLE }} ⋅ {{ SITENAME }}{% endblock title %}</title>
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/reset.css" />
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/common.css" />
+    <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/pygment.css" />
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/style.css" />
     {% if FEED_ALL_ATOM %}<link href="{{ FEED_DOMAIN }}/{{ FEED_ALL_ATOM }}" type="application/atom+xml" rel="alternate" title="{{ SITENAME }} Full Atom Feed" />{% endif %}
     {% if FEED_ALL_RSS %}<link href="{{ FEED_DOMAIN }}/{{ FEED_ALL_RSS }}" type="application/rss+xml" rel="alternate" title="{{ SITENAME }} Full RSS Feed" />{% endif %}

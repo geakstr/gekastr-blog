@@ -45,7 +45,7 @@ THEME_STATIC_PATHS = ['static']
 CSS_FILE = 'style.css'
 TYPOGRIFY = False
 
-MD_EXTENSIONS = ['extra']
+MD_EXTENSIONS = ['extra', 'codehilite']
 
 PLUGIN_PATHS = ["plugins"]
 PLUGINS = []

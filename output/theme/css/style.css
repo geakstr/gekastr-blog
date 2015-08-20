@@ -1,3 +1,4 @@
+/* Header */
 #header {
   border-top: 1px solid #A40000;
   padding-top: 1em;
@@ -23,7 +24,11 @@
   margin-bottom: 1.25em;
   font-size: 1.25em;
 }
+
+/* Base post */
 .post {
+  position: relative;
+  width: 100%;
   margin-bottom: 2.33em;
 }
 .post:last-child {
@@ -32,6 +37,8 @@
 .posts-list li {
   margin-bottom: 1em;
 }
+
+/* Post header */
 .post .header {
   margin-bottom: 0.8em;
 }
@@ -51,19 +58,55 @@
 .post .header .title a:hover {
   color: #A40000;
 }
+
+/* Base post body */
 .post .body {
+  position: relative;
+  width: 100%;
   font-size: 1.125em;
   line-height: 1.333;
 }
-.post .body p {
+.post .body p,
+.post .body .codehilite,
+.post .body .codehilitetable {
   margin-bottom: 0.66em;
 }
-.post .body p:last-child {
+.post .body p:last-child,
+.post .body .codehilite:last-child,
+.post .body .codehilitetable:last-child {
   margin-bottom: 0;
 }
 .post .body a:visited {
   color: #7090b0;
 }
+
+/* Code in post */
+.post .body pre, .post .body code {
+  font-size: 0.75em;
+}
+.post .body pre {
+  white-space: pre;
+}
+.post .body .codehilite {
+  max-width: 800px;
+  overflow: auto;
+}
+.post .body .codehilitetable,
+.post .body .codehilitetable .linenodiv,
+.post .body .codehilitetable .code,
+.post .body .codehilitetable .codehilite {
+  position: relative;
+}
+.post .body .codehilitetable .linenos {
+  position: absolute;
+}
+.post .body .codehilitetable .linenodiv {
+  left: -100%;
+  padding-right: 0.5em;
+  color: #ccc;
+}
+
+/* Post meta */
 .post .meta {
   margin-top: 1em;
   color: #666;
@@ -94,16 +137,36 @@
 .post .meta .tags a.tag:hover u {
   color: #333;
 }
+
+/* Paginator */ 
 .paginator .new {
   margin-right: 0.5em;
 }
 .paginator .old {
   margin-left: 0.5em;
 }
+
+/* Footer */
 #footer {
   margin-top: 2em;
   margin-bottom: 1em;
 }
 .article-page-content + #footer {
   margin-top: 1em;
+}
+
+/* Mobile improvements */
+@media only screen and (max-width:800px) {
+  .post .body .codehilite {
+    max-width: 100%;
+  }
+  .post .body .codehilitetable {
+    display: block;
+  }
+  .post .body .codehilitetable tbody, .post .body .codehilitetable tr, .post .body .codehilitetable td {
+    display: inline;
+  }
+  .post .body .codehilitetable .linenos {
+    display: none;
+  }
 }
