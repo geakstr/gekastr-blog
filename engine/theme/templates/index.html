@@ -12,6 +12,9 @@
 {% for article in articles_page.object_list %}
 <article class="post">
     <header class="header">
+        {% if article.readtime %}
+            <div class="readtime"><i class="sprite sprite-clock"></i> {{article.readtime.minutes}} мин. на прочтение</div>
+        {% endif %}
         <h2 class="title">
             <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark">{{ article.title }}</a>
         </h2>

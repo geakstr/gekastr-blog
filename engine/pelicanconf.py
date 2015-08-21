@@ -48,7 +48,7 @@ TYPOGRIFY = False
 MD_EXTENSIONS = ['extra', 'codehilite']
 
 PLUGIN_PATHS = ["plugins"]
-PLUGINS = []
+PLUGINS = ['readtime', 'typo']
 
 FEED_RSS =  'feeds/rss.xml'
 FEED_ATOM =  None

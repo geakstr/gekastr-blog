@@ -58,32 +58,33 @@
 <section id="content" class="article-page-content">
   <article class="post">
     <header class="header">
+          <div class="readtime"><i class="sprite sprite-clock"></i> 7 мин. на прочтение</div>
       <h2 class="title"><em>Хороший JavaScript. Vol. 1 «Pimp your code»</em></h2>
       
     </header>
-    <div class="body"><p>Как известно, JavaScript — язык-ошибка, язык-неочевидное поведение, язык-недоразумение.
-Причиной этому являлась необходимость в середине 90 в жесткие сроки получить мощный язык,
-позволяющий придать страницам больше возможностей. И получили.
-Все проблемы (повсеместные глобальные переменные, область видимости переменных, неочевидные и нелогичные приведения типов)
-зашиты в JS глубоко и надолго. Сейчас к нам приближается ES6, который явно, но не достаточно кардинально улучшает ситуацию.</p>
-<p>С другой стороны язык очень гибок и никто не запрещает обходить плохие стороны, использовать хорошие и улучшать язык своими силами.
-Этим я и займусь в серии заметок.
-Несгладимое впечатление на меня произвела книга <a href="http://www.ozon.ru/context/detail/id/20217226/" class="nodecor">«<u>JavaScript. Сильные стороны</u>»</a> Дугласа Крокфорда,
-рекомендую к прочтению (она совсем небольшая).</p>
-<h2><span id="objects">Объекты</span></h2>
-<p>Это один из основных механизмов в языке и, надо сказать, удачно реализованный. </p>
-<p>Всё (ну, примитивы не совсем объекты, они неизменяемы) в JS — объект. Объекты обладают прототипом, который и сам является объектом со своим набором свойств. 
-К прототипам можно относиться как к базовым объектам, задающим начальную функциональность другим объектам. Разные объекты могут иметь один и тот же прототип. 
-Каждый раз при изменении прототипа у объекта все другие объекты с этим же прототипом получают его обновленную версию.
-Это достигается за счет того, что объекты содержат не копию, а ссылку на прототип. Это способствует экономии памяти и скорости работы.</p>
-<p>Помимо прототипа у объекта есть свои, эксклюзивные свойства. Имя свойства может совпадать с именем свойства в прототипе.
-Ситуация разрешается просто: JS сначала поищет запрашиваемое свойство в списке личных свойств объекта, а если не найдет, пойдет искать по цепочке прототипов в их свойствах.</p>
-<p>Что можно со всем этим делать?</p>
-<h2>Расширение функциональности на лету</h2>
-<p>Как было сказано, почти все в JS является объектом, в том числе массивы (ага). Мы всегда можем добавить объекту новое свойство.
-Давайте попробуем использовать это себе во благо. </p>
-<p>Например, имеем список абзацев с текстом на странице. Помимо самих DOM элементов мы хотим хранить рядом с ними какую-то метаинформацию (к примеру, UID абзаца). 
-И мы должны уметь удалять и вставлять абзацы в произвольных местах. Работающий пример можно посмотреть <a href="https://jsbin.com/qemaqo/edit?html,js,output">здесь</a>.</p>
+    <div class="body"><p>Как известно, JavaScript&nbsp;&mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение.
+Причиной этому являлась необходимость в&nbsp;середине 90 в&nbsp;жесткие сроки получить мощный язык,
+позволяющий придать страницам больше возможностей. И&nbsp;получили.
+Все проблемы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>повсеместные глобальные переменные, область видимости переменных, неочевидные и&nbsp;нелогичные приведения типов)
+зашиты в&nbsp;JS глубоко и&nbsp;надолго. Сейчас к&nbsp;нам приближается ES6, который явно, но&nbsp;не&nbsp;достаточно кардинально улучшает ситуацию.</p>
+<p>С&nbsp;другой стороны язык очень гибок и&nbsp;никто не&nbsp;запрещает обходить плохие стороны, использовать хорошие и&nbsp;улучшать язык своими силами.
+Этим я&nbsp;и&nbsp;займусь в&nbsp;серии заметок.
+Несгладимое впечатление на&nbsp;меня произвела книга<span style="margin-right:0.44em;"> </span><span style="margin-left:-0.44em;">&laquo;</span><a href="http://www.ozon.ru/context/detail/id/20217226/">JavaScript. Сильные стороны</a>&raquo; Дугласа Крокфорда,
+рекомендую к&nbsp;прочтению<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>она совсем небольшая).</p>
+<h2>Объекты</h2>
+<p>Это один из&nbsp;основных механизмов в&nbsp;языке и, надо сказать, удачно реализованный. </p>
+<p>Всё<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ну, примитивы не&nbsp;совсем объекты, они неизменяемы) в&nbsp;JS&nbsp;&mdash; объект. Объекты обладают прототипом, который и&nbsp;сам является объектом со&nbsp;своим набором свойств. 
+К&nbsp;прототипам можно относиться как к&nbsp;базовым объектам, задающим начальную функциональность другим объектам. Разные объекты могут иметь один и&nbsp;тот&nbsp;же прототип. 
+Каждый раз при изменении прототипа у&nbsp;объекта все другие объекты с&nbsp;этим&nbsp;же прототипом получают его обновленную версию.
+Это достигается за&nbsp;счет того, что объекты содержат не&nbsp;копию, а&nbsp;ссылку на&nbsp;прототип. Это способствует экономии памяти и&nbsp;скорости работы.</p>
+<p>Помимо прототипа у&nbsp;объекта есть свои, эксклюзивные свойства. Имя свойства может совпадать с&nbsp;именем свойства в&nbsp;прототипе.
+Ситуация разрешается просто: JS&nbsp;сначала поищет запрашиваемое свойство в&nbsp;списке личных свойств объекта, а&nbsp;если не&nbsp;найдет, пойдет искать по&nbsp;цепочке прототипов в&nbsp;их&nbsp;свойствах.</p>
+<p>Что можно со&nbsp;всем этим делать?</p>
+<h2>Расширение функциональности на&nbsp;лету</h2>
+<p>Как было сказано, почти все в&nbsp;JS является объектом, в&nbsp;том числе массивы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ага). Мы&nbsp;всегда можем добавить объекту новое свойство.
+Давайте попробуем использовать это себе во&nbsp;благо. </p>
+<p>Например, имеем список абзацев с&nbsp;текстом на&nbsp;странице. Помимо самих DOM элементов мы&nbsp;хотим хранить рядом с&nbsp;ними какую-то метаинформацию<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>к&nbsp;примеру, UID абзаца). 
+И&nbsp;мы&nbsp;должны уметь удалять и&nbsp;вставлять абзацы в&nbsp;произвольных местах. Работающий пример можно посмотреть <a href="https://jsbin.com/qemaqo/edit?html,js,output">здесь</a>.</p>
 <p>Есть следующая страница:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -117,7 +118,7 @@
 </pre></div>
 </td></tr></table>
 
-<p>Объявим массив, где будем хранить наши абзацы, и опишем объект, который будет представлять абзац с текстом и дополнительной информацией.</p>
+<p>Объявим массив, где будем хранить наши абзацы, и&nbsp;опишем объект, который будет представлять абзац с&nbsp;текстом и&nbsp;дополнительной информацией.</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -144,8 +145,8 @@
 </pre></div>
 </td></tr></table>
 
-<p>Наша цель — абстрагироваться от работы с DOM и иметь дело только с моделью данных. Чтобы осуществлять вставку и удаление в массиве хорошо подойдет стандартный метод <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/splice"><code>splice</code></a>.
-Но есть проблема: нам всё-таки <em>нужно</em> воздействовать на DOM, чтобы изменения были видны <nobr>визуально :)</nobr> Давайте <em>подправим</em> метод <code>splice</code>, но только для массива <code>blocks</code>:</p>
+<p>Наша цель&nbsp;&mdash; абстрагироваться от&nbsp;работы с&nbsp;DOM и&nbsp;иметь дело только с&nbsp;моделью данных. Чтобы осуществлять вставку и&nbsp;удаление в&nbsp;массиве хорошо подойдет стандартный метод <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/splice"><code>splice</code></a>.
+Но&nbsp;есть проблема: нам всё-таки <em>нужно</em> воздействовать на&nbsp;DOM, чтобы изменения были видны <nobr>визуально :)</nobr> Давайте <em>подправим</em> метод <code>splice</code>, но&nbsp;только для массива <code>blocks</code>:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -172,7 +173,7 @@
 24</pre></div></td><td class="code"><div class="codehilite"><pre><span class="nx">blocks</span><span class="p">.</span><span class="nx">splice</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">start</span><span class="p">,</span> <span class="nx">deleteCount</span><span class="p">,</span> <span class="nx">block</span><span class="p">)</span> <span class="p">{</span>
   <span class="kd">var</span> <span class="nx">insert</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
     <span class="c1">// Вставляем элемент на заданный индекс в DOM дереве</span>
-    <span class="c1">// Текущий и последующие элементы будут сдвинуты вправо</span>
+    <span class="c1">// Текущий и последующие элементы будут сдвинуты «вперед»</span>
     <span class="nx">content</span><span class="p">.</span><span class="nx">insertBefore</span><span class="p">(</span><span class="nx">block</span><span class="p">.</span><span class="nx">node</span><span class="p">,</span> <span class="nx">content</span><span class="p">.</span><span class="nx">childNodes</span><span class="p">[</span><span class="nx">start</span><span class="p">]);</span>
 
     <span class="c1">// Эта конструкция вызывает оригинальный метод splice из прототипа массива</span>
@@ -196,8 +197,8 @@
 </pre></div>
 </td></tr></table>
 
-<p>Для простоты реализации метод перестал поддерживать возможность вставки нескольких элементов разом. Ну и ладно.</p>
-<p>Теперь мы можем работать с нашей моделью данных и сразу влиять на DOM:</p>
+<p>Для простоты реализации метод перестал поддерживать возможность вставки нескольких элементов разом. Ну&nbsp;и&nbsp;ладно.</p>
+<p>Теперь мы&nbsp;можем работать с&nbsp;нашей моделью данных и&nbsp;сразу влиять на&nbsp;DOM:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -210,10 +211,10 @@
 </pre></div>
 </td></tr></table>
 
-<p>Наш метод <code>splice</code> не затрагивает прототипный метод (помните, выше я писал, что у объектов есть прототип, а есть свои личные методы?), 
-поэтому никаких проблем с использование метода у других массивов не будет. 
-Эта техника позволяет писать мощный, но в то же время чистый, легко поддерживаемый код.</p>
-<p>Подобным образом можно добавлять недостающую функциональность и к прототипам объектов (в том числе стандартным):</p>
+<p>Наш метод <code>splice</code> не&nbsp;затрагивает прототипный метод<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>помните, выше я&nbsp;писал, что у&nbsp;объектов есть прототип, а&nbsp;есть свои личные методы?), 
+поэтому никаких проблем с&nbsp;использование метода у&nbsp;других массивов не&nbsp;будет. 
+Эта техника позволяет писать мощный, но&nbsp;в&nbsp;то&nbsp;же время чистый, легко поддерживаемый код.</p>
+<p>Подобным образом можно добавлять недостающую функциональность и&nbsp;к&nbsp;прототипам объектов<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>в&nbsp;том числе стандартным):</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -222,13 +223,13 @@
 6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1">// Добавляем ко всем объектам типа String метод trim, если его нет</span>
 <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nb">String</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">trim</span> <span class="o">!==</span> <span class="s1">&#39;function&#39;</span><span class="p">)</span> <span class="p">{</span>
   <span class="nb">String</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">trim</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^\s+|\s+$/g</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="sr">/^s+|s+$/g</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">);</span>
   <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table>
 
-<p>В следующей статье мы продолжим работать с прототипами и посмотрим на способы реализации наследования в JavaScript.</p></div>
+<p>В&nbsp;следующей статье мы&nbsp;продолжим работать с&nbsp;прототипами и&nbsp;посмотрим на&nbsp;способы реализации наследования в&nbsp;JavaScript.</p></div>
     <footer class="meta">
         <span class="tags">
           <a class="tag nodecor" href="/blog/tags/js">#<u>js</u></a>

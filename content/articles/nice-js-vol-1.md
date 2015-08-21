@@ -11,10 +11,10 @@ Slug: nice-js-vol-1
 
 С другой стороны язык очень гибок и никто не запрещает обходить плохие стороны, использовать хорошие и улучшать язык своими силами.
 Этим я и займусь в серии заметок.
-Несгладимое впечатление на меня произвела книга <a href="http://www.ozon.ru/context/detail/id/20217226/" class="nodecor">«<u>JavaScript. Сильные стороны</u>»</a> Дугласа Крокфорда,
+Несгладимое впечатление на меня произвела книга [«JavaScript. Сильные стороны»] [js_good_parts_book] Дугласа Крокфорда,
 рекомендую к прочтению (она совсем небольшая).
 
-## <span id="objects">Объекты</span>
+## Объекты
 Это один из основных механизмов в языке и, надо сказать, удачно реализованный. 
 
 Всё (ну, примитивы не совсем объекты, они неизменяемы) в JS — объект. Объекты обладают прототипом, который и сам является объектом со своим набором свойств. 
@@ -76,7 +76,7 @@ Slug: nice-js-vol-1
     blocks.splice = function(start, deleteCount, block) {
       var insert = function() {
         // Вставляем элемент на заданный индекс в DOM дереве
-        // Текущий и последующие элементы будут сдвинуты вправо
+        // Текущий и последующие элементы будут сдвинуты «вперед»
         content.insertBefore(block.node, content.childNodes[start]);
 
         // Эта конструкция вызывает оригинальный метод splice из прототипа массива
@@ -125,5 +125,6 @@ Slug: nice-js-vol-1
 
 В следующей статье мы продолжим работать с прототипами и посмотрим на способы реализации наследования в JavaScript.
 
+[js_good_parts_book]: http://www.ozon.ru/context/detail/id/20217226/
 [splice_mozilla_doc]: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
 [js_demo]: https://jsbin.com/qemaqo/edit?html,js,output
