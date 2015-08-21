@@ -4,7 +4,7 @@
 
 {% block menu %}
 <li><h1>{% if articles_page.has_previous() %}<a id="logo" href="/">{% include 'logo.html' %}</a>{% else %}<span id="logo">{% include 'logo.html' %}</span>{% endif %}</h1></li>
-<li>О разработке и всём таком. <a href="/">Об авторе</a></li>
+<li><em>О разработке и всём таком. <a href="/">Об авторе</a></em></li>
 {% endblock %}
 
 {% block content %}
