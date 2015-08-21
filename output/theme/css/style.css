@@ -208,20 +208,9 @@
     left: 0;
     margin-right: 0.125em;
   }
-  .post .header .readtime {
-    font-size: 0.9em;
-  }
-  .post .header .title {
-    font-size: 1.25em;
-  }
-  .posts-list .post .header .title {
-    font-size: 1.125em;
-  }
-  .post .body {
-    font-size: 1em;
-  }
   .post .body .codehilite {
     max-width: 100%;
+    font-size: 0.9em;
   }
   .post .body .codehilitetable {
     display: block;
