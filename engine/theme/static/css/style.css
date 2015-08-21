@@ -222,10 +222,7 @@
     display: none;
   }
   #footer .fork-bomb {
-    right: 0;
-    width: auto;
-    margin-left: 0;
-    text-align: right;
+    display: none;
   }
   #footer .share {
     margin-bottom: 1em;
