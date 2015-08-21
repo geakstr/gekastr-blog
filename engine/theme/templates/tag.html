@@ -2,7 +2,7 @@
 
 {% block title %}Заметки с тегом #{{ tag | escape }} ⋅ {{ SITENAME }}{% endblock %}
 {% block menu %}
-<li><h1><a id="logo" href="/blog">{{ SITENAME }}</a></h1></li>
+<li><h1><a id="logo" href="/blog">{% include 'logo.html' %}</a></h1></li>
 {% endblock %}
 
 {% block content %}

@@ -17,7 +17,7 @@
 
 {% block title %}{{ article.title }} ⋅ {{ SITENAME }}{% endblock %}
 {% block menu %}
-<li><h1><a id="logo" href="/blog">{{ SITENAME }}</a></h1></li>
+<li><h1><a id="logo" href="/blog">{% include 'logo.html' %}</a></h1></li>
 {% endblock %}
 
 {% block content %}
@@ -34,18 +34,18 @@
     <div class="body">{{ article.content }}</div>
     <footer class="meta">
       {% if article.tags %}
-        <span class="tags">
+        <p class="tags">
         {% for tag in article.tags %}
           <a class="tag nodecor" href="/{{ tag.url }}">#<u>{{ tag | escape }}</u></a>
         {% endfor %}
-        </span>
+        </p>
       {% endif %}
     </footer>
   </article>
 </section>
 {% endblock %}
 
-{% block footer_year %}{{ article.locale_date }}{% endblock %}
+{% block footer_year %}{{ article.locale_date }}<br>{% endblock %}
 
 {% block share %}
 {% if article.share_post %}

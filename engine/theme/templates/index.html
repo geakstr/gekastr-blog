@@ -3,14 +3,12 @@
 {% block title %}{{ SITENAME }}{% endblock title %}
 
 {% block menu %}
-<li><h1>{% if articles_page.has_previous() %}<a id="logo" href="/">{{ SITENAME }}</a>{% else %}<span id="logo">{{ SITENAME }}</span>{% endif %}</h1></li>
-<li class="spacer"><span class="muted">❉</span></li>
-<li><a class="nodecor" href="/"><u>{{ AUTHOR }}</u>↶</a></li>
+<li><h1>{% if articles_page.has_previous() %}<a id="logo" href="/">{% include 'logo.html' %}</a>{% else %}<span id="logo">{% include 'logo.html' %}</span>{% endif %}</h1></li>
+<li>О разработке и всём таком. <a href="/">Об авторе</a></li>
 {% endblock %}
 
 {% block content %}
 <section id="content">
-<h3 class="title"><em>О разработке и всём таком</em></h3>
 
 {% for article in articles_page.object_list %}
 <article class="post">
@@ -26,14 +24,14 @@
     </header>
     <div class="body">{{ article.content }}</div>
     <footer class="meta">
-        <time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time>
         {% if article.tags %}
-        <span class="tags">
-        {% for tag in article.tags %}
-          <a class="tag nodecor" href="/{{ tag.url }}">#<u>{{ tag | escape }}</u></a>
-        {% endfor %}
-        </span>
-      {% endif %}
+            <p class="tags">
+            {% for tag in article.tags %}
+              <a class="tag nodecor" href="/{{ tag.url }}">#<u>{{ tag | escape }}</u></a>
+            {% endfor %}
+            </p>
+        {% endif %}
+        <p><time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time></p>
     </footer>
 </article>
 {% endfor %}
