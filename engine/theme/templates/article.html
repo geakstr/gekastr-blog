@@ -48,14 +48,16 @@
 
 {% block share %}
 {% if article.share_post %}
-<a href="{{article.share_post['twitter']}}" class="twitter" target="_blank" title="Поделиться в Twitter">В твитер</a>
-⋅
-<a href="{{article.share_post['facebook']}}" class="facebook" target="_blank" title="Поделиться в Facebook">В фейсбук</a>
-⋅
-<a href="{{article.share_post['google-plus']}}" class="google-plus nodecor" target="_blank" title="Поделиться в Google+"><u>В гугл</u>+</a>
-⋅
-<a href="{{article.share_post['vk']}}" class="vk" target="_blank" title="Поделиться во ВКонтакте">В контакт</a>
-⋅
-<a href="{{article.share_post['email']}}" class="email" target="_blank" title="Поделиться через эл. почту">По почте</a>
+<ul class="share">
+<li><a href="{{article.share_post['twitter']}}" class="twitter" target="_blank" title="Поделиться в Twitter">В твитер</a></li>
+<li class="splitter">⋅</li>
+<li><a href="{{article.share_post['facebook']}}" class="facebook" target="_blank" title="Поделиться в Facebook">В фейсбук</a></li>
+<li class="splitter">⋅</li>
+<li><a href="{{article.share_post['google-plus']}}" class="google-plus nodecor" target="_blank" title="Поделиться в Google+"><u>В гугл</u>+</a></li>
+<li class="splitter">⋅</li>
+<li><a href="{{article.share_post['vk']}}" class="vk" target="_blank" title="Поделиться во ВКонтакте">В контакт</a></li>
+<li class="splitter">⋅</li>
+<li><a href="{{article.share_post['email']}}" class="email" target="_blank" title="Поделиться через эл. почту">По почте</a></li>
+</ul>
 {% endif %}
 {% endblock %}

@@ -31,7 +31,7 @@
 <footer id="footer">
     <p>© {% block footer_year %}{{ CURRENT_YEAR }}{% endblock %}</p>
     <p class="fork-bomb">:(){ :|:& };:</p>
-    <p class="share">{% block share %}{% endblock %}</p>
+    {% block share %}{% endblock %}
 </footer>
 
 </body>
