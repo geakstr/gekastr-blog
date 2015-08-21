@@ -4,7 +4,7 @@
     {% block head %}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
-    <title>{% block title %}{{ SITESUBTITLE }} ⋅ {{ SITENAME }}{% endblock title %}</title>
+    <title>{% block title %}{% endblock title %}</title>
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/reset.css" />
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/common.css" />
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/pygment.css" />
@@ -20,9 +20,7 @@
 
 <header id="header">
     <nav id="menu"><ul>
-      <li><h1>{% block header_logo %}{% endblock %}</h1></li>
-      <li><span class="muted">⋅</span></li>
-      <li>{% block header_blog_link %}{% endblock %}</li>
+      {% block menu %}{% endblock %}
     </ul></nav>
 </header>
 

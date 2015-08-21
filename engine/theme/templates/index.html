@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}{{ BLOGTITLE }}{% endblock title %}
-{% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
-{% block header_blog_link %}
-<em>{% if articles_page.has_previous() %}<a href="/">{{ SITESUBTITLE }}</a>{% else %}{{ SITESUBTITLE }}{% endif %}</em>
+{% block title %}{{ SITENAME }}{% endblock title %}
+
+{% block menu %}
+<li><h1>{% if articles_page.has_previous() %}<a id="logo" href="/">{{ SITENAME }}</a>{% else %}<span id="logo">{{ SITENAME }}</span>{% endif %}</h1></li>
+<li class="spacer"><span class="muted">❉</span></li>
+<li><a class="nodecor" href="/"><u>{{ AUTHOR }}</u>↶</a></li>
 {% endblock %}
 
 {% block content %}

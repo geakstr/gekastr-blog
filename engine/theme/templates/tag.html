@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Заметки с тегом #{{ tag | escape }} ⋅ {{ BLOGTITLE }}{% endblock %}
-{% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
-{% block header_blog_link %}<em><a href="/blog">{{ SITESUBTITLE }}</a></em>{% endblock %}
+{% block title %}Заметки с тегом #{{ tag | escape }} ⋅ {{ SITENAME }}{% endblock %}
+{% block menu %}
+<li><h1><a id="logo" href="/blog">{{ SITENAME }}</a></h1></li>
+{% endblock %}
 
 {% block content %}
 <section id="content">

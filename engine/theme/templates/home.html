@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
-    <title>{{ SITENAME }}</title>
+    <title>{{ AUTHOR }}</title>
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/reset.css" />
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/common.css" />
     <link rel="stylesheet" href="/{{ THEME_STATIC_DIR }}/css/home.css" />
@@ -12,9 +12,9 @@
 
 <div id="content">
 <nav id="menu"><ul>
-  <li><h1>{{ SITENAME }}</h1></li>
+  <li><h1>{{ AUTHOR }}</h1></li>
   <li><span class="muted">⋅</span></li>
-  <li><a href="/blog" rel="me">Блог</a></li>
+  <li><a href="/blog" rel="me">{{ SITENAME }}</a></li>
 </ul></nav>
 
 <div id="text" class="vcard h-card">

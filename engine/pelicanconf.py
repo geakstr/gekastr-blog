@@ -4,9 +4,7 @@ from __future__ import unicode_literals
 import datetime
 
 AUTHOR = u'Дмитрий Харитонов'
-SITENAME = u'Дмитрий Харитонов'
-SITESUBTITLE = u'Блог'
-BLOGTITLE = u'Блог Дмитрия Харитонова'
+SITENAME = u'Hardcode Blog'
 SITEURL = 'http://dkharitonov.me'
 TIMEZONE = 'Europe/Moscow'
 DEFAULT_LANG = u'ru'
