@@ -40,12 +40,11 @@
         {% endfor %}
         </p>
       {% endif %}
+      <p><time datetime="{{ article.date.isoformat() }}">{{ article.locale_date }}</time></p>
     </footer>
   </article>
 </section>
 {% endblock %}
-
-{% block footer_year %}{{ article.locale_date }}<br>{% endblock %}
 
 {% block share %}
 {% if article.share_post %}
@@ -54,7 +53,7 @@
 <li class="splitter">⋅</li>
 <li><a href="{{article.share_post['facebook']}}" class="facebook" target="_blank" title="Поделиться в Facebook">В фейсбук</a></li>
 <li class="splitter">⋅</li>
-<li><a href="{{article.share_post['google-plus']}}" class="google-plus nodecor" target="_blank" title="Поделиться в Google+"><u>В гугл</u>+</a></li>
+<li><a href="{{article.share_post['google-plus']}}" class="google-plus" target="_blank" title="Поделиться в Google+">В гугл+</a></li>
 <li class="splitter">⋅</li>
 <li><a href="{{article.share_post['vk']}}" class="vk" target="_blank" title="Поделиться во ВКонтакте">В контакт</a></li>
 <li class="splitter">⋅</li>
