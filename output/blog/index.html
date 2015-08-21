@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
-    <title>Блог ⋅ Дмитрий Харитонов</title>
+    <title>Блог Дмитрия Харитонова</title>
     <link rel="stylesheet" href="/theme/css/reset.css" />
     <link rel="stylesheet" href="/theme/css/common.css" />
     <link rel="stylesheet" href="/theme/css/pygment.css" />
     <link rel="stylesheet" href="/theme/css/style.css" />
-<link href="/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Дмитрий Харитонов RSS Feed" /></head>
+<link href="http://dkharitonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Дмитрий Харитонов RSS Feed" /></head>
 <body>
 <!-- Yandex.Metrika counter -->
 <script>
@@ -62,29 +62,16 @@
         </h2>
         
     </header>
-    <div class="body"><p>Как известно, JavaScript&nbsp;&mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение.
-Причиной этому являлась необходимость в&nbsp;середине 90 в&nbsp;жесткие сроки получить мощный язык,
-позволяющий придать страницам больше возможностей. И&nbsp;получили.
-Все проблемы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>повсеместные глобальные переменные, область видимости переменных, неочевидные и&nbsp;нелогичные приведения типов)
-зашиты в&nbsp;JS глубоко и&nbsp;надолго. Сейчас к&nbsp;нам приближается ES6, который явно, но&nbsp;не&nbsp;достаточно кардинально улучшает ситуацию.</p>
-<p>С&nbsp;другой стороны язык очень гибок и&nbsp;никто не&nbsp;запрещает обходить плохие стороны, использовать хорошие и&nbsp;улучшать язык своими силами.
-Этим я&nbsp;и&nbsp;займусь в&nbsp;серии заметок.
-Несгладимое впечатление на&nbsp;меня произвела книга<span style="margin-right:0.44em;"> </span><span style="margin-left:-0.44em;">&laquo;</span><a href="http://www.ozon.ru/context/detail/id/20217226/">JavaScript. Сильные стороны</a>&raquo; Дугласа Крокфорда,
-рекомендую к&nbsp;прочтению<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>она совсем небольшая).</p>
+    <div class="body"><p>Как известно, JavaScript&nbsp;&mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение. Причиной этому являлась необходимость в&nbsp;середине 90 в&nbsp;жесткие сроки получить мощный язык, позволяющий придать страницам больше возможностей. И&nbsp;получили. Все проблемы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>повсеместные глобальные переменные, область видимости переменных, неочевидные и&nbsp;нелогичные приведения типов) зашиты в&nbsp;JS глубоко и&nbsp;надолго. Сейчас к&nbsp;нам приближается ES6, который явно, но&nbsp;не&nbsp;достаточно кардинально улучшает ситуацию.</p>
+<p>С&nbsp;другой стороны язык очень гибок и&nbsp;никто не&nbsp;запрещает обходить плохие стороны, использовать хорошие и&nbsp;улучшать язык своими силами. Этим я&nbsp;и&nbsp;займусь в&nbsp;серии заметок. Неизгладимое впечатление на&nbsp;меня произвела книга<span style="margin-right:0.44em;"> </span><span style="margin-left:-0.44em;">&laquo;</span><a href="http://www.ozon.ru/context/detail/id/20217226/">JavaScript. Сильные стороны</a>&raquo; Дугласа Крокфорда, рекомендую к&nbsp;прочтению<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>она совсем небольшая).</p>
 <h2>Объекты</h2>
 <p>Это один из&nbsp;основных механизмов в&nbsp;языке и, надо сказать, удачно реализованный. </p>
-<p>Всё<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ну, примитивы не&nbsp;совсем объекты, они неизменяемы) в&nbsp;JS&nbsp;&mdash; объект. Объекты обладают прототипом, который и&nbsp;сам является объектом со&nbsp;своим набором свойств. 
-К&nbsp;прототипам можно относиться как к&nbsp;базовым объектам, задающим начальную функциональность другим объектам. Разные объекты могут иметь один и&nbsp;тот&nbsp;же прототип. 
-Каждый раз при изменении прототипа у&nbsp;объекта все другие объекты с&nbsp;этим&nbsp;же прототипом получают его обновленную версию.
-Это достигается за&nbsp;счет того, что объекты содержат не&nbsp;копию, а&nbsp;ссылку на&nbsp;прототип. Это способствует экономии памяти и&nbsp;скорости работы.</p>
-<p>Помимо прототипа у&nbsp;объекта есть свои, эксклюзивные свойства. Имя свойства может совпадать с&nbsp;именем свойства в&nbsp;прототипе.
-Ситуация разрешается просто: JS&nbsp;сначала поищет запрашиваемое свойство в&nbsp;списке личных свойств объекта, а&nbsp;если не&nbsp;найдет, пойдет искать по&nbsp;цепочке прототипов в&nbsp;их&nbsp;свойствах.</p>
+<p>Всё<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ну, примитивы не&nbsp;совсем объекты, они неизменяемы) в&nbsp;JS&nbsp;&mdash; объект. Объекты обладают прототипом, который и&nbsp;сам является объектом со&nbsp;своим набором свойств. К&nbsp;прототипам можно относиться как к&nbsp;базовым объектам, задающим начальную функциональность другим объектам. Разные объекты могут иметь один и&nbsp;тот&nbsp;же прототип. Каждый раз при изменении прототипа у&nbsp;объекта все другие объекты с&nbsp;этим&nbsp;же прототипом получают его обновленную версию. Это достигается за&nbsp;счет того, что объекты содержат не&nbsp;копию, а&nbsp;ссылку на&nbsp;прототип. Такая реализация способствует экономии памяти и&nbsp;скорости работы.</p>
+<p>Помимо прототипа у&nbsp;объекта есть свои, эксклюзивные свойства. Имя свойства может совпадать с&nbsp;именем свойства в&nbsp;прототипе. Ситуация разрешается просто: JS&nbsp;сначала поищет запрашиваемое свойство в&nbsp;списке личных свойств объекта, а&nbsp;если не&nbsp;найдет, пойдет искать по&nbsp;цепочке прототипов в&nbsp;их&nbsp;свойствах.</p>
 <p>Что можно со&nbsp;всем этим делать?</p>
 <h2>Расширение функциональности на&nbsp;лету</h2>
-<p>Как было сказано, почти все в&nbsp;JS является объектом, в&nbsp;том числе массивы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ага). Мы&nbsp;всегда можем добавить объекту новое свойство.
-Давайте попробуем использовать это себе во&nbsp;благо. </p>
-<p>Например, имеем список абзацев с&nbsp;текстом на&nbsp;странице. Помимо самих DOM элементов мы&nbsp;хотим хранить рядом с&nbsp;ними какую-то метаинформацию<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>к&nbsp;примеру, UID абзаца). 
-И&nbsp;мы&nbsp;должны уметь удалять и&nbsp;вставлять абзацы в&nbsp;произвольных местах. Работающий пример можно посмотреть <a href="https://jsbin.com/qemaqo/edit?html,js,output">здесь</a>.</p>
+<p>Как было сказано, почти все в&nbsp;JS является объектом, в&nbsp;том числе массивы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ага). Мы&nbsp;всегда можем добавить объекту новое свойство. Давайте попробуем использовать это себе во&nbsp;благо. </p>
+<p>Например, имеем список абзацев с&nbsp;текстом на&nbsp;странице. Помимо самих DOM элементов мы&nbsp;хотим хранить рядом с&nbsp;ними какую-то метаинформацию<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>к&nbsp;примеру, UID абзаца). И&nbsp;мы&nbsp;должны уметь удалять и&nbsp;вставлять абзацы в&nbsp;произвольных местах. Работающий пример можно посмотреть <a href="https://jsbin.com/qemaqo/edit?html,js,output">здесь</a>.</p>
 <p>Есть следующая страница:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -145,8 +132,7 @@
 </pre></div>
 </td></tr></table>
 
-<p>Наша цель&nbsp;&mdash; абстрагироваться от&nbsp;работы с&nbsp;DOM и&nbsp;иметь дело только с&nbsp;моделью данных. Чтобы осуществлять вставку и&nbsp;удаление в&nbsp;массиве хорошо подойдет стандартный метод <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/splice"><code>splice</code></a>.
-Но&nbsp;есть проблема: нам всё-таки <em>нужно</em> воздействовать на&nbsp;DOM, чтобы изменения были видны <nobr>визуально :)</nobr> Давайте <em>подправим</em> метод <code>splice</code>, но&nbsp;только для массива <code>blocks</code>:</p>
+<p>Наша цель&nbsp;&mdash; абстрагироваться от&nbsp;работы с&nbsp;DOM и&nbsp;иметь дело только с&nbsp;моделью данных. Чтобы осуществлять вставку и&nbsp;удаление в&nbsp;массиве хорошо подойдет стандартный метод <a href="https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/splice"><code>splice</code></a>. Но&nbsp;есть проблема: нам всё-таки <em>нужно</em> воздействовать на&nbsp;DOM, чтобы изменения были видны <nobr>визуально :)</nobr> Давайте <em>подправим</em> метод <code>splice</code>, но&nbsp;только для массива <code>blocks</code>:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -211,9 +197,7 @@
 </pre></div>
 </td></tr></table>
 
-<p>Наш метод <code>splice</code> не&nbsp;затрагивает прототипный метод<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>помните, выше я&nbsp;писал, что у&nbsp;объектов есть прототип, а&nbsp;есть свои личные методы?), 
-поэтому никаких проблем с&nbsp;использование метода у&nbsp;других массивов не&nbsp;будет. 
-Эта техника позволяет писать мощный, но&nbsp;в&nbsp;то&nbsp;же время чистый, легко поддерживаемый код.</p>
+<p>Наш метод <code>splice</code> не&nbsp;затрагивает прототипный метод<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>помните, выше я&nbsp;писал, что у&nbsp;объектов есть прототип, а&nbsp;есть свои личные методы?), поэтому никаких проблем с&nbsp;использование метода у&nbsp;других массивов не&nbsp;будет. Эта техника позволяет писать мощный, но&nbsp;в&nbsp;то&nbsp;же время чистый, легко поддерживаемый код.</p>
 <p>Подобным образом можно добавлять недостающую функциональность и&nbsp;к&nbsp;прототипам объектов<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>в&nbsp;том числе стандартным):</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -243,6 +227,7 @@
 <footer id="footer">
     <p>© 2015</p>
     <p class="fork-bomb">:(){ :|:& };:</p>
+    <p class="share"></p>
 </footer>
 
 </body>

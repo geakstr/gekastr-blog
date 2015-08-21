@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}{{ BLOGTITLE }}{% endblock title %}
 {% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
 {% block header_blog_link %}
-<em>{% if articles_page.has_previous() %}<a href="{{ SITEURL }}/">{{ SITESUBTITLE }}</a>{% else %}{{ SITESUBTITLE }}{% endif %}</em>
+<em>{% if articles_page.has_previous() %}<a href="/">{{ SITESUBTITLE }}</a>{% else %}{{ SITESUBTITLE }}{% endif %}</em>
 {% endblock %}
 
 {% block content %}
@@ -16,7 +17,7 @@
             <div class="readtime"><i class="sprite sprite-clock"></i> {{article.readtime.minutes}} мин. на прочтение</div>
         {% endif %}
         <h2 class="title">
-            <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark">{{ article.title }}</a>
+            <a href="/{{ article.url }}" rel="bookmark">{{ article.title }}</a>
         </h2>
         {% import 'translations.html' as translations with context %}
         {{ translations.translations_for(article) }}
@@ -27,7 +28,7 @@
         {% if article.tags %}
         <span class="tags">
         {% for tag in article.tags %}
-          <a class="tag nodecor" href="{{ SITEURL }}/{{ tag.url }}">#<u>{{ tag | escape }}</u></a>
+          <a class="tag nodecor" href="/{{ tag.url }}">#<u>{{ tag | escape }}</u></a>
         {% endfor %}
         </span>
       {% endif %}

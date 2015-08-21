@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
-{% block title %}Заметки с тегом #{{ tag | escape }} ⋅ Блог ⋅ {{ SITENAME }}{% endblock %}
+{% block title %}Заметки с тегом #{{ tag | escape }} ⋅ {{ BLOGTITLE }}{% endblock %}
 {% block header_logo %}<a id="logo" href="/">{{ SITENAME }}</a>{% endblock %}
-{% block header_blog_link %}<em><a href="{{ SITEURL }}/blog">{{ SITESUBTITLE }}</a></em>{% endblock %}
+{% block header_blog_link %}<em><a href="/blog">{{ SITESUBTITLE }}</a></em>{% endblock %}
 
 {% block content %}
 <section id="content">
@@ -13,7 +13,7 @@
 <article class="post">
     <header class="header">
         <h2 class="title">
-            <a href="{{ SITEURL }}/{{ article.url }}" rel="bookmark">{{ article.title }}</a>
+            <a href="/{{ article.url }}" rel="bookmark">{{ article.title }}</a>
         </h2>
         {% import 'translations.html' as translations with context %}
         {{ translations.translations_for(article) }}
@@ -26,7 +26,7 @@
           {% if tag_entry == tag %}
           <span class="tag">#{{ tag_entry | escape }}</span>
           {% else %}
-          <a class="tag nodecor" href="{{ SITEURL }}/{{ tag_entry.url }}">#<u>{{ tag_entry | escape }}</u></a>
+          <a class="tag nodecor" href="/{{ tag_entry.url }}">#<u>{{ tag_entry | escape }}</u></a>
           {% endif %}
         {% endfor %}
         </span>

@@ -6,7 +6,8 @@ import datetime
 AUTHOR = u'Дмитрий Харитонов'
 SITENAME = u'Дмитрий Харитонов'
 SITESUBTITLE = u'Блог'
-SITEURL = ''
+BLOGTITLE = u'Блог Дмитрия Харитонова'
+SITEURL = 'http://dkharitonov.me'
 TIMEZONE = 'Europe/Moscow'
 DEFAULT_LANG = u'ru'
 
@@ -48,8 +49,9 @@ TYPOGRIFY = False
 MD_EXTENSIONS = ['extra', 'codehilite']
 
 PLUGIN_PATHS = ["plugins"]
-PLUGINS = ['readtime', 'typo']
+PLUGINS = ['readtime', 'typo', 'share_post']
 
+FEED_DOMAIN = SITEURL
 FEED_RSS =  'feeds/rss.xml'
 FEED_ATOM =  None
 FEED_ALL_ATOM = None

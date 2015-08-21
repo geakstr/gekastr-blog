@@ -173,6 +173,29 @@
 .article-page-content + #footer {
   margin-top: 1em;
 }
+#footer .share {
+  margin: 1em 0 2em 0;
+  text-align: center;
+  color: #333;
+}
+#footer .share a {
+  margin: 0 0.25em;
+}
+#footer .share a.twitter {
+  color: #55ACEE;
+}
+#footer .share a.facebook {
+  color: #46619E;
+}
+#footer .share a.google-plus {
+  color: #DB4631;
+}
+#footer .share a.vk {
+  color: #597BA5;
+}
+#footer .share a.email {
+  color: #666;
+}
 
 /* Mobile improvements */
 @media only screen and (max-width:800px) {
