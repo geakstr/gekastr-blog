@@ -71,6 +71,11 @@ pre, code {
 #footer a:hover {
   color: #444;
 }
+#footer .fork-bomb {
+  font-size: 0.75em;
+  line-height: 1.5;
+  font-family: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
 .sprite {
   display: inline-block;
   position: relative;
