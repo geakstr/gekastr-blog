@@ -290,6 +290,9 @@
 
 /* Mobile improvements */
 @media only screen and (max-width:800px) {
+  .post .body li {
+    list-style-position: inside;
+  }
   .post .header .readtime .sprite-clock {
     position: relative;
     top: 3px;
