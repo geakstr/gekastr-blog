@@ -1,6 +1,6 @@
 body {
   max-width: 800px;
-  width: 95%;
+  width: 90%;
   margin: 0 auto;
   background: #fff;
   color: #333;
@@ -41,6 +41,14 @@ ol li {
 }
 pre, code {
   font-family: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+sup, sub {
+  position: relative;
+  font-size: 0.66em;
+  font-family: 'Lucida Grande', 'Verdana', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+}
+sup {
+  top: -3px;
 }
 .cf:before, .cf:after {
   content: " ";

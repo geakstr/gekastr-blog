@@ -47,7 +47,7 @@ TYPOGRIFY = False
 MD_EXTENSIONS = ['extra', 'codehilite']
 
 PLUGIN_PATHS = ["plugins"]
-PLUGINS = ['readtime', 'typo', 'share_post']
+PLUGINS = ['assets', 'readtime', 'typo', 'simple_footnotes', 'share_post']
 
 FEED_DOMAIN = SITEURL
 FEED_RSS =  'feeds/rss.xml'
@@ -70,3 +70,5 @@ AUTHOR_SAVE_AS = ''
 AUTHORS_SAVE_AS = ''
 CATEGORY_SAVE_AS = ''
 CATEGORYS_SAVE_AS = ''
+
+MD_INLINE = {}
