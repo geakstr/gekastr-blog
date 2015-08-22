@@ -43,6 +43,8 @@ def create_assets_env(generator):
     generator.env.assets_environment = Environment(
         assets_destination, theme_static_dir)
 
+    generator.env.assets_environment.manifest = False
+
     if 'ASSET_CONFIG' in generator.settings:
         for item in generator.settings['ASSET_CONFIG']:
             generator.env.assets_environment.config[item[0]] = item[1]
@@ -55,6 +57,9 @@ def create_assets_env(generator):
         generator.env.assets_environment.debug = generator.settings['ASSET_DEBUG']
     elif logging.getLevelName(logger.getEffectiveLevel()) == "DEBUG":
         generator.env.assets_environment.debug = True
+
+    if 'ASSET_CACHE' in generator.settings:
+        generator.env.assets_environment.cache = generator.settings['ASSET_CACHE']
 
     for path in (generator.settings['THEME_STATIC_PATHS'] +
                  generator.settings.get('ASSET_SOURCE_PATHS', [])):
