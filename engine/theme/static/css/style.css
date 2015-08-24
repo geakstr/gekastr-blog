@@ -105,6 +105,8 @@
 }
 .post .body p:last-child,
 .post .body h2:last-child,
+.post .body h3:last-child,
+.post .body h4:last-child,
 .post .body .codehilite:last-child,
 .post .body .codehilitetable:last-child {
   margin-bottom: 0;
@@ -120,6 +122,14 @@
   line-height: 1.2;
   font-weight: 700;
   text-align: center;
+}
+
+.post .body h3, .post .body h4 {
+  margin-top: 0.75em;
+  margin-bottom: 0.25em;
+  font-size: 1em;
+  line-height: 1.2;
+  font-weight: 700;
 }
 
 /* Code in post */

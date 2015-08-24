@@ -1,12 +1,17 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8" />
+      <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
-    <title>Заметки с тегом #series ⋅ Forkbomb Blog</title>
+    <title>Вдумчивая настройка Raspberry Pi ⋅ Forkbomb Blog</title>
     <link rel="stylesheet" href="/theme/css/blog.min.css?32aa9f4a">
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link href="http://dkharitonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Forkbomb Blog RSS Feed" />
+
+
+
+    <meta name="tags" content="rpi" />
+    <meta name="tags" content="nix" />
 </head>
 <body>
 <!-- Yandex.Metrika counter -->
@@ -54,30 +59,460 @@
     </ul></nav>
 </header>
 
-<section id="content">
-<h3 class="title"><em>Заметки с тегом <strong>#series</strong>:</em></h3>
-<ol class="posts-list" reversed>
-<li>
-<article class="post">
+<section id="content" class="article-page-content">
+  <article class="post full-post">
     <header class="header">
-        <h2 class="title">
-            <a href="/blog/nice-js-vol-1" rel="bookmark">Хороший JavaScript. Vol. 1 «Pimp your code»</a>
-        </h2>
-        
+          <div class="readtime"><i class="sprite sprite-clock"></i> 13 мин. на прочтение</div>
+      <h2 class="title"><em>Вдумчивая настройка Raspberry Pi</em></h2>
+      
     </header>
+    <div class="body"><h3>Скачиваем и&nbsp;конфигурируем образ</h3>
+<p>Детально про используемый образ можно почитать <a href="https://github.com/debian-pi/raspbian-ua-netinst">в&nbsp;репозитории проекта</a>. Для начала необходимо узнать номер последней версии образа <a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest">тут</a>.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Замените &lt;version-number&gt; на номер версии</span>
+<span class="nv">rpi_inst_v</span><span class="o">=</span>v&lt;version-number&gt;
+
+<span class="c"># Скачиваем образ</span>
+wget https://github.com/debian-pi/raspbian-ua-netinst/releases/download/<span class="nv">$rpi_inst_v</span>/raspbian-ua-netinst-<span class="nv">$rpi_inst_v</span>.zip
+
+<span class="c"># Разархивируем</span>
+unzip raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v</span><span class="si">}</span>.zip -d ./raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v</span><span class="si">}</span>
+<span class="nb">cd </span>raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v</span><span class="si">}</span>
+
+<span class="c"># Укажем пароль (свой) для root пользователя</span>
+<span class="nb">echo</span> <span class="s2">&quot;rootpw=&lt;password&gt;&quot;</span> &gt; ./installer-config.txt
+
+<span class="c"># (опционально) Указываем имя дистрибутива и дополнительные нужные вам пакеты</span>
+<span class="nb">echo</span> <span class="s2">&quot;release=wheezy&quot;</span> &gt;&gt; ./installer-config.txt
+<span class="nb">echo</span> <span class="s2">&quot;packages=sudo,curl,nano&quot;</span> &gt;&gt; ./installer-config.txt
+</pre></div>
+</td></tr></table>
+
+<h3>Записываем образ на&nbsp;SD карту</h3>
+<p>Инструкция для&nbsp;OS X. Всё это можно сделать и&nbsp;через GUI.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Узнаём имя карточки (/dev/diskX, где X — число)</span>
+diskutil list
+
+<span class="c"># Форматируем в FAT 32</span>
+diskutil eraseDisk FAT32 RPI MBRFormat /dev/diskX
+
+<span class="c"># Копируем образ на карточку</span>
+cp -R ./* /Volumes/RPI
+
+<span class="c"># И извлекаем её</span>
+diskutil eject /dev/diskX
+</pre></div>
+</td></tr></table>
+
+<p>Теперь вставляем карту в&nbsp;пай и&nbsp;ждем. Если он&nbsp;подключен к&nbsp;телевизору, сможете наблюдать за&nbsp;процессом. Если нет, можно посматривать на&nbsp;лампочку Ethernet на&nbsp;пае, и&nbsp;когда она перестанет хаотично мигать, скорее всего можно идти дальше. Установка занимает минут 15.</p>
+<h3>Первоначальная настройка</h3>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Заходим на пай (пароль тот, что указали вначале)</span>
+ssh root@pi.ip.addr.ess
+
+<span class="c"># Обновим пакеты</span>
+apt-get update <span class="o">&amp;&amp;</span> apt-get dist-upgrade <span class="o">&amp;&amp;</span> apt-get upgrade
+
+<span class="c"># Обновим ядро и прошивку</span>
+<span class="c"># Не используйте утилиту rpi-update, она не работает с этим оразом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)</span>
+<span class="c"># Вместо этого воспользуемся пакетом raspberrypi-bootloader.</span>
+<span class="c"># Он включает в себя ядро и прошивку. Это пакет проекта raspberry pi на github (https://github.com/raspberrypi/linux)</span>
+apt-get install -y raspberrypi-bootloader
+sed -i <span class="s1">&#39;s/kernel=/#kernel=/g&#39;</span> /boot/config.txt
+sed -i <span class="s1">&#39;s/initramfs /#initramfs /g&#39;</span> /boot/config.txt
+
+<span class="c"># Сконфигурируем локали и временную зону</span>
+dpkg-reconfigure locales
+dpkg-reconfigure tzdata
+
+<span class="c"># Добавим нового пользователя</span>
+groupadd pi
+useradd pi -m -K <span class="nv">UMASK</span><span class="o">=</span><span class="m">0066</span> -s /bin/bash -g pi -G users,ssh,sudo
+passwd pi
+
+<span class="c"># Перезагрузимся, чтобы изменения вступили в силу</span>
+reboot
+
+<span class="c"># Теперь можно зайти на пай под новым пользователем</span>
+ssh pi@pi.ip.addr.ess
+</pre></div>
+</td></tr></table>
+
+<h3>Настройка SSH</h3>
+<p>Если смогли успешно войти под пользователем <code>pi</code> на&nbsp;предыдущем шаге, можно приступить к&nbsp;дальшейшей настройке. Усилим безопасность системы.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Запретим входить под рутом</span>
+sudo sed -i <span class="s1">&#39;s/PermitRootLogin yes/PermitRootLogin no/g&#39;</span> /etc/ssh/sshd_config
+
+<span class="c"># Можно разрешить сессии только определенным юзерам</span>
+<span class="c"># [ОПАСНАЯ ОПЦИЯ, проверьте правильность имен несколько раз]</span>
+<span class="nb">echo</span> <span class="s2">&quot;AllowUsers root pi&quot;</span> <span class="p">|</span> sudo tee --append /etc/ssh/sshd_config
+
+<span class="c"># Можно ограничить время бездействия пользовательской сессии (здесь 5 минут)</span>
+<span class="nb">echo</span> <span class="s2">&quot;ClientAliveInterval 300&quot;</span> <span class="p">|</span> sudo tee --append /etc/ssh/sshd_config &gt; /dev/null
+<span class="nb">echo</span> <span class="s2">&quot;ClientAliveCountMax 0&quot;</span> <span class="p">|</span> sudo tee --append /etc/ssh/sshd_config &gt; /dev/null
+
+<span class="c"># Перезапустим SSH демон</span>
+sudo /etc/init.d/ssh restart
+</pre></div>
+</td></tr></table>
+
+<h4>Настраиваем авторизацию по&nbsp;ключу</h4>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># На _своей_ машине сгенерируем ключ (если еще этого не делали)</span>
+<span class="c"># Не оставляем пароль ключа пустым</span>
+mkdir .ssh
+ssh-keygen -t rsa -C <span class="s2">&quot;your_email@example.com&quot;</span>
+ssh-add ~/.ssh/id_rsa
+<span class="c"># Скопируем свой _публичный_ ключ в буфер обмена</span>
+pbcopy &lt; ~/.ssh/id_rsa.pub
+
+<span class="c"># Дальнейшие действия делаем на пае под пользователем pi</span>
+mkdir ~/.ssh
+
+<span class="c"># Сюда вставим в новую строку скопированный публичный ключ</span>
+nano ~/.ssh/authorized_keys
+
+<span class="c"># Выставим правильные права</span>
+chmod <span class="m">700</span> ~/.ssh/
+chmod <span class="m">600</span> ~/.ssh/authorized_keys
+
+<span class="c"># Пробуем выйти и зайти опять, должно пустить без пароля</span>
+
+<span class="c"># Можно запретить вход по паролю, разрешить только по ключу</span>
+<span class="c"># Нужно помнить, что в случае, если у нас не останется</span>
+<span class="c"># ни одного авторизованного на пае ключа, по SSH войти не сможем</span>
+sudo sed -i <span class="s1">&#39;s/#PasswordAuthentication yes/PasswordAuthentication no/g&#39;</span> /etc/ssh/sshd_config
+sudo sed -i <span class="s1">&#39;s/UsePAM yes/UsePAM no/g&#39;</span> /etc/ssh/sshd_config
+
+<span class="c"># Перезапустим SSH демон</span>
+sudo /etc/init.d/ssh restart
+</pre></div>
+</td></tr></table>
+
+<p>Всё дальнейшее&nbsp;&mdash; опционально<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>впрочем, как и&nbsp;всё, что выше). Ваши потребности естественно могут отличаться от&nbsp;моих, поэтому выполняем команды <em>вдумчиво</em>. Рекомендую для удобства действовать от&nbsp;рута<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span><code>su&nbsp;root</code>).</p>
+<h3>Конфигурируем параметры пая</h3>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Выделяем минимальное количество видеопамяти</span>
+<span class="nb">echo</span> <span class="s2">&quot;gpu_mem=16&quot;</span> &gt;&gt; /boot/config.txt
+
+<span class="c"># Выключаем модуль камеры</span>
+<span class="nb">echo</span> <span class="s2">&quot;start_x=0&quot;</span> &gt;&gt; /boot/config.txt
+
+<span class="c"># Выключаем так называемые &quot;вылеты развертки&quot;, они не актуальны для современных телевизоров</span>
+<span class="nb">echo</span> <span class="s2">&quot;disable_overscan=1&quot;</span> &gt;&gt; /boot/config.txt
+
+<span class="c"># Разгоняем (подробно можно почитать тут http://elinux.org/RPiconfig)</span>
+<span class="nb">echo</span> <span class="s2">&quot;arm_freq=1000&quot;</span> &gt;&gt; /boot/config.txt
+<span class="nb">echo</span> <span class="s2">&quot;core_freq=500&quot;</span> &gt;&gt; /boot/config.txt
+<span class="nb">echo</span> <span class="s2">&quot;sdram_freq=600&quot;</span> &gt;&gt; /boot/config.txt
+<span class="nb">echo</span> <span class="s2">&quot;over_voltage=6&quot;</span> &gt;&gt; /boot/config.txt
+
+<span class="c"># Форсируем Turbo режим в первые 60 секунд работы</span>
+<span class="nb">echo</span> <span class="s2">&quot;initial_turbo=60&quot;</span> &gt;&gt; /boot/config.txt
+
+<span class="c"># Делает так, чтобы пай разгонялся только при необходимости</span>
+<span class="nb">echo</span> <span class="s2">&quot;force_turbo=0&quot;</span> &gt;&gt; /boot/config.txt
+</pre></div>
+</td></tr></table>
+
+<h4>Повышаем производительность</h4>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Улучшает производительность генератора случайных чисел</span>
+apt-get install -y rng-tools
+
+<span class="c"># Будет выдано сообщение о том, что скрипт не смог стартовать.</span>
+<span class="c"># Ничего страшного, необходимый модуль станет доступен после перезагрузки</span>
+<span class="nb">echo </span>bcm2708-rng &gt;&gt; /etc/modules
+
+<span class="c"># Улучшает производительность служб управления памятью</span>
+apt-get install -y raspi-copies-and-fills
+
+<span class="c"># Можно настроить сеть на статику</span>
+<span class="c"># [ОСТОРОЖНО, нужно быть уверенным в написанном, иначе можно потерять доступ по SSH]</span>
+<span class="c"># Заменяем dhcp</span>
+sed -i <span class="s1">&#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&#39;</span> /etc/network/interfaces
+<span class="c"># На что-то вроде такого, но специфичного для вашей сети</span>
+<span class="nv">net_conf</span><span class="o">=</span><span class="s2">&quot;iface eth0 inet static</span>
+<span class="s2">address 192.168.1.100</span>
+<span class="s2">gateway 192.168.1.1</span>
+<span class="s2">netmask 255.255.255.0</span>
+<span class="s2">network 192.168.1.0</span>
+<span class="s2">broadcast 192.168.1.255&quot;</span>
+<span class="nb">echo</span> <span class="s2">&quot;</span><span class="nv">$net_conf</span><span class="s2">&quot;</span> &gt;&gt; /etc/network/interfaces
+</pre></div>
+</td></tr></table>
+
+<h4>Убираем лишнее</h4>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Оставляем один getty, т.к. работаем в основном по SSH</span>
+sed -i <span class="s1">&#39;/[2-6]:23:respawn:\/sbin\/getty 38400 tty[2-6]/s%^%#%g&#39;</span> /etc/inittab
+sed -i <span class="s1">&#39;/T0:23:respawn:\/sbin\/getty -L ttyAMA0 115200 vt100/s%^%#%g&#39;</span> /etc/inittab
+
+<span class="c"># Выключаем ipv6</span>
+<span class="nb">echo</span> <span class="s2">&quot;net.ipv6.conf.all.disable_ipv6=1&quot;</span> &gt; /etc/sysctl.d/disableipv6.conf
+sed -i <span class="s1">&#39;/::/s%^%#%g&#39;</span> /etc/hosts
+
+<span class="c"># Выключаем неиспользуемые модули ядра</span>
+<span class="nb">echo</span> <span class="s2">&quot;blacklist ipv6&quot;</span> &gt;&gt; /etc/modprobe.d/raspi-blacklist.conf
+<span class="nb">echo</span> <span class="s2">&quot;blacklist spi-bcm2708&quot;</span> &gt;&gt; /etc/modprobe.d/raspi-blacklist.conf
+<span class="nb">echo</span> <span class="s2">&quot;blacklist i2c-bcm2708&quot;</span> &gt;&gt; /etc/modprobe.d/raspi-blacklist.conf
+chmod <span class="m">644</span> /etc/modprobe.d/raspi-blacklist.conf
+
+<span class="c"># Планировщик ввода/вывода &quot;noop&quot; лучше подходит для флеш памяти</span>
+sed -i <span class="s1">&#39;s/deadline/noop/g&#39;</span> /boot/cmdline.txt
+</pre></div>
+</td></tr></table>
+
+<h4>Тюним файловую систему</h4>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># noatime и nodiratime отключают запись информации</span>
+<span class="c"># о последнем времени доступа к файлам и директориям</span>
+sed -i <span class="s1">&#39;s/errors=remount-ro,noatime /errors=remount-ro,noatime,nodiratime /g&#39;</span> /etc/fstab
+
+<span class="c"># Разрешаем автоматически восстанавливать файловые системы при загрузке,</span>
+<span class="c"># если с ними что-то не так</span>
+sed -i <span class="s2">&quot;s/#FSCKFIX=no/FSCKFIX=yes/g&quot;</span> /etc/default/rcS
+
+<span class="c"># Каждые 3 перезагрузки проверяем главный раздел файловой системы</span>
+tune2fs -c <span class="m">3</span> /dev/mmcblk0p2
+
+<span class="c"># writeback тип записи в журнал дает больше производительности.</span>
+<span class="c"># однако при падении системы данные могут потеряться</span>
+<span class="c"># [ВЫПОЛНЯТЬ ТОЛЬКО С ПОНИМАНИЕМ РИСКОВ]</span>
+tune2fs -o journal_data_writeback /dev/mmcblk0p2
+
+<span class="c"># Перезагружаемся</span>
+reboot
+</pre></div>
+</td></tr></table>
+
+<h4>Логгируем в&nbsp;оперативной памяти</h4>
+<p>Для этого воспользуемся утилитой <a href="http://www.tremende.com/ramlog/"><code>ramlog</code></a>. Но, если у&nbsp;вас в&nbsp;системе демонами рулит <code>systemd</code><span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>например, потому что вы&nbsp;установили Debian 8 Jessie), то&nbsp;ничего не&nbsp;получится&nbsp;&mdash; <code>ramlog</code>, по&nbsp;крайней мере в&nbsp;версии 2.0.0, не&nbsp;совместим с&nbsp;ним.</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Для начала немного уменьшим количество маловажных логов</span>
+sed -i <span class="s1">&#39;s/auth,authpriv\.\*/:msg, contains, \&quot;pam\_unix\(cron:session\)\&quot; \~\nauth,authpriv\.\*/g&#39;</span> /etc/rsyslog.conf
+
+<span class="c"># Скачиваем и устанавливаем ramlog</span>
+<span class="nb">cd</span> /tmp
+wget http://www.tremende.com/ramlog/download/ramlog_2.0.0_all.deb
+apt-get install -y lsof rsync <span class="o">&amp;&amp;</span> dpkg -i ramlog_2.0.0_all.deb
+
+<span class="c"># Задаем максимальный объем логов в памяти</span>
+sed -i <span class="s1">&#39;s/TMPFS_RAMFS_SIZE=\t/TMPFS_RAMFS_SIZE=40m\t/g&#39;</span> /etc/default/ramlog
+
+<span class="c"># Говорим, что ramlog надо запускать/останавливать до/после rsyslog</span>
+sed -i <span class="s1">&#39;s/# Provides: ramlog/# Provides: ramlog\n# X-Start-Before: rsyslog\n# X-Stop-After: rsyslog/g&#39;</span> /etc/init.d/ramlog
+
+<span class="c"># Дадим знать обо всем этом автозагрузке</span>
+insserv
+
+<span class="c"># Теперь нужно 2 (!) раза перезагрузить пай</span>
+reboot
+
+<span class="c"># Проверить состояние ramlog можно так</span>
+/etc/init.d/ramlog status
+</pre></div>
+</td></tr></table>
+
+<p>В&nbsp;следующей заметке я&nbsp;покажу как собрать последнюю версию nginx и&nbsp;настроить его в&nbsp;соответствие со&nbsp;спецификой пая. Спасибо, что дочитали :)</p></div>
     <footer class="meta">
-        <time datetime="2015-08-20T12:51:00+03:00">20 августа 2015</time>
-        <span class="tags">
-          <a class="tag nodecor" href="/blog/tags/js">#<u>js</u></a>
-          <span class="tag">#series</span>
-        </span>
+        <p class="tags">
+          <a class="tag nodecor" href="/blog/tags/rpi">#<u>rpi</u></a>
+          <a class="tag nodecor" href="/blog/tags/nix">#<u>nix</u></a>
+        </p>
+      <p><time datetime="2015-08-24T12:51:00+03:00">24 августа 2015</time></p>
     </footer>
-</article>
-</li>
-</ol>
+  </article>
 </section>
 
 <footer id="footer">
+<ul class="share">
+<li><a href="http://twitter.com/home?status=%D0%92%D0%B4%D1%83%D0%BC%D1%87%D0%B8%D0%B2%D0%B0%D1%8F%20%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0%20Raspberry%20Pi%20http%3A//dkharitonov.me/blog/raspberry-pi-setup" class="twitter" target="_blank" title="Поделиться в Twitter">В твиттер</a></li>
+<li class="splitter">⋅</li>
+<li><a href="http://www.facebook.com/sharer/sharer.php?s=100&amp;p%5Burl%5D=http%3A//dkharitonov.me/blog/raspberry-pi-setup" class="facebook" target="_blank" title="Поделиться в Facebook">В фейсбук</a></li>
+<li class="splitter">⋅</li>
+<li><a href="https://plus.google.com/share?url=http%3A//dkharitonov.me/blog/raspberry-pi-setup" class="google-plus" target="_blank" title="Поделиться в Google+">В гугл+</a></li>
+<li class="splitter">⋅</li>
+<li><a href="https://vk.com/share.php?url=http%3A//dkharitonov.me/blog/raspberry-pi-setup" class="vk" target="_blank" title="Поделиться во ВКонтакте">В контакт</a></li>
+<li class="splitter">⋅</li>
+<li><a href="mailto:?subject=%D0%92%D0%B4%D1%83%D0%BC%D1%87%D0%B8%D0%B2%D0%B0%D1%8F%20%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0%20Raspberry%20Pi&amp;body=http%3A//dkharitonov.me/blog/raspberry-pi-setup" class="email" target="_blank" title="Поделиться через эл. почту">По почте</a></li>
+</ul>
     <p class="copyright">© Дмитрий Харитонов, <a href="mailto:geakstr@me.com" rel="me">geakstr@me.com</a></p>
 </footer>
 

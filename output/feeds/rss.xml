@@ -1,5 +1,429 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Forkbomb Blog</title><link>http://dkharitonov.me/</link><description></description><atom:link href="http://dkharitonov.me/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Thu, 20 Aug 2015 12:51:00 +0300</lastBuildDate><item><title>Хороший JavaScript. Vol. 1 «Pimp your code»</title><link>http://dkharitonov.me/blog/nice-js-vol-1</link><description>&lt;p&gt;Как известно, JavaScript&amp;nbsp;&amp;mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение. Причиной этому являлась необходимость в&amp;nbsp;середине 90 в&amp;nbsp;жесткие сроки получить мощный язык, позволяющий придать страницам больше возможностей. И&amp;nbsp;получили. Все проблемы&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;повсеместные глобальные переменные, область видимости переменных, неочевидные и&amp;nbsp;нелогичные приведения типов) зашиты в&amp;nbsp;JS глубоко и&amp;nbsp;надолго. Сейчас к&amp;nbsp;нам приближается ES6, который явно, но&amp;nbsp;не&amp;nbsp;достаточно кардинально улучшает ситуацию.&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Forkbomb Blog</title><link>http://dkharitonov.me/</link><description></description><atom:link href="http://dkharitonov.me/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 24 Aug 2015 12:51:00 +0300</lastBuildDate><item><title>Вдумчивая настройка Raspberry Pi</title><link>http://dkharitonov.me/blog/raspberry-pi-setup</link><description>&lt;h3&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/h3&gt;
+&lt;p&gt;Детально про используемый образ можно почитать &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst"&gt;в&amp;nbsp;репозитории проекта&lt;/a&gt;. Для начала необходимо узнать номер последней версии образа &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest"&gt;тут&lt;/a&gt;.&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Замените &amp;lt;version-number&amp;gt; на номер версии&lt;/span&gt;
+&lt;span class="nv"&gt;rpi_inst_v&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;v&amp;lt;version-number&amp;gt;
+
+&lt;span class="c"&gt;# Скачиваем образ&lt;/span&gt;
+wget https://github.com/debian-pi/raspbian-ua-netinst/releases/download/&lt;span class="nv"&gt;$rpi_inst_v&lt;/span&gt;/raspbian-ua-netinst-&lt;span class="nv"&gt;$rpi_inst_v&lt;/span&gt;.zip
+
+&lt;span class="c"&gt;# Разархивируем&lt;/span&gt;
+unzip raspbian-ua-netinst-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;rpi_inst_v&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.zip -d ./raspbian-ua-netinst-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;rpi_inst_v&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+&lt;span class="nb"&gt;cd &lt;/span&gt;raspbian-ua-netinst-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;rpi_inst_v&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+
+&lt;span class="c"&gt;# Укажем пароль (свой) для root пользователя&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;rootpw=&amp;lt;password&amp;gt;&amp;quot;&lt;/span&gt; &amp;gt; ./installer-config.txt
+
+&lt;span class="c"&gt;# (опционально) Указываем имя дистрибутива и дополнительные нужные вам пакеты&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;release=wheezy&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; ./installer-config.txt
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;packages=sudo,curl,nano&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; ./installer-config.txt
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h3&gt;Записываем образ на&amp;nbsp;SD карту&lt;/h3&gt;
+&lt;p&gt;Инструкция для&amp;nbsp;OS X. Всё это можно сделать и&amp;nbsp;через GUI.&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Узнаём имя карточки (/dev/diskX, где X — число)&lt;/span&gt;
+diskutil list
+
+&lt;span class="c"&gt;# Форматируем в FAT 32&lt;/span&gt;
+diskutil eraseDisk FAT32 RPI MBRFormat /dev/diskX
+
+&lt;span class="c"&gt;# Копируем образ на карточку&lt;/span&gt;
+cp -R ./* /Volumes/RPI
+
+&lt;span class="c"&gt;# И извлекаем её&lt;/span&gt;
+diskutil eject /dev/diskX
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Теперь вставляем карту в&amp;nbsp;пай и&amp;nbsp;ждем. Если он&amp;nbsp;подключен к&amp;nbsp;телевизору, сможете наблюдать за&amp;nbsp;процессом. Если нет, можно посматривать на&amp;nbsp;лампочку Ethernet на&amp;nbsp;пае, и&amp;nbsp;когда она перестанет хаотично мигать, скорее всего можно идти дальше. Установка занимает минут 15.&lt;/p&gt;
+&lt;h3&gt;Первоначальная настройка&lt;/h3&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Заходим на пай (пароль тот, что указали вначале)&lt;/span&gt;
+ssh root@pi.ip.addr.ess
+
+&lt;span class="c"&gt;# Обновим пакеты&lt;/span&gt;
+apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get dist-upgrade &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get upgrade
+
+&lt;span class="c"&gt;# Обновим ядро и прошивку&lt;/span&gt;
+&lt;span class="c"&gt;# Не используйте утилиту rpi-update, она не работает с этим оразом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)&lt;/span&gt;
+&lt;span class="c"&gt;# Вместо этого воспользуемся пакетом raspberrypi-bootloader.&lt;/span&gt;
+&lt;span class="c"&gt;# Он включает в себя ядро и прошивку. Это пакет проекта raspberry pi на github (https://github.com/raspberrypi/linux)&lt;/span&gt;
+apt-get install -y raspberrypi-bootloader
+sed -i &lt;span class="s1"&gt;&amp;#39;s/kernel=/#kernel=/g&amp;#39;&lt;/span&gt; /boot/config.txt
+sed -i &lt;span class="s1"&gt;&amp;#39;s/initramfs /#initramfs /g&amp;#39;&lt;/span&gt; /boot/config.txt
+
+&lt;span class="c"&gt;# Сконфигурируем локали и временную зону&lt;/span&gt;
+dpkg-reconfigure locales
+dpkg-reconfigure tzdata
+
+&lt;span class="c"&gt;# Добавим нового пользователя&lt;/span&gt;
+groupadd pi
+useradd pi -m -K &lt;span class="nv"&gt;UMASK&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;0066&lt;/span&gt; -s /bin/bash -g pi -G users,ssh,sudo
+passwd pi
+
+&lt;span class="c"&gt;# Перезагрузимся, чтобы изменения вступили в силу&lt;/span&gt;
+reboot
+
+&lt;span class="c"&gt;# Теперь можно зайти на пай под новым пользователем&lt;/span&gt;
+ssh pi@pi.ip.addr.ess
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h3&gt;Настройка SSH&lt;/h3&gt;
+&lt;p&gt;Если смогли успешно войти под пользователем &lt;code&gt;pi&lt;/code&gt; на&amp;nbsp;предыдущем шаге, можно приступить к&amp;nbsp;дальшейшей настройке. Усилим безопасность системы.&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Запретим входить под рутом&lt;/span&gt;
+sudo sed -i &lt;span class="s1"&gt;&amp;#39;s/PermitRootLogin yes/PermitRootLogin no/g&amp;#39;&lt;/span&gt; /etc/ssh/sshd_config
+
+&lt;span class="c"&gt;# Можно разрешить сессии только определенным юзерам&lt;/span&gt;
+&lt;span class="c"&gt;# [ОПАСНАЯ ОПЦИЯ, проверьте правильность имен несколько раз]&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;AllowUsers root pi&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee --append /etc/ssh/sshd_config
+
+&lt;span class="c"&gt;# Можно ограничить время бездействия пользовательской сессии (здесь 5 минут)&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ClientAliveInterval 300&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee --append /etc/ssh/sshd_config &amp;gt; /dev/null
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;ClientAliveCountMax 0&amp;quot;&lt;/span&gt; &lt;span class="p"&gt;|&lt;/span&gt; sudo tee --append /etc/ssh/sshd_config &amp;gt; /dev/null
+
+&lt;span class="c"&gt;# Перезапустим SSH демон&lt;/span&gt;
+sudo /etc/init.d/ssh restart
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h4&gt;Настраиваем авторизацию по&amp;nbsp;ключу&lt;/h4&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# На _своей_ машине сгенерируем ключ (если еще этого не делали)&lt;/span&gt;
+&lt;span class="c"&gt;# Не оставляем пароль ключа пустым&lt;/span&gt;
+mkdir .ssh
+ssh-keygen -t rsa -C &lt;span class="s2"&gt;&amp;quot;your_email@example.com&amp;quot;&lt;/span&gt;
+ssh-add ~/.ssh/id_rsa
+&lt;span class="c"&gt;# Скопируем свой _публичный_ ключ в буфер обмена&lt;/span&gt;
+pbcopy &amp;lt; ~/.ssh/id_rsa.pub
+
+&lt;span class="c"&gt;# Дальнейшие действия делаем на пае под пользователем pi&lt;/span&gt;
+mkdir ~/.ssh
+
+&lt;span class="c"&gt;# Сюда вставим в новую строку скопированный публичный ключ&lt;/span&gt;
+nano ~/.ssh/authorized_keys
+
+&lt;span class="c"&gt;# Выставим правильные права&lt;/span&gt;
+chmod &lt;span class="m"&gt;700&lt;/span&gt; ~/.ssh/
+chmod &lt;span class="m"&gt;600&lt;/span&gt; ~/.ssh/authorized_keys
+
+&lt;span class="c"&gt;# Пробуем выйти и зайти опять, должно пустить без пароля&lt;/span&gt;
+
+&lt;span class="c"&gt;# Можно запретить вход по паролю, разрешить только по ключу&lt;/span&gt;
+&lt;span class="c"&gt;# Нужно помнить, что в случае, если у нас не останется&lt;/span&gt;
+&lt;span class="c"&gt;# ни одного авторизованного на пае ключа, по SSH войти не сможем&lt;/span&gt;
+sudo sed -i &lt;span class="s1"&gt;&amp;#39;s/#PasswordAuthentication yes/PasswordAuthentication no/g&amp;#39;&lt;/span&gt; /etc/ssh/sshd_config
+sudo sed -i &lt;span class="s1"&gt;&amp;#39;s/UsePAM yes/UsePAM no/g&amp;#39;&lt;/span&gt; /etc/ssh/sshd_config
+
+&lt;span class="c"&gt;# Перезапустим SSH демон&lt;/span&gt;
+sudo /etc/init.d/ssh restart
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Всё дальнейшее&amp;nbsp;&amp;mdash; опционально&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;впрочем, как и&amp;nbsp;всё, что выше). Ваши потребности естественно могут отличаться от&amp;nbsp;моих, поэтому выполняем команды &lt;em&gt;вдумчиво&lt;/em&gt;. Рекомендую для удобства действовать от&amp;nbsp;рута&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;&lt;code&gt;su&amp;nbsp;root&lt;/code&gt;).&lt;/p&gt;
+&lt;h3&gt;Конфигурируем параметры пая&lt;/h3&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Выделяем минимальное количество видеопамяти&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;gpu_mem=16&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+
+&lt;span class="c"&gt;# Выключаем модуль камеры&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;start_x=0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+
+&lt;span class="c"&gt;# Выключаем так называемые &amp;quot;вылеты развертки&amp;quot;, они не актуальны для современных телевизоров&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;disable_overscan=1&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+
+&lt;span class="c"&gt;# Разгоняем (подробно можно почитать тут http://elinux.org/RPiconfig)&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;arm_freq=1000&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;core_freq=500&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;sdram_freq=600&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;over_voltage=6&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+
+&lt;span class="c"&gt;# Форсируем Turbo режим в первые 60 секунд работы&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;initial_turbo=60&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+
+&lt;span class="c"&gt;# Делает так, чтобы пай разгонялся только при необходимости&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;force_turbo=0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /boot/config.txt
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h4&gt;Повышаем производительность&lt;/h4&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Улучшает производительность генератора случайных чисел&lt;/span&gt;
+apt-get install -y rng-tools
+
+&lt;span class="c"&gt;# Будет выдано сообщение о том, что скрипт не смог стартовать.&lt;/span&gt;
+&lt;span class="c"&gt;# Ничего страшного, необходимый модуль станет доступен после перезагрузки&lt;/span&gt;
+&lt;span class="nb"&gt;echo &lt;/span&gt;bcm2708-rng &amp;gt;&amp;gt; /etc/modules
+
+&lt;span class="c"&gt;# Улучшает производительность служб управления памятью&lt;/span&gt;
+apt-get install -y raspi-copies-and-fills
+
+&lt;span class="c"&gt;# Можно настроить сеть на статику&lt;/span&gt;
+&lt;span class="c"&gt;# [ОСТОРОЖНО, нужно быть уверенным в написанном, иначе можно потерять доступ по SSH]&lt;/span&gt;
+&lt;span class="c"&gt;# Заменяем dhcp&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&amp;#39;&lt;/span&gt; /etc/network/interfaces
+&lt;span class="c"&gt;# На что-то вроде такого, но специфичного для вашей сети&lt;/span&gt;
+&lt;span class="nv"&gt;net_conf&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;iface eth0 inet static&lt;/span&gt;
+&lt;span class="s2"&gt;address 192.168.1.100&lt;/span&gt;
+&lt;span class="s2"&gt;gateway 192.168.1.1&lt;/span&gt;
+&lt;span class="s2"&gt;netmask 255.255.255.0&lt;/span&gt;
+&lt;span class="s2"&gt;network 192.168.1.0&lt;/span&gt;
+&lt;span class="s2"&gt;broadcast 192.168.1.255&amp;quot;&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$net_conf&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h4&gt;Убираем лишнее&lt;/h4&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Оставляем один getty, т.к. работаем в основном по SSH&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;/[2-6]:23:respawn:\/sbin\/getty 38400 tty[2-6]/s%^%#%g&amp;#39;&lt;/span&gt; /etc/inittab
+sed -i &lt;span class="s1"&gt;&amp;#39;/T0:23:respawn:\/sbin\/getty -L ttyAMA0 115200 vt100/s%^%#%g&amp;#39;&lt;/span&gt; /etc/inittab
+
+&lt;span class="c"&gt;# Выключаем ipv6&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;net.ipv6.conf.all.disable_ipv6=1&amp;quot;&lt;/span&gt; &amp;gt; /etc/sysctl.d/disableipv6.conf
+sed -i &lt;span class="s1"&gt;&amp;#39;/::/s%^%#%g&amp;#39;&lt;/span&gt; /etc/hosts
+
+&lt;span class="c"&gt;# Выключаем неиспользуемые модули ядра&lt;/span&gt;
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blacklist ipv6&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/modprobe.d/raspi-blacklist.conf
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blacklist spi-bcm2708&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/modprobe.d/raspi-blacklist.conf
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;blacklist i2c-bcm2708&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/modprobe.d/raspi-blacklist.conf
+chmod &lt;span class="m"&gt;644&lt;/span&gt; /etc/modprobe.d/raspi-blacklist.conf
+
+&lt;span class="c"&gt;# Планировщик ввода/вывода &amp;quot;noop&amp;quot; лучше подходит для флеш памяти&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;s/deadline/noop/g&amp;#39;&lt;/span&gt; /boot/cmdline.txt
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h4&gt;Тюним файловую систему&lt;/h4&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# noatime и nodiratime отключают запись информации&lt;/span&gt;
+&lt;span class="c"&gt;# о последнем времени доступа к файлам и директориям&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;s/errors=remount-ro,noatime /errors=remount-ro,noatime,nodiratime /g&amp;#39;&lt;/span&gt; /etc/fstab
+
+&lt;span class="c"&gt;# Разрешаем автоматически восстанавливать файловые системы при загрузке,&lt;/span&gt;
+&lt;span class="c"&gt;# если с ними что-то не так&lt;/span&gt;
+sed -i &lt;span class="s2"&gt;&amp;quot;s/#FSCKFIX=no/FSCKFIX=yes/g&amp;quot;&lt;/span&gt; /etc/default/rcS
+
+&lt;span class="c"&gt;# Каждые 3 перезагрузки проверяем главный раздел файловой системы&lt;/span&gt;
+tune2fs -c &lt;span class="m"&gt;3&lt;/span&gt; /dev/mmcblk0p2
+
+&lt;span class="c"&gt;# writeback тип записи в журнал дает больше производительности.&lt;/span&gt;
+&lt;span class="c"&gt;# однако при падении системы данные могут потеряться&lt;/span&gt;
+&lt;span class="c"&gt;# [ВЫПОЛНЯТЬ ТОЛЬКО С ПОНИМАНИЕМ РИСКОВ]&lt;/span&gt;
+tune2fs -o journal_data_writeback /dev/mmcblk0p2
+
+&lt;span class="c"&gt;# Перезагружаемся&lt;/span&gt;
+reboot
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;h4&gt;Логгируем в&amp;nbsp;оперативной памяти&lt;/h4&gt;
+&lt;p&gt;Для этого воспользуемся утилитой &lt;a href="http://www.tremende.com/ramlog/"&gt;&lt;code&gt;ramlog&lt;/code&gt;&lt;/a&gt;. Но, если у&amp;nbsp;вас в&amp;nbsp;системе демонами рулит &lt;code&gt;systemd&lt;/code&gt;&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;например, потому что вы&amp;nbsp;установили Debian 8 Jessie), то&amp;nbsp;ничего не&amp;nbsp;получится&amp;nbsp;&amp;mdash; &lt;code&gt;ramlog&lt;/code&gt;, по&amp;nbsp;крайней мере в&amp;nbsp;версии 2.0.0, не&amp;nbsp;совместим с&amp;nbsp;ним.&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Для начала немного уменьшим количество маловажных логов&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;s/auth,authpriv\.\*/:msg, contains, \&amp;quot;pam\_unix\(cron:session\)\&amp;quot; \~\nauth,authpriv\.\*/g&amp;#39;&lt;/span&gt; /etc/rsyslog.conf
+
+&lt;span class="c"&gt;# Скачиваем и устанавливаем ramlog&lt;/span&gt;
+&lt;span class="nb"&gt;cd&lt;/span&gt; /tmp
+wget http://www.tremende.com/ramlog/download/ramlog_2.0.0_all.deb
+apt-get install -y lsof rsync &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; dpkg -i ramlog_2.0.0_all.deb
+
+&lt;span class="c"&gt;# Задаем максимальный объем логов в памяти&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;s/TMPFS_RAMFS_SIZE=\t/TMPFS_RAMFS_SIZE=40m\t/g&amp;#39;&lt;/span&gt; /etc/default/ramlog
+
+&lt;span class="c"&gt;# Говорим, что ramlog надо запускать/останавливать до/после rsyslog&lt;/span&gt;
+sed -i &lt;span class="s1"&gt;&amp;#39;s/# Provides: ramlog/# Provides: ramlog\n# X-Start-Before: rsyslog\n# X-Stop-After: rsyslog/g&amp;#39;&lt;/span&gt; /etc/init.d/ramlog
+
+&lt;span class="c"&gt;# Дадим знать обо всем этом автозагрузке&lt;/span&gt;
+insserv
+
+&lt;span class="c"&gt;# Теперь нужно 2 (!) раза перезагрузить пай&lt;/span&gt;
+reboot
+
+&lt;span class="c"&gt;# Проверить состояние ramlog можно так&lt;/span&gt;
+/etc/init.d/ramlog status
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;В&amp;nbsp;следующей заметке я&amp;nbsp;покажу как собрать последнюю версию nginx и&amp;nbsp;настроить его в&amp;nbsp;соответствие со&amp;nbsp;спецификой пая. Спасибо, что дочитали :)&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Mon, 24 Aug 2015 12:51:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-24:blog/raspberry-pi-setup</guid><category>rpi</category><category>nix</category></item><item><title>Хороший JavaScript. Vol. 1 «Pimp your code»</title><link>http://dkharitonov.me/blog/nice-js-vol-1</link><description>&lt;p&gt;Как известно, JavaScript&amp;nbsp;&amp;mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение. Причиной этому являлась необходимость в&amp;nbsp;середине 90 в&amp;nbsp;жесткие сроки получить мощный язык, позволяющий придать страницам больше возможностей. И&amp;nbsp;получили. Все проблемы&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;повсеместные глобальные переменные, область видимости переменных, неочевидные и&amp;nbsp;нелогичные приведения типов) зашиты в&amp;nbsp;JS глубоко и&amp;nbsp;надолго. Сейчас к&amp;nbsp;нам приближается ES6, который явно, но&amp;nbsp;не&amp;nbsp;достаточно кардинально улучшает ситуацию.&lt;/p&gt;
 &lt;p&gt;С&amp;nbsp;другой стороны язык очень гибок и&amp;nbsp;никто не&amp;nbsp;запрещает обходить плохие стороны, использовать хорошие и&amp;nbsp;улучшать язык своими силами. Этим я&amp;nbsp;и&amp;nbsp;займусь в&amp;nbsp;серии заметок. Неизгладимое впечатление на&amp;nbsp;меня произвела книга&lt;span style="margin-right:0.44em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.44em;"&gt;&amp;laquo;&lt;/span&gt;&lt;a href="http://www.ozon.ru/context/detail/id/20217226/"&gt;JavaScript. Сильные стороны&lt;/a&gt;&amp;raquo; Дугласа Крокфорда, рекомендую к&amp;nbsp;прочтению&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;она совсем небольшая).&lt;/p&gt;
 &lt;h2&gt;Объекты&lt;/h2&gt;
 &lt;p&gt;Это один из&amp;nbsp;основных механизмов в&amp;nbsp;языке и, надо сказать, удачно реализованный. &lt;/p&gt;
