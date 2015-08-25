@@ -1,5 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Forkbomb Blog</title><link>http://dkharitonov.me/</link><description></description><atom:link href="http://dkharitonov.me/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Mon, 24 Aug 2015 12:51:00 +0300</lastBuildDate><item><title>Вдумчивая настройка Raspberry Pi</title><link>http://dkharitonov.me/blog/raspberry-pi-setup</link><description>&lt;h3&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/h3&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Forkbomb Blog</title><link>http://dkharitonov.me/</link><description></description><atom:link href="http://dkharitonov.me/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Tue, 25 Aug 2015 12:00:00 +0300</lastBuildDate><item><title>Делаем Raspberry Pi доступным из интернета при динамичном IP</title><link>http://dkharitonov.me/blog/yandex-dns-for-raspberry-pi</link><description>&lt;p&gt;Если вы&amp;nbsp;хотите сделать пай доступным извне по&amp;nbsp;доменному имени, у&amp;nbsp;вас не&amp;nbsp;статичный&amp;nbsp;IP и&amp;nbsp;у&amp;nbsp;вас есть, собственно, домен, который можно делегировать, то, как вариант, предлагаю воспользоваться сервисом от&amp;nbsp;Яндекса&amp;nbsp;&amp;mdash; &lt;a href="https://pdd.yandex.ru"&gt;Почта для домена&lt;/a&gt;. Помимо предоставления почты Яндекс позволяет настраивать DNS параметры домена через REST API.&lt;/p&gt;
+&lt;p&gt;Этим мы&amp;nbsp;и&amp;nbsp;воспользуемся, написав соответствующий скрипт, который будет автоматически обновлять&amp;nbsp;IP адрес пая в&amp;nbsp;DNS Яндекса. Для начала, конечно, домен должен быть делегирован Яндексу. &lt;a href="https://yandex.ru/support/pdd/hosting.xml"&gt;Тут&lt;/a&gt; написано как это сделать.&lt;/p&gt;
+&lt;p&gt;Создадим скрипт:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;mkdir ~/bin &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; ~/bin &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; nano ya_dns
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Тело скрипта:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class="c"&gt;# Использование:&lt;/span&gt;
+&lt;span class="c"&gt;# ./ya_dns &amp;lt;id&amp;gt; &amp;lt;domain&amp;gt; &amp;lt;subdomain&amp;gt; &amp;lt;ttl&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;# Получим токен для доступа к API&lt;/span&gt;
+&lt;span class="c"&gt;# Нужно заменить &amp;lt;yourdomain.com&amp;gt; на имя домена&lt;/span&gt;
+&lt;span class="c"&gt;# https://pddimp.yandex.ru/token/index.xml?domain=&amp;lt;yourdomain.com&amp;gt;&lt;/span&gt;
+&lt;span class="nv"&gt;token&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&amp;lt;put token here&amp;gt;&amp;quot;&lt;/span&gt;
+
+&lt;span class="c"&gt;# Посмотреть информацию о DNS параметрах тут&lt;/span&gt;
+&lt;span class="c"&gt;# Необходимо найти A запись для нужного домена/поддомена.&lt;/span&gt;
+&lt;span class="c"&gt;# Для использования скрипта нужно узнать следующее: id, domain, subdomain, ttl&lt;/span&gt;
+&lt;span class="c"&gt;# https://pddimp.yandex.ru/nsapi/get_domain_records.xml?token=&amp;lt;your_token_here&amp;gt;&amp;amp;domain=&amp;lt;yourdomain.com&amp;gt;&lt;/span&gt;
+
+&lt;span class="c"&gt;# Подробнее про редактирование записи по API можно почитать тут:&lt;/span&gt;
+&lt;span class="c"&gt;# https://tech.yandex.ru/pdd/doc/reference/dns-edit-docpage/&lt;/span&gt;
+
+&lt;span class="nv"&gt;args&lt;/span&gt;&lt;span class="o"&gt;=(&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$@&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Тут будем хранить IP&lt;/span&gt;
+&lt;span class="nv"&gt;ip_file&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/tmp/cur_ip.txt&amp;quot;&lt;/span&gt;
+
+&lt;span class="nv"&gt;old_ip&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;cat &lt;span class="nv"&gt;$ip_file&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Получим текущий IP&lt;/span&gt;
+&lt;span class="nv"&gt;cur_ip&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;/usr/bin/curl -sL http://icanhazip.com&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Если IP изменился с прошлого раза&lt;/span&gt;
+&lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$cur_ip&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; !&lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$old_ip&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="k"&gt;then&lt;/span&gt;
+  &lt;span class="c"&gt;# Сохраним новый IP&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="nv"&gt;$cur_ip&lt;/span&gt; &amp;gt; &lt;span class="nv"&gt;$ip_file&lt;/span&gt;
+
+  &lt;span class="nv"&gt;record_id&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;args&lt;/span&gt;&lt;span class="p"&gt;[0]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+  &lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;args&lt;/span&gt;&lt;span class="p"&gt;[1]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+  &lt;span class="nv"&gt;subdomain&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;args&lt;/span&gt;&lt;span class="p"&gt;[2]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+  &lt;span class="nv"&gt;ttl&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;args&lt;/span&gt;&lt;span class="p"&gt;[3]&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;
+
+  &lt;span class="c"&gt;# Обновим IP на яндексе&lt;/span&gt;
+  &lt;span class="nv"&gt;ya_pdd_url&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;https://pddimp.yandex.ru/nsapi/edit_a_record.xml?&amp;quot;&lt;/span&gt;
+  &lt;span class="nv"&gt;query_url&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ya_pdd_url&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;token=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;token&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;record_id=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;record_id&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;domain=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;domain&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;subdomain=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;subdomain&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;ttl=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;ttl&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;amp;content=&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cur_ip&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+  &lt;span class="nv"&gt;ya_pdd_response&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;/usr/bin/curl -sL &lt;span class="nv"&gt;$query_url&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+  &lt;span class="c"&gt;#echo $ya_pdd_response&lt;/span&gt;
+&lt;span class="k"&gt;fi&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Делаем скрипт исполняемым &lt;code&gt;chmod +x ./ya_dns&lt;/code&gt;, и&amp;nbsp;используем так: &lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;./ya_dns &amp;lt;id&amp;gt; &amp;lt;domain&amp;gt; &amp;lt;subdomain&amp;gt; &amp;lt;ttl&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Остается добавить его на&amp;nbsp;запуск по&amp;nbsp;расписанию: &lt;code&gt;crontab -e&lt;/code&gt;&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Запускать каждые 5 минут&lt;/span&gt;
+*/5 * * * * /home/pi/bin/ya_dns &amp;lt;id&amp;gt; &amp;lt;domain&amp;gt; &amp;lt;subdomain&amp;gt; &amp;lt;ttl&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Не&amp;nbsp;забудьте открыть нужные вам порты на&amp;nbsp;устройстве, с&amp;nbsp;помощью которого подключаетесь к&amp;nbsp;интернету.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;nobr&gt;P. S.&lt;/nobr&gt; Если у&amp;nbsp;вас нет домена, но&amp;nbsp;все&amp;nbsp;же хотите иметь доступ к&amp;nbsp;паю, можно переделать скрипт так, чтобы пай отправлял вам смс с&amp;nbsp;новым&amp;nbsp;IP&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;например, через &lt;a href="http://sms.ru/?panel=main&amp;amp;subpanel=programmer"&gt;sms.ru&lt;/a&gt;). Или еще что-нибудь такое.&lt;/em&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Tue, 25 Aug 2015 12:00:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-25:blog/yandex-dns-for-raspberry-pi</guid><category>rpi</category><category>nix</category><category>dns</category><category>yandex</category></item><item><title>Вдумчивая настройка Raspberry Pi</title><link>http://dkharitonov.me/blog/raspberry-pi-setup</link><description>&lt;h3&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/h3&gt;
 &lt;p&gt;Детально про используемый образ можно почитать &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst"&gt;в&amp;nbsp;репозитории проекта&lt;/a&gt;. Для начала необходимо узнать номер последней версии образа &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest"&gt;тут&lt;/a&gt;.&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
@@ -275,8 +390,7 @@ sudo /etc/init.d/ssh restart
 18
 19
 20
-21
-22&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Улучшает производительность генератора случайных чисел&lt;/span&gt;
+21&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Улучшает производительность генератора случайных чисел&lt;/span&gt;
 apt-get install -y rng-tools
 
 &lt;span class="c"&gt;# Будет выдано сообщение о том, что скрипт не смог стартовать.&lt;/span&gt;
@@ -291,13 +405,12 @@ apt-get install -y raspi-copies-and-fills
 &lt;span class="c"&gt;# Заменяем dhcp&lt;/span&gt;
 sed -i &lt;span class="s1"&gt;&amp;#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&amp;#39;&lt;/span&gt; /etc/network/interfaces
 &lt;span class="c"&gt;# На что-то вроде такого, но специфичного для вашей сети&lt;/span&gt;
-&lt;span class="nv"&gt;net_conf&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;iface eth0 inet static&lt;/span&gt;
-&lt;span class="s2"&gt;address 192.168.1.100&lt;/span&gt;
-&lt;span class="s2"&gt;gateway 192.168.1.1&lt;/span&gt;
-&lt;span class="s2"&gt;netmask 255.255.255.0&lt;/span&gt;
-&lt;span class="s2"&gt;network 192.168.1.0&lt;/span&gt;
-&lt;span class="s2"&gt;broadcast 192.168.1.255&amp;quot;&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$net_conf&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;iface eth0 inet static&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;address 192.168.1.100&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;gateway 192.168.1.1&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;netmask 255.255.255.0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;network 192.168.1.0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;broadcast 192.168.1.255&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
@@ -395,13 +508,7 @@ reboot
 16
 17
 18
-19
-20
-21
-22&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Для начала немного уменьшим количество маловажных логов&lt;/span&gt;
-sed -i &lt;span class="s1"&gt;&amp;#39;s/auth,authpriv\.\*/:msg, contains, \&amp;quot;pam\_unix\(cron:session\)\&amp;quot; \~\nauth,authpriv\.\*/g&amp;#39;&lt;/span&gt; /etc/rsyslog.conf
-
-&lt;span class="c"&gt;# Скачиваем и устанавливаем ramlog&lt;/span&gt;
+19&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Скачиваем и устанавливаем ramlog&lt;/span&gt;
 &lt;span class="nb"&gt;cd&lt;/span&gt; /tmp
 wget http://www.tremende.com/ramlog/download/ramlog_2.0.0_all.deb
 apt-get install -y lsof rsync &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; dpkg -i ramlog_2.0.0_all.deb
@@ -423,7 +530,7 @@ reboot
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;p&gt;В&amp;nbsp;следующей заметке я&amp;nbsp;покажу как собрать последнюю версию nginx и&amp;nbsp;настроить его в&amp;nbsp;соответствие со&amp;nbsp;спецификой пая. Спасибо, что дочитали :)&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Mon, 24 Aug 2015 12:51:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-24:blog/raspberry-pi-setup</guid><category>rpi</category><category>nix</category></item><item><title>Хороший JavaScript. Vol. 1 «Pimp your code»</title><link>http://dkharitonov.me/blog/nice-js-vol-1</link><description>&lt;p&gt;Как известно, JavaScript&amp;nbsp;&amp;mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение. Причиной этому являлась необходимость в&amp;nbsp;середине 90 в&amp;nbsp;жесткие сроки получить мощный язык, позволяющий придать страницам больше возможностей. И&amp;nbsp;получили. Все проблемы&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;повсеместные глобальные переменные, область видимости переменных, неочевидные и&amp;nbsp;нелогичные приведения типов) зашиты в&amp;nbsp;JS глубоко и&amp;nbsp;надолго. Сейчас к&amp;nbsp;нам приближается ES6, который явно, но&amp;nbsp;не&amp;nbsp;достаточно кардинально улучшает ситуацию.&lt;/p&gt;
+&lt;p&gt;На&amp;nbsp;этом, пожалуй, пока что остановимся. Спасибо, что дочитали :)&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Mon, 24 Aug 2015 23:30:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-24:blog/raspberry-pi-setup</guid><category>rpi</category><category>nix</category></item><item><title>Хороший JavaScript. Vol. 1 «Pimp your code»</title><link>http://dkharitonov.me/blog/nice-js-vol-1</link><description>&lt;p&gt;Как известно, JavaScript&amp;nbsp;&amp;mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение. Причиной этому являлась необходимость в&amp;nbsp;середине 90 в&amp;nbsp;жесткие сроки получить мощный язык, позволяющий придать страницам больше возможностей. И&amp;nbsp;получили. Все проблемы&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;повсеместные глобальные переменные, область видимости переменных, неочевидные и&amp;nbsp;нелогичные приведения типов) зашиты в&amp;nbsp;JS глубоко и&amp;nbsp;надолго. Сейчас к&amp;nbsp;нам приближается ES6, который явно, но&amp;nbsp;не&amp;nbsp;достаточно кардинально улучшает ситуацию.&lt;/p&gt;
 &lt;p&gt;С&amp;nbsp;другой стороны язык очень гибок и&amp;nbsp;никто не&amp;nbsp;запрещает обходить плохие стороны, использовать хорошие и&amp;nbsp;улучшать язык своими силами. Этим я&amp;nbsp;и&amp;nbsp;займусь в&amp;nbsp;серии заметок. Неизгладимое впечатление на&amp;nbsp;меня произвела книга&lt;span style="margin-right:0.44em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.44em;"&gt;&amp;laquo;&lt;/span&gt;&lt;a href="http://www.ozon.ru/context/detail/id/20217226/"&gt;JavaScript. Сильные стороны&lt;/a&gt;&amp;raquo; Дугласа Крокфорда, рекомендую к&amp;nbsp;прочтению&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;она совсем небольшая).&lt;/p&gt;
 &lt;h2&gt;Объекты&lt;/h2&gt;
 &lt;p&gt;Это один из&amp;nbsp;основных механизмов в&amp;nbsp;языке и, надо сказать, удачно реализованный. &lt;/p&gt;

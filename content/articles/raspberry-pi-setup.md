@@ -171,13 +171,12 @@ Slug: raspberry-pi-setup
     # Заменяем dhcp
     sed -i 's/iface eth0 inet dhcp/#iface eth0 inet dhcp/g' /etc/network/interfaces
     # На что-то вроде такого, но специфичного для вашей сети
-    net_conf="iface eth0 inet static
-    address 192.168.1.100
-    gateway 192.168.1.1
-    netmask 255.255.255.0
-    network 192.168.1.0
-    broadcast 192.168.1.255"
-    echo "$net_conf" >> /etc/network/interfaces
+    echo "iface eth0 inet static" >> /etc/network/interfaces
+    echo "address 192.168.1.100" >> /etc/network/interfaces
+    echo "gateway 192.168.1.1" >> /etc/network/interfaces
+    echo "netmask 255.255.255.0" >> /etc/network/interfaces
+    echo "network 192.168.1.0" >> /etc/network/interfaces
+    echo "broadcast 192.168.1.255" >> /etc/network/interfaces
 
 #### Убираем лишнее
 
@@ -226,9 +225,6 @@ Slug: raspberry-pi-setup
 Для этого воспользуемся утилитой [`ramlog`] [ramlog]. Но, если у вас в системе демонами рулит `systemd` (например, потому что вы установили Debian 8 Jessie), то ничего не получится — `ramlog`, по крайней мере в версии 2.0.0, не совместим с ним.
 
     #!bash
-    # Для начала немного уменьшим количество маловажных логов
-    sed -i 's/auth,authpriv\\.\\*/:msg, contains, \\"pam\\_unix\\(cron:session\\)\\" \\~\\nauth,authpriv\\.\\*/g' /etc/rsyslog.conf
-
     # Скачиваем и устанавливаем ramlog
     cd /tmp
     wget http://www.tremende.com/ramlog/download/ramlog_2.0.0_all.deb
@@ -249,7 +245,7 @@ Slug: raspberry-pi-setup
     # Проверить состояние ramlog можно так
     /etc/init.d/ramlog status
 
-В следующей заметке я покажу как собрать последнюю версию nginx и настроить его в соответствие со спецификой пая. Спасибо, что дочитали :)
+На этом, пожалуй, пока что остановимся. Спасибо, что дочитали :)
 
 
 [raspbian-ua-netinst]: https://github.com/debian-pi/raspbian-ua-netinst

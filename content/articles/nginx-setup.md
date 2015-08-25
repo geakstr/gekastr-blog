@@ -1,169 +1,193 @@
-Title: Установка и настройка nginx
-Date: 2012-08-24 12:51
+Title: Грамотно собираем и конфигурируем nginx
+Date: 2015-08-25 12:00
 Tags: nginx, nix
 Slug: nginx-setup
-status: draft
+Status: draft
 
-#!/usr/bin/env bash
+`su -`
 
-# names of latest versions of each package
-export VERSION_PCRE=pcre-8.37
-export VERSION_OPENSSL=openssl-1.0.2d
-export VERSION_NGINX=nginx-1.9.4
+`nano /tmp/build_nginx.sh`
 
-# URLs to the source directories
-export SOURCE_OPENSSL=https://www.openssl.org/source/
-export SOURCE_PCRE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
-export SOURCE_NGINX=http://nginx.org/download/
+    #!bash
+    #!/usr/bin/env bash
 
-# make a 'today' variable for use in back-up filenames later
-today=$(date +"%Y-%m-%d")
+    # names of latest versions of each package
+    export VERSION_PCRE=pcre-8.37
+    export VERSION_OPENSSL=openssl-1.0.2d
+    export VERSION_NGINX=nginx-1.9.4
 
-# clean out any files from previous runs of this script
-rm -rf build
-rm -rf /etc/nginx-default
-mkdir build
+    # URLs to the source directories
+    export SOURCE_OPENSSL=https://www.openssl.org/source/
+    export SOURCE_PCRE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
+    export SOURCE_NGINX=http://nginx.org/download/
 
-# ensure that we have the required software to compile our own nginx
-apt-get -y install curl wget build-essential libz-dev libssl-dev
+    # make a 'today' variable for use in back-up filenames later
+    today=$(date +"%Y-%m-%d")
 
-# grab the source files
-wget -P ./build $SOURCE_PCRE$VERSION_PCRE.tar.gz
-wget -P ./build $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz --no-check-certificate
-wget -P ./build $SOURCE_NGINX$VERSION_NGINX.tar.gz
+    # clean out any files from previous runs of this script
+    rm -rf build
+    rm -rf /etc/nginx-default
+    mkdir build
 
-# expand the source files
-cd build
-tar xzf $VERSION_NGINX.tar.gz
-tar xzf $VERSION_OPENSSL.tar.gz
-tar xzf $VERSION_PCRE.tar.gz
-cd ../
+    # ensure that we have the required software to compile our own nginx
+    apt-get -y install curl wget build-essential libz-dev libssl-dev
 
-# set where OpenSSL and nginx will be built
-export BPATH=$(pwd)/build
-export STATICLIBSSL="$BPATH/staticlibssl"
+    # grab the source files
+    wget -P ./build $SOURCE_PCRE$VERSION_PCRE.tar.gz
+    wget -P ./build $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz --no-check-certificate
+    wget -P ./build $SOURCE_NGINX$VERSION_NGINX.tar.gz
 
-# build static openssl
-cd $BPATH/$VERSION_OPENSSL
-rm -rf "$STATICLIBSSL"
-mkdir "$STATICLIBSSL"
-make clean
-./config --prefix=$STATICLIBSSL no-shared\
-&& make depend \
-&& make \
-&& make install_sw
+    # expand the source files
+    cd build
+    tar xzf $VERSION_NGINX.tar.gz
+    tar xzf $VERSION_OPENSSL.tar.gz
+    tar xzf $VERSION_PCRE.tar.gz
+    cd ../
 
-# rename the existing /etc/nginx directory so it's saved as a back-up
-mv /etc/nginx /etc/nginx-$today
+    # set where OpenSSL and nginx will be built
+    export BPATH=$(pwd)/build
+    export STATICLIBSSL="$BPATH/staticlibssl"
 
-# build nginx, with various modules included/excluded
-cd $BPATH/$VERSION_NGINX
-mkdir -p $BPATH/nginx
-./configure --with-cc-opt="-I $STATICLIBSSL/include -I/usr/include" \
---with-ld-opt="-L $STATICLIBSSL/lib -Wl,-rpath=$STATICLIBSSL/lib -lssl -lcrypto -ldl -lz" \
---sbin-path=/usr/sbin/nginx \
---conf-path=/etc/nginx/nginx.conf \
---pid-path=/var/run/nginx.pid \
---error-log-path=/var/log/nginx/error.log \
---http-log-path=/var/log/nginx/access.log \
---with-pcre=$BPATH/$VERSION_PCRE \
---with-http_ssl_module \
---with-file-aio \
---with-http_gzip_static_module \
---without-mail_pop3_module \
---without-mail_smtp_module \
---without-mail_imap_module \
-&& make && make install
+    # build static openssl
+    cd $BPATH/$VERSION_OPENSSL
+    rm -rf "$STATICLIBSSL"
+    mkdir "$STATICLIBSSL"
+    make clean
+    ./config --prefix=$STATICLIBSSL no-shared \\
+    && make depend \\
+    && make \\
+    && make install_sw
 
-# rename the compiled 'default' /etc/nginx directory so its accessible as a reference to the new nginx defaults
-mv /etc/nginx /etc/nginx-default
+    # rename the existing /etc/nginx directory so it's saved as a back-up
+    mv /etc/nginx /etc/nginx-$today
 
-# now restore the previous version of /etc/nginx to /etc/nginx so the old settings are kept
-mv /etc/nginx-$today /etc/nginx
+    # build nginx, with various modules included/excluded
+    cd $BPATH/$VERSION_NGINX
+    mkdir -p $BPATH/nginx
+    ./configure --with-cc-opt="-I $STATICLIBSSL/include -I/usr/include" \\
+    --with-ld-opt="-L $STATICLIBSSL/lib -Wl,-rpath=$STATICLIBSSL/lib -lssl -lcrypto -ldl -lz" \\
+    --sbin-path=/usr/sbin/nginx \\
+    --conf-path=/etc/nginx/nginx.conf \\
+    --pid-path=/var/run/nginx.pid \\
+    --error-log-path=/var/log/nginx/error.log \\
+    --http-log-path=/var/log/nginx/access.log \\
+    --with-pcre=$BPATH/$VERSION_PCRE \\
+    --with-http_ssl_module \\
+    --with-file-aio \\
+    --with-http_gzip_static_module \\
+    --without-mail_pop3_module \\
+    --without-mail_smtp_module \\
+    --without-mail_imap_module \\
+    && make && make install
 
-echo "All done.";
-echo "This build has not edited your existing /etc/nginx directory.";
-echo "If things aren't working now you may need to refer to the";
-echo "configuration files the new nginx ships with as defaults,";
-echo "which are available at /etc/nginx-default";
+    # rename the compiled 'default' /etc/nginx directory so its accessible as a reference to the new nginx defaults
+    mv /etc/nginx /etc/nginx-default
 
+    # now restore the previous version of /etc/nginx to /etc/nginx so the old settings are kept
+    mv /etc/nginx-$today /etc/nginx
 
+    echo "All done.";
+    echo "This build has not edited your existing /etc/nginx directory.";
+    echo "If things aren't working now you may need to refer to the";
+    echo "configuration files the new nginx ships with as defaults,";
+    echo "which are available at /etc/nginx-default";
 
-cp -R /etc/nginx-default /etc/nginx
+Запустим процесс компиляции и пойдем пить чай
 
-useradd nginx
-groupadd nginx
-usermod -g nginx -G www-data nginx
+    #!bash
+    chmod +x /tmp/build_nginx.sh && /tmp/build_nginx.sh
 
-mkdir /var/www
-chmod -R 775 /var/www
-chown -R www-data:www-data /var/www
+Как nginx соберется, подготовимся к его настройке
 
+    #!bash
+    useradd nginx
+    groupadd nginx
+    usermod -g nginx -G www-data nginx
 
+    mkdir /var/www
+    chmod -R 775 /var/www
+    chown -R www-data:www-data /var/www
 
+Приступим к конфигурированию
 
+    #!bash
+    cp -R /etc/nginx-default /etc/nginx
+    nano /etc/nginx/nginx.conf
 
-user              nginx;
-worker_processes  2;
+Удалим все из конфига и создадим такой:
 
-error_log  /var/log/nginx/error.log warn;
-pid        /var/run/nginx.pid;
+    #!nginx
+    user              nginx;
+    worker_processes  1;
 
-events {
-  worker_connections  1024;
-}
+    error_log  /var/log/nginx/error.log warn;
+    pid        /var/run/nginx.pid;
 
-http {
-  include       /etc/nginx/mime.types;
-  default_type  application/octet-stream;
+    events {
+      worker_connections  1024;
+    }
 
-  access_log  off;
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
 
-  sendfile     on;
-  tcp_nopush   on;
-  tcp_nodelay  on;
-  expires      max;
-  directio     5m;
+      access_log  off;
 
-  client_body_timeout    10;
-  client_header_timeout  10;
-  keepalive_timeout      5 5;
-  send_timeout           10;
+      sendfile     on;
+      tcp_nopush   on;
+      tcp_nodelay  on;
+      expires      max;
+      directio     5m;
 
-  client_body_buffer_size      1K;
-  client_header_buffer_size    1k;
-  client_max_body_size         1k;
-  large_client_header_buffers  2 1k;
+      client_body_timeout    10;
+      client_header_timeout  10;
+      keepalive_timeout      5 5;
+      send_timeout           10;
 
-  server_tokens  off;
-  add_header     X-Frame-Options SAMEORIGIN;
-  add_header     X-Content-Type-Options nosniff;
-  add_header     X-XSS-Protection "1; mode=block";
+      client_body_buffer_size      1K;
+      client_header_buffer_size    1k;
+      client_max_body_size         1k;
+      large_client_header_buffers  2 1k;
 
-  gzip               on; 
-  gzip_proxied       any;
-  gzip_min_length    1000;
-  gzip_http_version  1.0;
-  gzip_buffers       16 8k;
-  gzip_comp_level    4;
-  gzip_types         text/plain text/css application/json text/javascript application/x-javascript text/xml application/xml application/xml+rss;
+      server_tokens  off;
+      add_header     X-Frame-Options SAMEORIGIN;
+      add_header     X-Content-Type-Options nosniff;
+      add_header     X-XSS-Protection "1; mode=block";
 
-  include /etc/nginx/conf.d/*.conf;
-}
+      gzip               on; 
+      gzip_proxied       any;
+      gzip_min_length    1000;
+      gzip_http_version  1.0;
+      gzip_buffers       16 8k;
+      gzip_comp_level    4;
+      gzip_types         text/plain text/css application/json text/javascript application/x-javascript text/xml application/xml application/xml+rss;
 
-server {
-  listen       80;
-  server_name  localhost;
+      include /etc/nginx/conf.d/*.conf;
+    }
 
-  index  index.html;
-  root   /var/www/dkharitonov.me;
+Осталось создать хост
 
-  location ~ /\. {
-    return 404;
-  }
+    #!bash
+    mkdir /etc/nginx/conf.d && nano /etc/nginx/conf.d/home.conf
 
-  location / {
-    index      index.html;
-    try_files  $uri.html $uri $uri/index.html =404;
-  }
-}
+Вот пример конфига, который отдает статику
+
+    #!nginx
+    server {
+      listen       80;
+      server_name  localhost;
+
+      index  index.html;
+      root   /var/www;
+
+      location ~ /\\. {
+        return 404;
+      }
+
+      location / {
+        index      index.html;
+        try_files  $uri.html $uri $uri/index.html =404;
+      }
+    }
+
+Стартуем nginx так: `nginx`. Останавливаем: `nginx -s stop`. 

@@ -3,7 +3,7 @@
 <head>
       <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
-    <title>Установка и настройка nginx ⋅ Forkbomb Blog</title>
+    <title>Грамотно собираем и конфигурируем nginx ⋅ Forkbomb Blog</title>
     <link rel="stylesheet" href="/theme/css/blog.min.css?32aa9f4a">
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link href="http://dkharitonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Forkbomb Blog RSS Feed" />
@@ -62,148 +62,358 @@
 <section id="content" class="article-page-content">
   <article class="post full-post">
     <header class="header">
-          <div class="readtime"><i class="sprite sprite-clock"></i> 6 мин. на прочтение</div>
-      <h2 class="title"><em>Установка и настройка nginx</em></h2>
+          <div class="readtime"><i class="sprite sprite-clock"></i> 8 мин. на прочтение</div>
+      <h2 class="title"><em>Грамотно собираем и конфигурируем nginx</em></h2>
       
     </header>
-    <div class="body"><h1>!/usr/bin/env bash</h1>
-<h1>names of latest versions of each package</h1>
-<p>export VERSION_PCRE=pcre-8.37
-export VERSION_OPENSSL=openssl-1.0.2d
-export VERSION_NGINX=nginx-1.9.4</p>
-<h1>URLs to the source directories</h1>
-<p>export SOURCE_OPENSSL=https://www.openssl.org/source/
-export SOURCE_PCRE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
-export SOURCE_NGINX=http://nginx.org/download/</p>
-<h1>make a 'today' variable for use in back-up filenames later</h1>
-<p>today=$(date +"%Y-%m-%d")</p>
-<h1>clean out any files from previous runs of this script</h1>
-<p>rm -rf build
+    <div class="body"><p><code>su -</code></p>
+<p><code>nano /tmp/build_nginx.sh</code></p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c">#!/usr/bin/env bash</span>
+
+<span class="c"># names of latest versions of each package</span>
+<span class="nb">export </span><span class="nv">VERSION_PCRE</span><span class="o">=</span>pcre-8.37
+<span class="nb">export </span><span class="nv">VERSION_OPENSSL</span><span class="o">=</span>openssl-1.0.2d
+<span class="nb">export </span><span class="nv">VERSION_NGINX</span><span class="o">=</span>nginx-1.9.4
+
+<span class="c"># URLs to the source directories</span>
+<span class="nb">export </span><span class="nv">SOURCE_OPENSSL</span><span class="o">=</span>https://www.openssl.org/source/
+<span class="nb">export </span><span class="nv">SOURCE_PCRE</span><span class="o">=</span>ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
+<span class="nb">export </span><span class="nv">SOURCE_NGINX</span><span class="o">=</span>http://nginx.org/download/
+
+<span class="c"># make a &#39;today&#39; variable for use in back-up filenames later</span>
+<span class="nv">today</span><span class="o">=</span><span class="k">$(</span>date +<span class="s2">&quot;%Y-%m-%d&quot;</span><span class="k">)</span>
+
+<span class="c"># clean out any files from previous runs of this script</span>
+rm -rf build
 rm -rf /etc/nginx-default
-mkdir build</p>
-<h1>ensure that we have the required software to compile our own nginx</h1>
-<p>apt-get -y install curl wget build-essential libz-dev libssl-dev</p>
-<h1>grab the source files</h1>
-<p>wget -P ./build $SOURCE_PCRE$VERSION_PCRE.tar.gz
-wget -P ./build $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz --no-check-certificate
-wget -P ./build $SOURCE_NGINX$VERSION_NGINX.tar.gz</p>
-<h1>expand the source files</h1>
-<p>cd build
-tar xzf $VERSION_NGINX.tar.gz
-tar xzf $VERSION_OPENSSL.tar.gz
-tar xzf $VERSION_PCRE.tar.gz
-cd ../</p>
-<h1>set where OpenSSL and nginx will be built</h1>
-<p>export BPATH=$(pwd)/build
-export STATICLIBSSL="$BPATH/staticlibssl"</p>
-<h1>build static openssl</h1>
-<p>cd $BPATH/$VERSION_OPENSSL
-rm -rf "$STATICLIBSSL"
-mkdir "$STATICLIBSSL"
+mkdir build
+
+<span class="c"># ensure that we have the required software to compile our own nginx</span>
+apt-get -y install curl wget build-essential libz-dev libssl-dev
+
+<span class="c"># grab the source files</span>
+wget -P ./build <span class="nv">$SOURCE_PCRE$VERSION_PCRE</span>.tar.gz
+wget -P ./build <span class="nv">$SOURCE_OPENSSL$VERSION_OPENSSL</span>.tar.gz --no-check-certificate
+wget -P ./build <span class="nv">$SOURCE_NGINX$VERSION_NGINX</span>.tar.gz
+
+<span class="c"># expand the source files</span>
+<span class="nb">cd </span>build
+tar xzf <span class="nv">$VERSION_NGINX</span>.tar.gz
+tar xzf <span class="nv">$VERSION_OPENSSL</span>.tar.gz
+tar xzf <span class="nv">$VERSION_PCRE</span>.tar.gz
+<span class="nb">cd</span> ../
+
+<span class="c"># set where OpenSSL and nginx will be built</span>
+<span class="nb">export </span><span class="nv">BPATH</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/build
+<span class="nb">export </span><span class="nv">STATICLIBSSL</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$BPATH</span><span class="s2">/staticlibssl&quot;</span>
+
+<span class="c"># build static openssl</span>
+<span class="nb">cd</span> <span class="nv">$BPATH</span>/<span class="nv">$VERSION_OPENSSL</span>
+rm -rf <span class="s2">&quot;</span><span class="nv">$STATICLIBSSL</span><span class="s2">&quot;</span>
+mkdir <span class="s2">&quot;</span><span class="nv">$STATICLIBSSL</span><span class="s2">&quot;</span>
 make clean
-./config --prefix=$STATICLIBSSL no-shared\
-&amp;&amp; make depend \
-&amp;&amp; make \
-&amp;&amp; make install_sw</p>
-<h1>rename the existing /etc/nginx directory so it's saved as a back-up</h1>
-<p>mv /etc/nginx /etc/nginx-$today</p>
-<h1>build nginx, with various modules included/excluded</h1>
-<p>cd $BPATH/$VERSION_NGINX
-mkdir -p $BPATH/nginx
-./configure --with-cc-opt="-I $STATICLIBSSL/include -I/usr/include" \
---with-ld-opt="-L $STATICLIBSSL/lib -Wl,-rpath=$STATICLIBSSL/lib -lssl -lcrypto -ldl -lz" \
---sbin-path=/usr/sbin/nginx \
---conf-path=/etc/nginx/nginx.conf \
---pid-path=/var/run/nginx.pid \
---error-log-path=/var/log/nginx/error.log \
---http-log-path=/var/log/nginx/access.log \
---with-pcre=$BPATH/$VERSION_PCRE \
---with-http_ssl_module \
---with-file-aio \
---with-http_gzip_static_module \
---without-mail_pop3_module \
---without-mail_smtp_module \
---without-mail_imap_module \
-&amp;&amp; make &amp;&amp; make install</p>
-<h1>rename the compiled 'default' /etc/nginx directory so its accessible as a reference to the new nginx defaults</h1>
-<p>mv /etc/nginx /etc/nginx-default</p>
-<h1>now restore the previous version of /etc/nginx to /etc/nginx so the old settings are kept</h1>
-<p>mv /etc/nginx-$today /etc/nginx</p>
-<p>echo "All done.";
-echo "This build has not edited your existing /etc/nginx directory.";
-echo "If things aren't working now you may need to refer to the";
-echo "configuration files the new nginx ships with as defaults,";
-echo "which are available at /etc/nginx-default";</p>
-<p>cp -R /etc/nginx-default /etc/nginx</p>
-<p>useradd nginx
+./config --prefix<span class="o">=</span><span class="nv">$STATICLIBSSL</span> no-shared <span class="se">\\</span>
+<span class="o">&amp;&amp;</span> make depend <span class="se">\\</span>
+<span class="o">&amp;&amp;</span> make <span class="se">\\</span>
+<span class="o">&amp;&amp;</span> make install_sw
+
+<span class="c"># rename the existing /etc/nginx directory so it&#39;s saved as a back-up</span>
+mv /etc/nginx /etc/nginx-<span class="nv">$today</span>
+
+<span class="c"># build nginx, with various modules included/excluded</span>
+<span class="nb">cd</span> <span class="nv">$BPATH</span>/<span class="nv">$VERSION_NGINX</span>
+mkdir -p <span class="nv">$BPATH</span>/nginx
+./configure --with-cc-opt<span class="o">=</span><span class="s2">&quot;-I </span><span class="nv">$STATICLIBSSL</span><span class="s2">/include -I/usr/include&quot;</span> <span class="se">\\</span>
+--with-ld-opt<span class="o">=</span><span class="s2">&quot;-L </span><span class="nv">$STATICLIBSSL</span><span class="s2">/lib -Wl,-rpath=</span><span class="nv">$STATICLIBSSL</span><span class="s2">/lib -lssl -lcrypto -ldl -lz&quot;</span> <span class="se">\\</span>
+--sbin-path<span class="o">=</span>/usr/sbin/nginx <span class="se">\\</span>
+--conf-path<span class="o">=</span>/etc/nginx/nginx.conf <span class="se">\\</span>
+--pid-path<span class="o">=</span>/var/run/nginx.pid <span class="se">\\</span>
+--error-log-path<span class="o">=</span>/var/log/nginx/error.log <span class="se">\\</span>
+--http-log-path<span class="o">=</span>/var/log/nginx/access.log <span class="se">\\</span>
+--with-pcre<span class="o">=</span><span class="nv">$BPATH</span>/<span class="nv">$VERSION_PCRE</span> <span class="se">\\</span>
+--with-http_ssl_module <span class="se">\\</span>
+--with-file-aio <span class="se">\\</span>
+--with-http_gzip_static_module <span class="se">\\</span>
+--without-mail_pop3_module <span class="se">\\</span>
+--without-mail_smtp_module <span class="se">\\</span>
+--without-mail_imap_module <span class="se">\\</span>
+<span class="o">&amp;&amp;</span> make <span class="o">&amp;&amp;</span> make install
+
+<span class="c"># rename the compiled &#39;default&#39; /etc/nginx directory so its accessible as a reference to the new nginx defaults</span>
+mv /etc/nginx /etc/nginx-default
+
+<span class="c"># now restore the previous version of /etc/nginx to /etc/nginx so the old settings are kept</span>
+mv /etc/nginx-<span class="nv">$today</span> /etc/nginx
+
+<span class="nb">echo</span> <span class="s2">&quot;All done.&quot;</span><span class="p">;</span>
+<span class="nb">echo</span> <span class="s2">&quot;This build has not edited your existing /etc/nginx directory.&quot;</span><span class="p">;</span>
+<span class="nb">echo</span> <span class="s2">&quot;If things aren&#39;t working now you may need to refer to the&quot;</span><span class="p">;</span>
+<span class="nb">echo</span> <span class="s2">&quot;configuration files the new nginx ships with as defaults,&quot;</span><span class="p">;</span>
+<span class="nb">echo</span> <span class="s2">&quot;which are available at /etc/nginx-default&quot;</span><span class="p">;</span>
+</pre></div>
+</td></tr></table>
+
+<p>Запустим процесс компиляции и пойдем пить чай</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>chmod +x /tmp/build_nginx.sh <span class="o">&amp;&amp;</span> /tmp/build_nginx.sh
+</pre></div>
+</td></tr></table>
+
+<p>Как nginx соберется, подготовимся к его настройке</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="codehilite"><pre>useradd nginx
 groupadd nginx
-usermod -g nginx -G www-data nginx</p>
-<p>mkdir /var/www
-chmod -R 775 /var/www
-chown -R www-data:www-data /var/www</p>
-<p>user              nginx;
-worker_processes  2;</p>
-<p>error_log  /var/log/nginx/error.log warn;
-pid        /var/run/nginx.pid;</p>
-<p>events {
-  worker_connections  1024;
-}</p>
-<p>http {
-  include       /etc/nginx/mime.types;
-  default_type  application/octet-stream;</p>
-<p>access_log  off;</p>
-<p>sendfile     on;
-  tcp_nopush   on;
-  tcp_nodelay  on;
-  expires      max;
-  directio     5m;</p>
-<p>client_body_timeout    10;
-  client_header_timeout  10;
-  keepalive_timeout      5 5;
-  send_timeout           10;</p>
-<p>client_body_buffer_size      1K;
-  client_header_buffer_size    1k;
-  client_max_body_size         1k;
-  large_client_header_buffers  2 1k;</p>
-<p>server_tokens  off;
-  add_header     X-Frame-Options SAMEORIGIN;
-  add_header     X-Content-Type-Options nosniff;
-  add_header     X-XSS-Protection "1; mode=block";</p>
-<p>gzip               on; 
-  gzip_proxied       any;
-  gzip_min_length    1000;
-  gzip_http_version  1.0;
-  gzip_buffers       16 8k;
-  gzip_comp_level    4;
-  gzip_types         text/plain text/css application/json text/javascript application/x-javascript text/xml application/xml application/xml+rss;</p>
-<p>include /etc/nginx/conf.d/*.conf;
-}</p>
-<p>server {
-  listen       80;
-  server_name  localhost;</p>
-<p>index  index.html;
-  root   /var/www/dkharitonov.me;</p>
-<p>location ~ /. {
-    return 404;
-  }</p>
-<p>location / {
-    index      index.html;
-    try_files  $uri.html $uri $uri/index.html =404;
-  }
-}</p></div>
+usermod -g nginx -G www-data nginx
+
+mkdir /var/www
+chmod -R <span class="m">775</span> /var/www
+chown -R www-data:www-data /var/www
+</pre></div>
+</td></tr></table>
+
+<p>Приступим к конфигурированию</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="codehilite"><pre>cp -R /etc/nginx-default /etc/nginx
+nano /etc/nginx/nginx.conf
+</pre></div>
+</td></tr></table>
+
+<p>Удалим все из конфига и создадим такой:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">user</span>              <span class="s">nginx</span><span class="p">;</span>
+<span class="k">worker_processes</span>  <span class="mi">1</span><span class="p">;</span>
+
+<span class="k">error_log</span>  <span class="s">/var/log/nginx/error.log</span> <span class="s">warn</span><span class="p">;</span>
+<span class="k">pid</span>        <span class="s">/var/run/nginx.pid</span><span class="p">;</span>
+
+<span class="k">events</span> <span class="p">{</span>
+  <span class="kn">worker_connections</span>  <span class="mi">1024</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">http</span> <span class="p">{</span>
+  <span class="kn">include</span>       <span class="s">/etc/nginx/mime.types</span><span class="p">;</span>
+  <span class="kn">default_type</span>  <span class="s">application/octet-stream</span><span class="p">;</span>
+
+  <span class="kn">access_log</span>  <span class="no">off</span><span class="p">;</span>
+
+  <span class="kn">sendfile</span>     <span class="no">on</span><span class="p">;</span>
+  <span class="kn">tcp_nopush</span>   <span class="no">on</span><span class="p">;</span>
+  <span class="kn">tcp_nodelay</span>  <span class="no">on</span><span class="p">;</span>
+  <span class="kn">expires</span>      <span class="s">max</span><span class="p">;</span>
+  <span class="kn">directio</span>     <span class="mi">5m</span><span class="p">;</span>
+
+  <span class="kn">client_body_timeout</span>    <span class="mi">10</span><span class="p">;</span>
+  <span class="kn">client_header_timeout</span>  <span class="mi">10</span><span class="p">;</span>
+  <span class="kn">keepalive_timeout</span>      <span class="mi">5</span> <span class="mi">5</span><span class="p">;</span>
+  <span class="kn">send_timeout</span>           <span class="mi">10</span><span class="p">;</span>
+
+  <span class="kn">client_body_buffer_size</span>      <span class="s">1K</span><span class="p">;</span>
+  <span class="kn">client_header_buffer_size</span>    <span class="mi">1k</span><span class="p">;</span>
+  <span class="kn">client_max_body_size</span>         <span class="mi">1k</span><span class="p">;</span>
+  <span class="kn">large_client_header_buffers</span>  <span class="mi">2</span> <span class="mi">1k</span><span class="p">;</span>
+
+  <span class="kn">server_tokens</span>  <span class="no">off</span><span class="p">;</span>
+  <span class="kn">add_header</span>     <span class="s">X-Frame-Options</span> <span class="s">SAMEORIGIN</span><span class="p">;</span>
+  <span class="kn">add_header</span>     <span class="s">X-Content-Type-Options</span> <span class="s">nosniff</span><span class="p">;</span>
+  <span class="kn">add_header</span>     <span class="s">X-XSS-Protection</span> <span class="s">&quot;1</span><span class="p">;</span> <span class="kn">mode=block&quot;</span><span class="p">;</span>
+
+  <span class="kn">gzip</span>               <span class="no">on</span><span class="p">;</span> 
+  <span class="kn">gzip_proxied</span>       <span class="s">any</span><span class="p">;</span>
+  <span class="kn">gzip_min_length</span>    <span class="mi">1000</span><span class="p">;</span>
+  <span class="kn">gzip_http_version</span>  <span class="mi">1</span><span class="s">.0</span><span class="p">;</span>
+  <span class="kn">gzip_buffers</span>       <span class="mi">16</span> <span class="mi">8k</span><span class="p">;</span>
+  <span class="kn">gzip_comp_level</span>    <span class="mi">4</span><span class="p">;</span>
+  <span class="kn">gzip_types</span>         <span class="s">text/plain</span> <span class="s">text/css</span> <span class="s">application/json</span> <span class="s">text/javascript</span> <span class="s">application/x-javascript</span> <span class="s">text/xml</span> <span class="s">application/xml</span> <span class="s">application/xml+rss</span><span class="p">;</span>
+
+  <span class="kn">include</span> <span class="s">/etc/nginx/conf.d/*.conf</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Осталось создать хост</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>mkdir /etc/nginx/conf.d <span class="o">&amp;&amp;</span> nano /etc/nginx/conf.d/home.conf
+</pre></div>
+</td></tr></table>
+
+<p>Вот пример конфига, который отдает статику</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">server</span> <span class="p">{</span>
+  <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
+  <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
+
+  <span class="kn">index</span>  <span class="s">index.html</span><span class="p">;</span>
+  <span class="kn">root</span>   <span class="s">/var/www</span><span class="p">;</span>
+
+  <span class="kn">location</span> <span class="p">~</span> <span class="sr">/\\.</span> <span class="p">{</span>
+    <span class="kn">return</span> <span class="mi">404</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
+    <span class="kn">index</span>      <span class="s">index.html</span><span class="p">;</span>
+    <span class="kn">try_files</span>  <span class="nv">$uri.html</span> <span class="nv">$uri</span> <span class="nv">$uri/index.html</span> <span class="p">=</span><span class="mi">404</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Стартуем nginx так: <code>nginx</code>. Останавливаем: <code>nginx -s stop</code>. </p></div>
     <footer class="meta">
         <p class="tags">
           <a class="tag nodecor" href="/blog/tags/nginx">#<u>nginx</u></a>
           <a class="tag nodecor" href="/blog/tags/nix">#<u>nix</u></a>
         </p>
-      <p><time datetime="2012-08-24T12:51:00+04:00">24 августа 2012</time></p>
+      <p><time datetime="2015-08-25T12:00:00+03:00">25 августа 2015</time></p>
     </footer>
   </article>
 </section>
 
 <footer id="footer">
 <ul class="share">
-<li><a href="http://twitter.com/home?status=%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0%20%D0%B8%20%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0%20nginx%20http%3A//dkharitonov.me/drafts/nginx-setup.html" class="twitter" target="_blank" title="Поделиться в Twitter">В твиттер</a></li>
+<li><a href="http://twitter.com/home?status=%D0%93%D1%80%D0%B0%D0%BC%D0%BE%D1%82%D0%BD%D0%BE%20%D1%81%D0%BE%D0%B1%D0%B8%D1%80%D0%B0%D0%B5%D0%BC%20%D0%B8%20%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B8%D1%80%D1%83%D0%B5%D0%BC%20nginx%20http%3A//dkharitonov.me/drafts/nginx-setup.html" class="twitter" target="_blank" title="Поделиться в Twitter">В твиттер</a></li>
 <li class="splitter">⋅</li>
 <li><a href="http://www.facebook.com/sharer/sharer.php?s=100&amp;p%5Burl%5D=http%3A//dkharitonov.me/drafts/nginx-setup.html" class="facebook" target="_blank" title="Поделиться в Facebook">В фейсбук</a></li>
 <li class="splitter">⋅</li>
@@ -211,7 +421,7 @@ pid        /var/run/nginx.pid;</p>
 <li class="splitter">⋅</li>
 <li><a href="https://vk.com/share.php?url=http%3A//dkharitonov.me/drafts/nginx-setup.html" class="vk" target="_blank" title="Поделиться во ВКонтакте">В контакт</a></li>
 <li class="splitter">⋅</li>
-<li><a href="mailto:?subject=%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0%20%D0%B8%20%D0%BD%D0%B0%D1%81%D1%82%D1%80%D0%BE%D0%B9%D0%BA%D0%B0%20nginx&amp;body=http%3A//dkharitonov.me/drafts/nginx-setup.html" class="email" target="_blank" title="Поделиться через эл. почту">По почте</a></li>
+<li><a href="mailto:?subject=%D0%93%D1%80%D0%B0%D0%BC%D0%BE%D1%82%D0%BD%D0%BE%20%D1%81%D0%BE%D0%B1%D0%B8%D1%80%D0%B0%D0%B5%D0%BC%20%D0%B8%20%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B3%D1%83%D1%80%D0%B8%D1%80%D1%83%D0%B5%D0%BC%20nginx&amp;body=http%3A//dkharitonov.me/drafts/nginx-setup.html" class="email" target="_blank" title="Поделиться через эл. почту">По почте</a></li>
 </ul>
     <p class="copyright">© Дмитрий Харитонов, <a href="mailto:geakstr@me.com" rel="me">geakstr@me.com</a></p>
 </footer>
