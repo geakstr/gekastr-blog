@@ -309,8 +309,7 @@ nano /etc/nginx/nginx.conf
 43
 44
 45
-46
-47</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">user</span>              <span class="s">nginx</span><span class="p">;</span>
+46</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">user</span>              <span class="s">nginx</span><span class="p">;</span>
 <span class="k">worker_processes</span>  <span class="mi">1</span><span class="p">;</span>
 
 <span class="k">error_log</span>  <span class="s">/var/log/nginx/error.log</span> <span class="s">warn</span><span class="p">;</span>
@@ -329,7 +328,6 @@ nano /etc/nginx/nginx.conf
   <span class="kn">sendfile</span>     <span class="no">on</span><span class="p">;</span>
   <span class="kn">tcp_nopush</span>   <span class="no">on</span><span class="p">;</span>
   <span class="kn">tcp_nodelay</span>  <span class="no">on</span><span class="p">;</span>
-  <span class="kn">expires</span>      <span class="s">max</span><span class="p">;</span>
   <span class="kn">directio</span>     <span class="mi">5m</span><span class="p">;</span>
 
   <span class="kn">client_body_timeout</span>    <span class="mi">10</span><span class="p">;</span>
@@ -400,7 +398,8 @@ nano /etc/nginx/nginx.conf
 </pre></div>
 </td></tr></table>
 
-<p>Стартуем nginx так: <code>nginx</code>. Останавливаем: <code>nginx -s stop</code>. </p></div>
+<p>wget http://git.io/vs5QS -O /etc/init.d/nginx
+chmod 755 /etc/init.d/nginx &amp;&amp; insserv -v /etc/init.d/nginx</p></div>
     <footer class="meta">
         <p class="tags">
           <a class="tag nodecor" href="/blog/tags/nginx">#<u>nginx</u></a>

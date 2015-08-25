@@ -76,7 +76,7 @@ Slug: raspberry-pi-setup
     # Теперь можно зайти на пай под новым пользователем
     ssh pi@pi.ip.addr.ess
 
-### Настройка SSH
+### Настраиваем SSH
 
 Если смогли успешно войти под пользователем `pi` на предыдущем шаге, можно приступить к дальшейшей настройке. Усилим безопасность системы.
     
@@ -222,7 +222,7 @@ Slug: raspberry-pi-setup
 
 #### Логгируем в оперативной памяти
 
-Для этого воспользуемся утилитой [`ramlog`] [ramlog]. Но, если у вас в системе демонами рулит `systemd` (например, потому что вы установили Debian 8 Jessie), то ничего не получится — `ramlog`, по крайней мере в версии 2.0.0, не совместим с ним.
+Это, во-первых, увеличит производительность, во-вторых, снизит нагрузку на SD карту. Для этого воспользуемся утилитой [`ramlog`] [ramlog]. Но, если у вас в системе демонами рулит `systemd` (например, потому что вы установили Debian 8 Jessie), то ничего не получится — `ramlog`, по крайней мере в версии 2.0.0, не совместим с ним.
 
     #!bash
     # Скачиваем и устанавливаем ramlog
@@ -236,14 +236,132 @@ Slug: raspberry-pi-setup
     # Говорим, что ramlog надо запускать/останавливать до/после rsyslog
     sed -i 's/# Provides: ramlog/# Provides: ramlog\\n# X-Start-Before: rsyslog\\n# X-Stop-After: rsyslog/g' /etc/init.d/ramlog
 
-    # Дадим знать обо всем этом автозагрузке
-    insserv
+    # Дадим знать об этом автозагрузке
+    insserv -v /etc/init.d/ramlog
 
     # Теперь нужно 2 (!) раза перезагрузить пай
     reboot
 
     # Проверить состояние ramlog можно так
     /etc/init.d/ramlog status
+
+    # Напоследок уберем абсолютно неважные логи крона про успешную авторизацию
+    sed -i 's/(the "Additional" block)/(the "Additional" block)\\nsession [success=1 default=ignore] pam_succeed_if.so service in cron quiet use_uid/g' /etc/pam.d/common-session-noninteractive
+
+### Настраиваем фаервол
+
+Рекомендую не полениться и сконфигурировать фаервол — это хороший способ повысить безопасность системы. Установим `iptables` (самый популярный фаервол на Debian подобных системах).
+
+    #!bash
+    # Устанавливаем iptables
+    apt-get install iptables
+
+    # Скачиваем скрипт для управления демоном
+    wget http://git.io/vs7i5 -O /etc/init.d/iptables
+    chmod 755 /etc/init.d/iptables && insserv -v /etc/init.d/iptables
+
+Теперь зададим несколько базовых правил `nano /etc/iptables.rules`:
+
+    #!bash
+    *filter
+
+    # Принимаем все пакеты для loopback трафика
+    -A INPUT -i lo -j ACCEPT -m comment --comment "Allow all loopback traffic"
+
+    # Запрещаем все, что на 127 сети и не использует loopback трафик
+    -A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT -m comment --comment "Drop all traffic to 127 that doesnt use lo"
+
+    # Принимаем все входящие пакеты от уже установленных соединений
+    -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT -m comment --comment "Allow all incoming on established connections"
+
+    # Разрешаем весь исходящий трафик
+    -A OUTPUT -j ACCEPT -m comment --comment "Accept all outgoing"
+
+    # Разрешаем Ping
+    -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT -m comment --comment "Allow Ping"
+
+    # SSH 
+    -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+    
+    # ... остальные нужные вам правила. По iptables очень много информации в сети
+
+    # Все остальное отклонять. Эти две инструкции должны быть в конце файла
+    -A INPUT -j REJECT -m comment --comment "Reject all incoming"
+    -A FORWARD -j REJECT -m comment --comment "Reject all forwarded"
+
+    # Говорим фаерволу применить инструкции
+    COMMIT
+
+Также необходимо задать правила фаерволу перед поднятием сетевых интерфейсов:
+
+    #!bash
+    # Немного правим файл /etc/network/interfaces
+    sed -i 's/iface lo inet loopback/iface lo inet loopback\\npre-up iptables-restore < \\/etc\\/iptables.rules/g' /etc/network/interfaces
+
+Наконец, стартуем фаервол:
+
+    #!bash
+    /etc/init.d/iptables start
+
+#### Баним ботов пачками с помощью fail2ban
+
+Если ваш пай будет смотреть наружу в интернет, то в него точно начнут ломиться боты. Если у вас в SSH настроена авторизация по ключу и отключена возможность входа по паролю, то смысла в fail2ban не слишком много. Однако он может работать не только с SSH, а со многими утилитами, поэтому всё же стоит рассмотреть вариант его применения. Да и вообще приятно в логах видеть `NOTICE  [ssh] fckn.bot.ip.addr already banned` :)
+
+    #!bash
+    # Если не хотим заморачиваться с установкой последней версии fail2ban
+    # то просто ставим пакет и переходим к следующему шагу
+    apt-get install -y fail2ban
+
+    # Если хотим, будем ставить свежую версию из репозитория
+    # fail2ban написан на питоне, поэтому нужно его установить
+    apt-get install -y python 
+
+    # Скачаем сам fail2ban
+    # Можете посмотреть номер последней релизной версии тут
+    # https://github.com/fail2ban/fail2ban/releases
+    cd /tmp
+    wget https://github.com/fail2ban/fail2ban/archive/0.9.2.tar.gz -O fail2ban.tar.gz
+
+    # Разархивируем
+    mkdir fail2ban && tar -xzvf fail2ban.tar.gz -C ./fail2ban --strip-components=1 && cd fail2ban
+
+    # Установим
+    python setup.py install
+
+    # Скопируем скрипт для управления fail2ban демоном
+    cp ./files/debian-initd /etc/init.d/fail2ban
+    chmod 755 /etc/init.d/fail2ban && insserv -v /etc/init.d/fail2ban
+
+Теперь создадим конфиг `nano /etc/fail2ban/jail.local` с примерно таким текстом:
+
+    #!bash
+    [DEFAULT]
+    # Игнорировать запросы из нашей сети
+    ignoreip = 192.168.1.0/24
+
+    # Наблюдаем за авторизацией по ssh
+    # Я выставляю очень жесткие настройки, может быть разумнее сделать лояльнее
+    [ssh]
+    enabled  = true
+    port     = ssh
+    filter   = sshd
+    logpath  = /var/log/auth.log
+    # Наблюдать за IP в течение часа
+    findtime    = 3600
+    # Если 3 попытки входа неудачны
+    maxretry    = 3
+    # Бан на сутки
+    bantime     = 86400
+
+Наконец, запустим fail2ban:
+
+    #!bash
+    /etc/init.d/fail2ban start
+
+Логи, чтобы посмотреть успешно прошло или нет, лежат тут:
+
+    #!bash
+    cat /var/log/fail2ban.log
 
 На этом, пожалуй, пока что остановимся. Спасибо, что дочитали :)
 

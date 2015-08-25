@@ -15,8 +15,8 @@ DISPLAY_CATEGORIES_ON_MENU = False
 DELETE_OUTPUT_DIRECTORY = True
 SLUGIFY_SOURCE = 'title'
 
-DEFAULT_PAGINATION = 10
-DEFAULT_ORPHANS = 3
+DEFAULT_PAGINATION = 5
+DEFAULT_ORPHANS = 0
 PAGINATION_PATTERNS = (
     (1, '{base_name}/{name}', 'blog/{name}.html'),
     (2, '{base_name}/{name}/page/{number}', 'blog/{name}/page/{number}/index.html'),

@@ -136,7 +136,6 @@ Status: draft
       sendfile     on;
       tcp_nopush   on;
       tcp_nodelay  on;
-      expires      max;
       directio     5m;
 
       client_body_timeout    10;
@@ -190,4 +189,5 @@ Status: draft
       }
     }
 
-Стартуем nginx так: `nginx`. Останавливаем: `nginx -s stop`. 
+wget http://git.io/vs5QS -O /etc/init.d/nginx
+chmod 755 /etc/init.d/nginx && insserv -v /etc/init.d/nginx
