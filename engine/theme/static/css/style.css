@@ -98,6 +98,23 @@
   font-size: 1.125em;
   line-height: 1.333;
 }
+.post .body .toc {
+  color: #666;
+}
+.post .body .toc a, .post .body .toc a:visited {
+  color: #555;
+  border-bottom: 1px dotted #999;
+}
+.post .body .toc a:hover {
+  color: #000;
+}
+.post .body .toc > ul {
+  list-style: decimal outside;
+}
+.post .body .toc > ul ul li {
+  margin-left: 1.5em;
+  list-style: lower-greek outside;
+}
 .post .body p,
 .post .body .codehilite,
 .post .body .codehilitetable {

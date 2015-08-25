@@ -3,6 +3,8 @@ Date: 2015-08-24 23:30
 Tags: rpi, nix
 Slug: raspberry-pi-setup
 
+[TOC]
+
 ### Скачиваем и конфигурируем образ 
 
 Детально про используемый образ можно почитать [в репозитории проекта] [raspbian-ua-netinst]. Для начала необходимо узнать номер последней версии образа [тут] [raspbian-ua-netinst-latest].
@@ -54,7 +56,7 @@ Slug: raspberry-pi-setup
     apt-get update && apt-get dist-upgrade && apt-get upgrade
 
     # Обновим ядро и прошивку
-    # Не используйте утилиту rpi-update, она не работает с этим оразом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)
+    # Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)
     # Вместо этого воспользуемся пакетом raspberrypi-bootloader.
     # Он включает в себя ядро и прошивку. Это пакет проекта raspberry pi на github (https://github.com/raspberrypi/linux)
     apt-get install -y raspberrypi-bootloader
@@ -153,7 +155,7 @@ Slug: raspberry-pi-setup
     # Делает так, чтобы пай разгонялся только при необходимости
     echo "force_turbo=0" >> /boot/config.txt
 
-#### Повышаем производительность
+### Повышаем производительность
 
     #!bash
     # Улучшает производительность генератора случайных чисел

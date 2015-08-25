@@ -114,7 +114,29 @@
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
 &lt;p&gt;Не&amp;nbsp;забудьте открыть нужные вам порты на&amp;nbsp;устройстве, с&amp;nbsp;помощью которого подключаетесь к&amp;nbsp;интернету.&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;&lt;nobr&gt;P. S.&lt;/nobr&gt; Если у&amp;nbsp;вас нет домена, но&amp;nbsp;все&amp;nbsp;же хотите иметь доступ к&amp;nbsp;паю, можно переделать скрипт так, чтобы пай отправлял вам смс с&amp;nbsp;новым&amp;nbsp;IP&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;например, через &lt;a href="http://sms.ru/?panel=main&amp;amp;subpanel=programmer"&gt;sms.ru&lt;/a&gt;). Или еще что-нибудь такое.&lt;/em&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Tue, 25 Aug 2015 12:00:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-25:blog/yandex-dns-for-raspberry-pi</guid><category>rpi</category><category>nix</category><category>dns</category><category>yandex</category></item><item><title>Вдумчивая настройка Raspberry Pi</title><link>http://dkharitonov.me/blog/raspberry-pi-setup</link><description>&lt;h3&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/h3&gt;
+&lt;p&gt;&lt;em&gt;&lt;nobr&gt;P. S.&lt;/nobr&gt; Если у&amp;nbsp;вас нет домена, но&amp;nbsp;все&amp;nbsp;же хотите иметь доступ к&amp;nbsp;паю, можно переделать скрипт так, чтобы пай отправлял вам смс с&amp;nbsp;новым&amp;nbsp;IP&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;например, через &lt;a href="http://sms.ru/?panel=main&amp;amp;subpanel=programmer"&gt;sms.ru&lt;/a&gt;). Или еще что-нибудь такое.&lt;/em&gt;&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Tue, 25 Aug 2015 12:00:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-25:blog/yandex-dns-for-raspberry-pi</guid><category>rpi</category><category>nix</category><category>dns</category><category>yandex</category></item><item><title>Вдумчивая настройка Raspberry Pi</title><link>http://dkharitonov.me/blog/raspberry-pi-setup</link><description>&lt;div class="toc"&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="#toc_63316041064523f3b4740b01343c43e6"&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_321d299e11f26fdecc5f3868b78d6f19"&gt;Записываем образ на&amp;nbsp;SD карту&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_b89f1706b4c65978c762544a237c4fd6"&gt;Первоначальная настройка&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_22061d9aae64f3048970888c10f0d056"&gt;Настраиваем SSH&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#toc_64ae2c3973c80573ea629fcaa91af970"&gt;Настраиваем авторизацию по&amp;nbsp;ключу&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_baabdfee1ac9edc1bdb18ac8732f7749"&gt;Конфигурируем параметры пая&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_551772c075bb90e516359f15b8d618fc"&gt;Повышаем производительность&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#toc_86b9010b372b4f02961008912b51a878"&gt;Убираем лишнее&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_62c07b571c8df7d71f7bb5c2d0c888c9"&gt;Тюним файловую систему&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_6b30cff589e3d9637aed14c0522c18c2"&gt;Логгируем в&amp;nbsp;оперативной памяти&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#toc_b94a67aec6e2351c725ca095b39816cd"&gt;Настраиваем фаервол&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href="#toc_de7e672a7e2cef4286d332c6d508ce04"&gt;Баним ботов пачками с&amp;nbsp;помощью fail2ban&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;h3 id="toc_63316041064523f3b4740b01343c43e6"&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/h3&gt;
 &lt;p&gt;Детально про используемый образ можно почитать &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst"&gt;в&amp;nbsp;репозитории проекта&lt;/a&gt;. Для начала необходимо узнать номер последней версии образа &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest"&gt;тут&lt;/a&gt;.&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
@@ -150,7 +172,7 @@ unzip raspbian-ua-netinst-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h3&gt;Записываем образ на&amp;nbsp;SD карту&lt;/h3&gt;
+&lt;h3 id="toc_321d299e11f26fdecc5f3868b78d6f19"&gt;Записываем образ на&amp;nbsp;SD карту&lt;/h3&gt;
 &lt;p&gt;Инструкция для&amp;nbsp;OS X. Всё это можно сделать и&amp;nbsp;через GUI.&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
@@ -177,7 +199,7 @@ diskutil eject /dev/diskX
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
 &lt;p&gt;Теперь вставляем карту в&amp;nbsp;пай и&amp;nbsp;ждем. Если он&amp;nbsp;подключен к&amp;nbsp;телевизору, сможете наблюдать за&amp;nbsp;процессом. Если нет, можно посматривать на&amp;nbsp;лампочку Ethernet на&amp;nbsp;пае, и&amp;nbsp;когда она перестанет хаотично мигать, скорее всего можно идти дальше. Установка занимает минут 15.&lt;/p&gt;
-&lt;h3&gt;Первоначальная настройка&lt;/h3&gt;
+&lt;h3 id="toc_b89f1706b4c65978c762544a237c4fd6"&gt;Первоначальная настройка&lt;/h3&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
@@ -212,7 +234,7 @@ ssh root@pi.ip.addr.ess
 apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get dist-upgrade &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get upgrade
 
 &lt;span class="c"&gt;# Обновим ядро и прошивку&lt;/span&gt;
-&lt;span class="c"&gt;# Не используйте утилиту rpi-update, она не работает с этим оразом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)&lt;/span&gt;
+&lt;span class="c"&gt;# Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)&lt;/span&gt;
 &lt;span class="c"&gt;# Вместо этого воспользуемся пакетом raspberrypi-bootloader.&lt;/span&gt;
 &lt;span class="c"&gt;# Он включает в себя ядро и прошивку. Это пакет проекта raspberry pi на github (https://github.com/raspberrypi/linux)&lt;/span&gt;
 apt-get install -y raspberrypi-bootloader
@@ -236,7 +258,7 @@ ssh pi@pi.ip.addr.ess
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h3&gt;Настраиваем SSH&lt;/h3&gt;
+&lt;h3 id="toc_22061d9aae64f3048970888c10f0d056"&gt;Настраиваем SSH&lt;/h3&gt;
 &lt;p&gt;Если смогли успешно войти под пользователем &lt;code&gt;pi&lt;/code&gt; на&amp;nbsp;предыдущем шаге, можно приступить к&amp;nbsp;дальшейшей настройке. Усилим безопасность системы.&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
@@ -266,7 +288,7 @@ sudo /etc/init.d/ssh restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h4&gt;Настраиваем авторизацию по&amp;nbsp;ключу&lt;/h4&gt;
+&lt;h4 id="toc_64ae2c3973c80573ea629fcaa91af970"&gt;Настраиваем авторизацию по&amp;nbsp;ключу&lt;/h4&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
@@ -326,7 +348,7 @@ sudo /etc/init.d/ssh restart
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
 &lt;p&gt;Всё дальнейшее&amp;nbsp;&amp;mdash; опционально&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;впрочем, как и&amp;nbsp;всё, что выше). Ваши потребности естественно могут отличаться от&amp;nbsp;моих, поэтому выполняем команды &lt;em&gt;вдумчиво&lt;/em&gt;. Рекомендую для удобства действовать от&amp;nbsp;рута&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;&lt;code&gt;su&amp;nbsp;root&lt;/code&gt;).&lt;/p&gt;
-&lt;h3&gt;Конфигурируем параметры пая&lt;/h3&gt;
+&lt;h3 id="toc_baabdfee1ac9edc1bdb18ac8732f7749"&gt;Конфигурируем параметры пая&lt;/h3&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
@@ -369,7 +391,7 @@ sudo /etc/init.d/ssh restart
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h4&gt;Повышаем производительность&lt;/h4&gt;
+&lt;h3 id="toc_551772c075bb90e516359f15b8d618fc"&gt;Повышаем производительность&lt;/h3&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
@@ -414,7 +436,7 @@ sed -i &lt;span class="s1"&gt;&amp;#39;s/iface eth0 inet dhcp/#iface eth0 inet d
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h4&gt;Убираем лишнее&lt;/h4&gt;
+&lt;h4 id="toc_86b9010b372b4f02961008912b51a878"&gt;Убираем лишнее&lt;/h4&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
@@ -449,7 +471,7 @@ sed -i &lt;span class="s1"&gt;&amp;#39;s/deadline/noop/g&amp;#39;&lt;/span&gt; /
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h4&gt;Тюним файловую систему&lt;/h4&gt;
+&lt;h4 id="toc_62c07b571c8df7d71f7bb5c2d0c888c9"&gt;Тюним файловую систему&lt;/h4&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
@@ -488,7 +510,7 @@ reboot
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h4&gt;Логгируем в&amp;nbsp;оперативной памяти&lt;/h4&gt;
+&lt;h4 id="toc_6b30cff589e3d9637aed14c0522c18c2"&gt;Логгируем в&amp;nbsp;оперативной памяти&lt;/h4&gt;
 &lt;p&gt;Это, во-первых, увеличит производительность, во-вторых, снизит нагрузку на&amp;nbsp;SD карту. Для этого воспользуемся утилитой &lt;a href="http://www.tremende.com/ramlog/"&gt;&lt;code&gt;ramlog&lt;/code&gt;&lt;/a&gt;. Но, если у&amp;nbsp;вас в&amp;nbsp;системе демонами рулит &lt;code&gt;systemd&lt;/code&gt;&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;например, потому что вы&amp;nbsp;установили Debian 8 Jessie), то&amp;nbsp;ничего не&amp;nbsp;получится&amp;nbsp;&amp;mdash; &lt;code&gt;ramlog&lt;/code&gt;, по&amp;nbsp;крайней мере в&amp;nbsp;версии 2.0.0, не&amp;nbsp;совместим с&amp;nbsp;ним.&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
@@ -536,7 +558,7 @@ sed -i &lt;span class="s1"&gt;&amp;#39;s/(the &amp;quot;Additional&amp;quot; blo
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h3&gt;Настраиваем фаервол&lt;/h3&gt;
+&lt;h3 id="toc_b94a67aec6e2351c725ca095b39816cd"&gt;Настраиваем фаервол&lt;/h3&gt;
 &lt;p&gt;Рекомендую не&amp;nbsp;полениться и&amp;nbsp;сконфигурировать фаервол&amp;nbsp;&amp;mdash; это хороший способ повысить безопасность системы. Установим &lt;code&gt;iptables&lt;/code&gt;&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;самый популярный фаервол на&amp;nbsp;Debian подобных системах).&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
 2
@@ -623,7 +645,7 @@ sed -i &lt;span class="s1"&gt;&amp;#39;s/iface lo inet loopback/iface lo inet lo
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;h4&gt;Баним ботов пачками с&amp;nbsp;помощью fail2ban&lt;/h4&gt;
+&lt;h4 id="toc_de7e672a7e2cef4286d332c6d508ce04"&gt;Баним ботов пачками с&amp;nbsp;помощью fail2ban&lt;/h4&gt;
 &lt;p&gt;Если ваш пай будет смотреть наружу в&amp;nbsp;интернет, то&amp;nbsp;в&amp;nbsp;него точно начнут ломиться боты. Если у&amp;nbsp;вас в&amp;nbsp;SSH настроена авторизация по&amp;nbsp;ключу и&amp;nbsp;отключена возможность входа по&amp;nbsp;паролю, то&amp;nbsp;смысла в&amp;nbsp;fail2ban не&amp;nbsp;слишком много. Однако он&amp;nbsp;может работать не&amp;nbsp;только с&amp;nbsp;SSH, а&amp;nbsp;со&amp;nbsp;многими утилитами, поэтому всё&amp;nbsp;же стоит рассмотреть вариант его применения. Да&amp;nbsp;и&amp;nbsp;вообще приятно в&amp;nbsp;логах видеть &lt;code&gt;NOTICE [ssh] fckn.bot.ip.addr already banned&lt;/code&gt; :)&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
@@ -722,12 +744,12 @@ chmod &lt;span class="m"&gt;755&lt;/span&gt; /etc/init.d/fail2ban &lt;span class
 
 &lt;p&gt;На&amp;nbsp;этом, пожалуй, пока что остановимся. Спасибо, что дочитали :)&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Mon, 24 Aug 2015 23:30:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-24:blog/raspberry-pi-setup</guid><category>rpi</category><category>nix</category></item><item><title>Хороший JavaScript. Vol. 1 «Pimp your code»</title><link>http://dkharitonov.me/blog/nice-js-vol-1</link><description>&lt;p&gt;Как известно, JavaScript&amp;nbsp;&amp;mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение. Причиной этому являлась необходимость в&amp;nbsp;середине 90 в&amp;nbsp;жесткие сроки получить мощный язык, позволяющий придать страницам больше возможностей. И&amp;nbsp;получили. Все проблемы&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;повсеместные глобальные переменные, область видимости переменных, неочевидные и&amp;nbsp;нелогичные приведения типов) зашиты в&amp;nbsp;JS глубоко и&amp;nbsp;надолго. Сейчас к&amp;nbsp;нам приближается ES6, который явно, но&amp;nbsp;не&amp;nbsp;достаточно кардинально улучшает ситуацию.&lt;/p&gt;
 &lt;p&gt;С&amp;nbsp;другой стороны язык очень гибок и&amp;nbsp;никто не&amp;nbsp;запрещает обходить плохие стороны, использовать хорошие и&amp;nbsp;улучшать язык своими силами. Этим я&amp;nbsp;и&amp;nbsp;займусь в&amp;nbsp;серии заметок. Неизгладимое впечатление на&amp;nbsp;меня произвела книга&lt;span style="margin-right:0.44em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.44em;"&gt;&amp;laquo;&lt;/span&gt;&lt;a href="http://www.ozon.ru/context/detail/id/20217226/"&gt;JavaScript. Сильные стороны&lt;/a&gt;&amp;raquo; Дугласа Крокфорда, рекомендую к&amp;nbsp;прочтению&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;она совсем небольшая).&lt;/p&gt;
-&lt;h2&gt;Объекты&lt;/h2&gt;
+&lt;h2 id="toc_d972ebc74a909f1b32a76cf3dd80a746"&gt;Объекты&lt;/h2&gt;
 &lt;p&gt;Это один из&amp;nbsp;основных механизмов в&amp;nbsp;языке и, надо сказать, удачно реализованный. &lt;/p&gt;
 &lt;p&gt;Всё&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;ну, примитивы не&amp;nbsp;совсем объекты, они неизменяемы) в&amp;nbsp;JS&amp;nbsp;&amp;mdash; объект. Объекты обладают прототипом, который и&amp;nbsp;сам является объектом со&amp;nbsp;своим набором свойств. К&amp;nbsp;прототипам можно относиться как к&amp;nbsp;базовым объектам, задающим начальную функциональность другим объектам. Разные объекты могут иметь один и&amp;nbsp;тот&amp;nbsp;же прототип. Каждый раз при изменении прототипа у&amp;nbsp;объекта все другие объекты с&amp;nbsp;этим&amp;nbsp;же прототипом получают его обновленную версию. Это достигается за&amp;nbsp;счет того, что объекты содержат не&amp;nbsp;копию, а&amp;nbsp;ссылку на&amp;nbsp;прототип. Такая реализация способствует экономии памяти и&amp;nbsp;скорости работы.&lt;/p&gt;
 &lt;p&gt;Помимо прототипа у&amp;nbsp;объекта есть свои, эксклюзивные свойства. Имя свойства может совпадать с&amp;nbsp;именем свойства в&amp;nbsp;прототипе. Ситуация разрешается просто: JS&amp;nbsp;сначала поищет запрашиваемое свойство в&amp;nbsp;списке личных свойств объекта, а&amp;nbsp;если не&amp;nbsp;найдет, пойдет искать по&amp;nbsp;цепочке прототипов в&amp;nbsp;их&amp;nbsp;свойствах.&lt;/p&gt;
 &lt;p&gt;Что можно со&amp;nbsp;всем этим делать?&lt;/p&gt;
-&lt;h2&gt;Расширение функциональности на&amp;nbsp;лету&lt;/h2&gt;
+&lt;h2 id="toc_825117b30d21cab641d86125e8720255"&gt;Расширение функциональности на&amp;nbsp;лету&lt;/h2&gt;
 &lt;p&gt;Как было сказано, почти все в&amp;nbsp;JS является объектом, в&amp;nbsp;том числе массивы&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;ага). Мы&amp;nbsp;всегда можем добавить объекту новое свойство. Давайте попробуем использовать это себе во&amp;nbsp;благо. &lt;/p&gt;
 &lt;p&gt;Например, имеем список абзацев с&amp;nbsp;текстом на&amp;nbsp;странице. Помимо самих DOM элементов мы&amp;nbsp;хотим хранить рядом с&amp;nbsp;ними какую-то метаинформацию&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;к&amp;nbsp;примеру, UID абзаца). И&amp;nbsp;мы&amp;nbsp;должны уметь удалять и&amp;nbsp;вставлять абзацы в&amp;nbsp;произвольных местах. Работающий пример можно посмотреть &lt;a href="https://jsbin.com/qemaqo/edit?html,js,output"&gt;здесь&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Есть следующая страница:&lt;/p&gt;

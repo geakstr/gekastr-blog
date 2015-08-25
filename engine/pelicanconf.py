@@ -31,8 +31,10 @@ PATH = '../content'
 OUTPUT_PATH = '../output'
 ARTICLE_PATHS = ['./articles']
 PAGE_PATHS = ['./pages']
-STATIC_PATHS = ['imgs', 'pdfs']
-OUTPUT_RETENTION = [".git", ".gitignore"]
+STATIC_PATHS = ['imgs', 'pdfs', 'extra/favicon.ico']
+EXTRA_PATH_METADATA = {
+    'extra/favicon.ico': {'path': 'favicon.ico'}
+}
 
 CURRENT_YEAR = datetime.datetime.utcnow().strftime("%Y")
 
@@ -42,12 +44,18 @@ PAGINATED_DIRECT_TEMPLATES = ['index']
 THEME = './theme'
 THEME_STATIC_PATHS = ['static']
 CSS_FILE = 'style.css'
-TYPOGRIFY = False
 
-MD_EXTENSIONS = ['extra', 'codehilite']
+import md5 
+def my_slugify(value, sep):
+    m = md5.new()
+    m.update(value.encode("UTF-8"))
+    return "toc_{}".format(m.digest().encode("hex"))
+from markdown.extensions.headerid import HeaderIdExtension
+
+MD_EXTENSIONS = ['extra', 'codehilite', 'toc', HeaderIdExtension(configs=[('slugify', my_slugify)])]
 
 PLUGIN_PATHS = ["plugins"]
-PLUGINS = ['assets', 'readtime', 'typo', 'simple_footnotes', 'share_post']
+PLUGINS = ['assets', 'readtime', 'typo', 'share_post']
 
 FEED_DOMAIN = SITEURL
 FEED_RSS =  'feeds/rss.xml'
@@ -72,6 +80,8 @@ CATEGORY_SAVE_AS = ''
 CATEGORYS_SAVE_AS = ''
 
 MD_INLINE = {}
+
+
 
 ASSET_CACHE = False
 ASSET_DEBUG = False

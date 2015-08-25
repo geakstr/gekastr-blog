@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
     <title>Forkbomb Blog</title>
-    <link rel="stylesheet" href="/theme/css/blog.min.css?32aa9f4a">
+    <link rel="stylesheet" href="/theme/css/blog.min.css?6cd34f50">
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link href="http://dkharitonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Forkbomb Blog RSS Feed" />
 </head>
@@ -201,7 +201,29 @@
     </h2>
     
 </header>
-<div class="body"><h3>Скачиваем и&nbsp;конфигурируем образ</h3>
+<div class="body"><div class="toc">
+<ul>
+<li><a href="#toc_63316041064523f3b4740b01343c43e6">Скачиваем и&nbsp;конфигурируем образ</a></li>
+<li><a href="#toc_321d299e11f26fdecc5f3868b78d6f19">Записываем образ на&nbsp;SD карту</a></li>
+<li><a href="#toc_b89f1706b4c65978c762544a237c4fd6">Первоначальная настройка</a></li>
+<li><a href="#toc_22061d9aae64f3048970888c10f0d056">Настраиваем SSH</a><ul>
+<li><a href="#toc_64ae2c3973c80573ea629fcaa91af970">Настраиваем авторизацию по&nbsp;ключу</a></li>
+</ul>
+</li>
+<li><a href="#toc_baabdfee1ac9edc1bdb18ac8732f7749">Конфигурируем параметры пая</a></li>
+<li><a href="#toc_551772c075bb90e516359f15b8d618fc">Повышаем производительность</a><ul>
+<li><a href="#toc_86b9010b372b4f02961008912b51a878">Убираем лишнее</a></li>
+<li><a href="#toc_62c07b571c8df7d71f7bb5c2d0c888c9">Тюним файловую систему</a></li>
+<li><a href="#toc_6b30cff589e3d9637aed14c0522c18c2">Логгируем в&nbsp;оперативной памяти</a></li>
+</ul>
+</li>
+<li><a href="#toc_b94a67aec6e2351c725ca095b39816cd">Настраиваем фаервол</a><ul>
+<li><a href="#toc_de7e672a7e2cef4286d332c6d508ce04">Баним ботов пачками с&nbsp;помощью fail2ban</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h3 id="toc_63316041064523f3b4740b01343c43e6">Скачиваем и&nbsp;конфигурируем образ</h3>
 <p>Детально про используемый образ можно почитать <a href="https://github.com/debian-pi/raspbian-ua-netinst">в&nbsp;репозитории проекта</a>. Для начала необходимо узнать номер последней версии образа <a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest">тут</a>.</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -237,7 +259,7 @@ unzip raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v<
 </pre></div>
 </td></tr></table>
 
-<h3>Записываем образ на&nbsp;SD карту</h3>
+<h3 id="toc_321d299e11f26fdecc5f3868b78d6f19">Записываем образ на&nbsp;SD карту</h3>
 <p>Инструкция для&nbsp;OS X. Всё это можно сделать и&nbsp;через GUI.</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -264,7 +286,7 @@ diskutil eject /dev/diskX
 </td></tr></table>
 
 <p>Теперь вставляем карту в&nbsp;пай и&nbsp;ждем. Если он&nbsp;подключен к&nbsp;телевизору, сможете наблюдать за&nbsp;процессом. Если нет, можно посматривать на&nbsp;лампочку Ethernet на&nbsp;пае, и&nbsp;когда она перестанет хаотично мигать, скорее всего можно идти дальше. Установка занимает минут 15.</p>
-<h3>Первоначальная настройка</h3>
+<h3 id="toc_b89f1706b4c65978c762544a237c4fd6">Первоначальная настройка</h3>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -299,7 +321,7 @@ ssh root@pi.ip.addr.ess
 apt-get update <span class="o">&amp;&amp;</span> apt-get dist-upgrade <span class="o">&amp;&amp;</span> apt-get upgrade
 
 <span class="c"># Обновим ядро и прошивку</span>
-<span class="c"># Не используйте утилиту rpi-update, она не работает с этим оразом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)</span>
+<span class="c"># Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)</span>
 <span class="c"># Вместо этого воспользуемся пакетом raspberrypi-bootloader.</span>
 <span class="c"># Он включает в себя ядро и прошивку. Это пакет проекта raspberry pi на github (https://github.com/raspberrypi/linux)</span>
 apt-get install -y raspberrypi-bootloader
@@ -323,7 +345,7 @@ ssh pi@pi.ip.addr.ess
 </pre></div>
 </td></tr></table>
 
-<h3>Настраиваем SSH</h3>
+<h3 id="toc_22061d9aae64f3048970888c10f0d056">Настраиваем SSH</h3>
 <p>Если смогли успешно войти под пользователем <code>pi</code> на&nbsp;предыдущем шаге, можно приступить к&nbsp;дальшейшей настройке. Усилим безопасность системы.</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -353,7 +375,7 @@ sudo /etc/init.d/ssh restart
 </pre></div>
 </td></tr></table>
 
-<h4>Настраиваем авторизацию по&nbsp;ключу</h4>
+<h4 id="toc_64ae2c3973c80573ea629fcaa91af970">Настраиваем авторизацию по&nbsp;ключу</h4>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -413,7 +435,7 @@ sudo /etc/init.d/ssh restart
 </td></tr></table>
 
 <p>Всё дальнейшее&nbsp;&mdash; опционально<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>впрочем, как и&nbsp;всё, что выше). Ваши потребности естественно могут отличаться от&nbsp;моих, поэтому выполняем команды <em>вдумчиво</em>. Рекомендую для удобства действовать от&nbsp;рута<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span><code>su&nbsp;root</code>).</p>
-<h3>Конфигурируем параметры пая</h3>
+<h3 id="toc_baabdfee1ac9edc1bdb18ac8732f7749">Конфигурируем параметры пая</h3>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -456,7 +478,7 @@ sudo /etc/init.d/ssh restart
 </pre></div>
 </td></tr></table>
 
-<h4>Повышаем производительность</h4>
+<h3 id="toc_551772c075bb90e516359f15b8d618fc">Повышаем производительность</h3>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -501,7 +523,7 @@ sed -i <span class="s1">&#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&#39;
 </pre></div>
 </td></tr></table>
 
-<h4>Убираем лишнее</h4>
+<h4 id="toc_86b9010b372b4f02961008912b51a878">Убираем лишнее</h4>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -536,7 +558,7 @@ sed -i <span class="s1">&#39;s/deadline/noop/g&#39;</span> /boot/cmdline.txt
 </pre></div>
 </td></tr></table>
 
-<h4>Тюним файловую систему</h4>
+<h4 id="toc_62c07b571c8df7d71f7bb5c2d0c888c9">Тюним файловую систему</h4>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -575,7 +597,7 @@ reboot
 </pre></div>
 </td></tr></table>
 
-<h4>Логгируем в&nbsp;оперативной памяти</h4>
+<h4 id="toc_6b30cff589e3d9637aed14c0522c18c2">Логгируем в&nbsp;оперативной памяти</h4>
 <p>Это, во-первых, увеличит производительность, во-вторых, снизит нагрузку на&nbsp;SD карту. Для этого воспользуемся утилитой <a href="http://www.tremende.com/ramlog/"><code>ramlog</code></a>. Но, если у&nbsp;вас в&nbsp;системе демонами рулит <code>systemd</code><span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>например, потому что вы&nbsp;установили Debian 8 Jessie), то&nbsp;ничего не&nbsp;получится&nbsp;&mdash; <code>ramlog</code>, по&nbsp;крайней мере в&nbsp;версии 2.0.0, не&nbsp;совместим с&nbsp;ним.</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -623,7 +645,7 @@ sed -i <span class="s1">&#39;s/(the &quot;Additional&quot; block)/(the &quot;Add
 </pre></div>
 </td></tr></table>
 
-<h3>Настраиваем фаервол</h3>
+<h3 id="toc_b94a67aec6e2351c725ca095b39816cd">Настраиваем фаервол</h3>
 <p>Рекомендую не&nbsp;полениться и&nbsp;сконфигурировать фаервол&nbsp;&mdash; это хороший способ повысить безопасность системы. Установим <code>iptables</code><span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>самый популярный фаервол на&nbsp;Debian подобных системах).</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -710,7 +732,7 @@ sed -i <span class="s1">&#39;s/iface lo inet loopback/iface lo inet loopback\npr
 </pre></div>
 </td></tr></table>
 
-<h4>Баним ботов пачками с&nbsp;помощью fail2ban</h4>
+<h4 id="toc_de7e672a7e2cef4286d332c6d508ce04">Баним ботов пачками с&nbsp;помощью fail2ban</h4>
 <p>Если ваш пай будет смотреть наружу в&nbsp;интернет, то&nbsp;в&nbsp;него точно начнут ломиться боты. Если у&nbsp;вас в&nbsp;SSH настроена авторизация по&nbsp;ключу и&nbsp;отключена возможность входа по&nbsp;паролю, то&nbsp;смысла в&nbsp;fail2ban не&nbsp;слишком много. Однако он&nbsp;может работать не&nbsp;только с&nbsp;SSH, а&nbsp;со&nbsp;многими утилитами, поэтому всё&nbsp;же стоит рассмотреть вариант его применения. Да&nbsp;и&nbsp;вообще приятно в&nbsp;логах видеть <code>NOTICE [ssh] fckn.bot.ip.addr already banned</code> :)</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -826,12 +848,12 @@ chmod <span class="m">755</span> /etc/init.d/fail2ban <span class="o">&amp;&amp;
 </header>
 <div class="body"><p>Как известно, JavaScript&nbsp;&mdash; язык-ошибка, язык-неочевидное поведение, язык-недоразумение. Причиной этому являлась необходимость в&nbsp;середине 90 в&nbsp;жесткие сроки получить мощный язык, позволяющий придать страницам больше возможностей. И&nbsp;получили. Все проблемы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>повсеместные глобальные переменные, область видимости переменных, неочевидные и&nbsp;нелогичные приведения типов) зашиты в&nbsp;JS глубоко и&nbsp;надолго. Сейчас к&nbsp;нам приближается ES6, который явно, но&nbsp;не&nbsp;достаточно кардинально улучшает ситуацию.</p>
 <p>С&nbsp;другой стороны язык очень гибок и&nbsp;никто не&nbsp;запрещает обходить плохие стороны, использовать хорошие и&nbsp;улучшать язык своими силами. Этим я&nbsp;и&nbsp;займусь в&nbsp;серии заметок. Неизгладимое впечатление на&nbsp;меня произвела книга<span style="margin-right:0.44em;"> </span><span style="margin-left:-0.44em;">&laquo;</span><a href="http://www.ozon.ru/context/detail/id/20217226/">JavaScript. Сильные стороны</a>&raquo; Дугласа Крокфорда, рекомендую к&nbsp;прочтению<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>она совсем небольшая).</p>
-<h2>Объекты</h2>
+<h2 id="toc_d972ebc74a909f1b32a76cf3dd80a746">Объекты</h2>
 <p>Это один из&nbsp;основных механизмов в&nbsp;языке и, надо сказать, удачно реализованный. </p>
 <p>Всё<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ну, примитивы не&nbsp;совсем объекты, они неизменяемы) в&nbsp;JS&nbsp;&mdash; объект. Объекты обладают прототипом, который и&nbsp;сам является объектом со&nbsp;своим набором свойств. К&nbsp;прототипам можно относиться как к&nbsp;базовым объектам, задающим начальную функциональность другим объектам. Разные объекты могут иметь один и&nbsp;тот&nbsp;же прототип. Каждый раз при изменении прототипа у&nbsp;объекта все другие объекты с&nbsp;этим&nbsp;же прототипом получают его обновленную версию. Это достигается за&nbsp;счет того, что объекты содержат не&nbsp;копию, а&nbsp;ссылку на&nbsp;прототип. Такая реализация способствует экономии памяти и&nbsp;скорости работы.</p>
 <p>Помимо прототипа у&nbsp;объекта есть свои, эксклюзивные свойства. Имя свойства может совпадать с&nbsp;именем свойства в&nbsp;прототипе. Ситуация разрешается просто: JS&nbsp;сначала поищет запрашиваемое свойство в&nbsp;списке личных свойств объекта, а&nbsp;если не&nbsp;найдет, пойдет искать по&nbsp;цепочке прототипов в&nbsp;их&nbsp;свойствах.</p>
 <p>Что можно со&nbsp;всем этим делать?</p>
-<h2>Расширение функциональности на&nbsp;лету</h2>
+<h2 id="toc_825117b30d21cab641d86125e8720255">Расширение функциональности на&nbsp;лету</h2>
 <p>Как было сказано, почти все в&nbsp;JS является объектом, в&nbsp;том числе массивы<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>ага). Мы&nbsp;всегда можем добавить объекту новое свойство. Давайте попробуем использовать это себе во&nbsp;благо. </p>
 <p>Например, имеем список абзацев с&nbsp;текстом на&nbsp;странице. Помимо самих DOM элементов мы&nbsp;хотим хранить рядом с&nbsp;ними какую-то метаинформацию<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>к&nbsp;примеру, UID абзаца). И&nbsp;мы&nbsp;должны уметь удалять и&nbsp;вставлять абзацы в&nbsp;произвольных местах. Работающий пример можно посмотреть <a href="https://jsbin.com/qemaqo/edit?html,js,output">здесь</a>.</p>
 <p>Есть следующая страница:</p>
