@@ -4,7 +4,7 @@
       <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
     <title>Вдумчивая настройка Raspberry Pi ⋅ Forkbomb Blog</title>
-    <link rel="stylesheet" href="/theme/css/blog.min.css?6cd34f50">
+    <link rel="stylesheet" href="/theme/css/blog.min.css?90e29e24">
     <link rel="shortcut icon" href="/favicon.ico"/>
     <link href="http://dkharitonov.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="Forkbomb Blog RSS Feed" />
 
@@ -88,6 +88,7 @@
 </li>
 </ul>
 </div>
+<p>Этот ман собирался мной в&nbsp;течение длительного времени использования Raspberry Pi&nbsp;Model B. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа <a href="https://syncthing.net">syncthing</a>, XBMC, торрентокачалки <nobr>и т. п.</nobr> В&nbsp;общем, для домашнего использования.</p>
 <h3 id="toc_63316041064523f3b4740b01343c43e6">Скачиваем и&nbsp;конфигурируем образ</h3>
 <p>Детально про используемый образ можно почитать <a href="https://github.com/debian-pi/raspbian-ua-netinst">в&nbsp;репозитории проекта</a>. Для начала необходимо узнать номер последней версии образа <a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest">тут</a>.</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -183,7 +184,7 @@ diskutil eject /dev/diskX
 ssh root@pi.ip.addr.ess
 
 <span class="c"># Обновим пакеты</span>
-apt-get update <span class="o">&amp;&amp;</span> apt-get dist-upgrade <span class="o">&amp;&amp;</span> apt-get upgrade
+apt-get -y update <span class="o">&amp;&amp;</span> apt-get -y dist-upgrade <span class="o">&amp;&amp;</span> apt-get -y autoremove <span class="o">&amp;&amp;</span> apt-get -y autoclean
 
 <span class="c"># Обновим ядро и прошивку</span>
 <span class="c"># Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)</span>
@@ -511,7 +512,7 @@ sed -i <span class="s1">&#39;s/(the &quot;Additional&quot; block)/(the &quot;Add
 </td></tr></table>
 
 <h3 id="toc_b94a67aec6e2351c725ca095b39816cd">Настраиваем фаервол</h3>
-<p>Рекомендую не&nbsp;полениться и&nbsp;сконфигурировать фаервол&nbsp;&mdash; это хороший способ повысить безопасность системы. Установим <code>iptables</code><span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>самый популярный фаервол на&nbsp;Debian подобных системах).</p>
+<p>Рекомендую не&nbsp;полениться и&nbsp;сконфигурировать фаервол&nbsp;&mdash; это хороший способ повысить безопасность системы. Установим <code>iptables</code><span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>утилиту для управления параметрами фаервола).</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
@@ -585,7 +586,7 @@ COMMIT
 </pre></div>
 </td></tr></table>
 
-<p>Также необходимо задать правила фаерволу перед поднятием сетевых интерфейсов:</p>
+<p>Также необходимо задать правила фаерволу <em>перед</em> поднятием сетевых интерфейсов:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Немного правим файл /etc/network/interfaces</span>
 sed -i <span class="s1">&#39;s/iface lo inet loopback/iface lo inet loopback\npre-up iptables-restore &lt; \/etc\/iptables.rules/g&#39;</span> /etc/network/interfaces

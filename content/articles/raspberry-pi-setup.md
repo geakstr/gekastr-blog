@@ -5,6 +5,8 @@ Slug: raspberry-pi-setup
 
 [TOC]
 
+Этот ман собирался мной в течение длительного времени использования Raspberry Pi Model B. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа [syncthing] [syncthing], XBMC, торрентокачалки и т.п. В общем, для домашнего использования.
+
 ### Скачиваем и конфигурируем образ 
 
 Детально про используемый образ можно почитать [в репозитории проекта] [raspbian-ua-netinst]. Для начала необходимо узнать номер последней версии образа [тут] [raspbian-ua-netinst-latest].
@@ -53,7 +55,7 @@ Slug: raspberry-pi-setup
     ssh root@pi.ip.addr.ess
 
     # Обновим пакеты
-    apt-get update && apt-get dist-upgrade && apt-get upgrade
+    apt-get -y update && apt-get -y dist-upgrade && apt-get -y autoremove && apt-get -y autoclean
 
     # Обновим ядро и прошивку
     # Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)
@@ -252,7 +254,7 @@ Slug: raspberry-pi-setup
 
 ### Настраиваем фаервол
 
-Рекомендую не полениться и сконфигурировать фаервол — это хороший способ повысить безопасность системы. Установим `iptables` (самый популярный фаервол на Debian подобных системах).
+Рекомендую не полениться и сконфигурировать фаервол — это хороший способ повысить безопасность системы. Установим `iptables` (утилиту для управления параметрами фаервола).
 
     #!bash
     # Устанавливаем iptables
@@ -294,7 +296,7 @@ Slug: raspberry-pi-setup
     # Говорим фаерволу применить инструкции
     COMMIT
 
-Также необходимо задать правила фаерволу перед поднятием сетевых интерфейсов:
+Также необходимо задать правила фаерволу _перед_ поднятием сетевых интерфейсов:
 
     #!bash
     # Немного правим файл /etc/network/interfaces
@@ -367,7 +369,7 @@ Slug: raspberry-pi-setup
 
 На этом, пожалуй, пока что остановимся. Спасибо, что дочитали :)
 
-
+[syncthing]: https://syncthing.net
 [raspbian-ua-netinst]: https://github.com/debian-pi/raspbian-ua-netinst
 [raspbian-ua-netinst-latest]: https://github.com/debian-pi/raspbian-ua-netinst/releases/latest
 [ramlog]: http://www.tremende.com/ramlog/

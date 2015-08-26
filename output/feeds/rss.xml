@@ -1,5 +1,484 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Forkbomb Blog</title><link>http://dkharitonov.me/</link><description></description><atom:link href="http://dkharitonov.me/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Tue, 25 Aug 2015 12:00:00 +0300</lastBuildDate><item><title>Делаем Raspberry Pi доступным из интернета при динамичном IP</title><link>http://dkharitonov.me/blog/yandex-dns-for-raspberry-pi</link><description>&lt;p&gt;Если вы&amp;nbsp;хотите сделать пай доступным извне по&amp;nbsp;доменному имени, у&amp;nbsp;вас не&amp;nbsp;статичный&amp;nbsp;IP и&amp;nbsp;есть, собственно, домен, который можно делегировать, то, как вариант, предлагаю воспользоваться сервисом от&amp;nbsp;Яндекса&amp;nbsp;&amp;mdash; &lt;a href="https://pdd.yandex.ru"&gt;Почта для домена&lt;/a&gt;. Помимо предоставления почты Яндекс позволяет настраивать DNS параметры домена через REST API&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;бесплатно).&lt;/p&gt;
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Forkbomb Blog</title><link>http://dkharitonov.me/</link><description></description><atom:link href="http://dkharitonov.me/feeds/rss.xml" rel="self"></atom:link><lastBuildDate>Wed, 26 Aug 2015 17:00:00 +0300</lastBuildDate><item><title>Грамотно собираем и конфигурируем nginx</title><link>http://dkharitonov.me/blog/nginx-setup</link><description>&lt;p&gt;В&amp;nbsp;данной заметке я&amp;nbsp;покажу, как скомпилировать nginx из&amp;nbsp;исходников с&amp;nbsp;необходимыми модулями, а&amp;nbsp;также достаточно тонко настроить параметры сервера. Некоторые вещи в&amp;nbsp;конфиге специфичны и&amp;nbsp;подойдут далеко не&amp;nbsp;для всех задач, так что аккуратно и&amp;nbsp;внимательно с&amp;nbsp;этапом настройки. Эта конфигурация хорошо подойдет для использования на&amp;nbsp;Raspberry Pi. &lt;/p&gt;
+&lt;p&gt;Получим рута и&amp;nbsp;создадим файл скрипта:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;su root
+nano /tmp/build_nginx.sh
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Тело скрипта: &lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class="c"&gt;# Скрипт взят тут https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24&lt;/span&gt;
+&lt;span class="c"&gt;# и почти полностью его копирует, с некоторыми модификациями&lt;/span&gt;
+
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;VERSION_PCRE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;pcre-8.37
+&lt;span class="c"&gt;# Посмотрите номер последней версии openssl здесь https://www.openssl.org/news/changelog.html&lt;/span&gt;
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;VERSION_OPENSSL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;openssl-1.0.2d
+&lt;span class="c"&gt;# Номер последней версии nginx здесь http://nginx.org/en/download.html&lt;/span&gt;
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;VERSION_NGINX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;nginx-1.9.4
+
+&lt;span class="c"&gt;# Адреса откуда качать исходники&lt;/span&gt;
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;SOURCE_OPENSSL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;https://www.openssl.org/source/
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;SOURCE_PCRE&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;SOURCE_NGINX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;http://nginx.org/download/
+
+&lt;span class="c"&gt;# Переменная с датой для бекапа текущих настроек nginx&lt;/span&gt;
+&lt;span class="nv"&gt;today&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;date +&lt;span class="s2"&gt;&amp;quot;%Y-%m-%d&amp;quot;&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;
+
+&lt;span class="c"&gt;# Почистим директории, которые могли остаться после предыдущего запуска скрипта&lt;/span&gt;
+rm -rf build
+rm -rf /etc/nginx-default
+mkdir build
+
+&lt;span class="c"&gt;# Для сборки нужны следующие пакеты &lt;/span&gt;
+apt-get -y install curl wget build-essential libz-dev libssl-dev
+
+&lt;span class="c"&gt;# Качаем исходники&lt;/span&gt;
+wget -P ./build &lt;span class="nv"&gt;$SOURCE_PCRE$VERSION_PCRE&lt;/span&gt;.tar.gz
+wget -P ./build &lt;span class="nv"&gt;$SOURCE_OPENSSL$VERSION_OPENSSL&lt;/span&gt;.tar.gz --no-check-certificate
+wget -P ./build &lt;span class="nv"&gt;$SOURCE_NGINX$VERSION_NGINX&lt;/span&gt;.tar.gz
+
+&lt;span class="c"&gt;# Разархивируем их&lt;/span&gt;
+&lt;span class="nb"&gt;cd &lt;/span&gt;build
+tar xzf &lt;span class="nv"&gt;$VERSION_NGINX&lt;/span&gt;.tar.gz
+tar xzf &lt;span class="nv"&gt;$VERSION_OPENSSL&lt;/span&gt;.tar.gz
+tar xzf &lt;span class="nv"&gt;$VERSION_PCRE&lt;/span&gt;.tar.gz
+&lt;span class="nb"&gt;cd&lt;/span&gt; ../
+
+&lt;span class="c"&gt;# Указываем директории, в которых будем компилить nginx и openssl&lt;/span&gt;
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;BPATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="k"&gt;$(&lt;/span&gt;&lt;span class="nb"&gt;pwd&lt;/span&gt;&lt;span class="k"&gt;)&lt;/span&gt;/build
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;STATICLIBSSL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$BPATH&lt;/span&gt;&lt;span class="s2"&gt;/staticlibssl&amp;quot;&lt;/span&gt;
+
+&lt;span class="c"&gt;# Компилим openssl&lt;/span&gt;
+&lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$BPATH&lt;/span&gt;/&lt;span class="nv"&gt;$VERSION_OPENSSL&lt;/span&gt;
+rm -rf &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$STATICLIBSSL&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+mkdir &lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;span class="nv"&gt;$STATICLIBSSL&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+make clean
+./config --prefix&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$STATICLIBSSL&lt;/span&gt; no-shared &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make depend &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install_sw
+
+&lt;span class="c"&gt;# Бекапим текущие исходники nginx&lt;/span&gt;
+mv /etc/nginx /etc/nginx-&lt;span class="nv"&gt;$today&lt;/span&gt;
+
+&lt;span class="c"&gt;# Собираем nginx&lt;/span&gt;
+&lt;span class="c"&gt;# Указан небольшой перечень модулей. Если вам нужны дополнительные, список можно посмотреть здесь&lt;/span&gt;
+&lt;span class="c"&gt;# http://wiki.nginx.org/Modules&lt;/span&gt;
+&lt;span class="nb"&gt;cd&lt;/span&gt; &lt;span class="nv"&gt;$BPATH&lt;/span&gt;/&lt;span class="nv"&gt;$VERSION_NGINX&lt;/span&gt;
+mkdir -p &lt;span class="nv"&gt;$BPATH&lt;/span&gt;/nginx
+./configure --with-cc-opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-I &lt;/span&gt;&lt;span class="nv"&gt;$STATICLIBSSL&lt;/span&gt;&lt;span class="s2"&gt;/include -I/usr/include&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+--with-ld-opt&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;-L &lt;/span&gt;&lt;span class="nv"&gt;$STATICLIBSSL&lt;/span&gt;&lt;span class="s2"&gt;/lib -Wl,-rpath=&lt;/span&gt;&lt;span class="nv"&gt;$STATICLIBSSL&lt;/span&gt;&lt;span class="s2"&gt;/lib -lssl -lcrypto -ldl -lz&amp;quot;&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+--sbin-path&lt;span class="o"&gt;=&lt;/span&gt;/usr/sbin/nginx &lt;span class="se"&gt;\&lt;/span&gt;
+--conf-path&lt;span class="o"&gt;=&lt;/span&gt;/etc/nginx/nginx.conf &lt;span class="se"&gt;\&lt;/span&gt;
+--pid-path&lt;span class="o"&gt;=&lt;/span&gt;/var/run/nginx.pid &lt;span class="se"&gt;\&lt;/span&gt;
+--error-log-path&lt;span class="o"&gt;=&lt;/span&gt;/var/log/nginx/error.log &lt;span class="se"&gt;\&lt;/span&gt;
+--http-log-path&lt;span class="o"&gt;=&lt;/span&gt;/var/log/nginx/access.log &lt;span class="se"&gt;\&lt;/span&gt;
+--with-pcre&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$BPATH&lt;/span&gt;/&lt;span class="nv"&gt;$VERSION_PCRE&lt;/span&gt; &lt;span class="se"&gt;\&lt;/span&gt;
+--with-http_ssl_module &lt;span class="se"&gt;\&lt;/span&gt;
+--with-file-aio &lt;span class="se"&gt;\&lt;/span&gt;
+--with-http_gzip_static_module &lt;span class="se"&gt;\&lt;/span&gt;
+--without-mail_pop3_module &lt;span class="se"&gt;\&lt;/span&gt;
+--without-mail_smtp_module &lt;span class="se"&gt;\&lt;/span&gt;
+--without-mail_imap_module &lt;span class="se"&gt;\&lt;/span&gt;
+&lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+
+&lt;span class="c"&gt;# Переименуем директорию с новыми дефолтными конфигами&lt;/span&gt;
+mv /etc/nginx /etc/nginx-default
+
+&lt;span class="c"&gt;# Вернем конфиги из бекапа&lt;/span&gt;
+mv /etc/nginx-&lt;span class="nv"&gt;$today&lt;/span&gt; /etc/nginx
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Запустим процесс компиляции и&amp;nbsp;пойдем пить чай. Много чая.&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;chmod +x /tmp/build_nginx.sh &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; /tmp/build_nginx.sh
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Если ранее уже был установлен nginx, скрипт вернул старые конфиги и&amp;nbsp;все продолжит работать как раньше. Если нет, подготовимся к&amp;nbsp;его настройке:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2
+3
+4
+5
+6
+7
+8
+9&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Создадим пользователя, от которого будет запускаться nginx&lt;/span&gt;
+useradd nginx
+groupadd nginx
+usermod -g nginx -G www-data nginx
+
+&lt;span class="c"&gt;# И директорию для сайтов&lt;/span&gt;
+mkdir /var/www
+chmod -R &lt;span class="m"&gt;775&lt;/span&gt; /var/www
+chown -R www-data:www-data /var/www
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Приступим к&amp;nbsp;конфигурированию:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2
+3
+4
+5&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Скопируем дефолтные конфиги&lt;/span&gt;
+cp -R /etc/nginx-default /etc/nginx
+
+&lt;span class="c"&gt;# И начнем править&lt;/span&gt;
+nano /etc/nginx/nginx.conf
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Удалим все из&amp;nbsp;конфига и&amp;nbsp;создадим такой:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c1"&gt;# Пользователь, от которого будет запускаться nginx&lt;/span&gt;
+&lt;span class="k"&gt;user&lt;/span&gt;              &lt;span class="s"&gt;nginx&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Рекомендуется выставлять по количеству ядер в системе&lt;/span&gt;
+&lt;span class="c1"&gt;# Можно узнать командой nproc&lt;/span&gt;
+&lt;span class="k"&gt;worker_processes&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Путь до файла с логами ошибок&lt;/span&gt;
+&lt;span class="k"&gt;error_log&lt;/span&gt;  &lt;span class="s"&gt;/var/log/nginx/error.log&lt;/span&gt; &lt;span class="s"&gt;warn&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Здесь будет храниться id процесса nginx&lt;/span&gt;
+&lt;span class="k"&gt;pid&lt;/span&gt;        &lt;span class="s"&gt;/var/run/nginx.pid&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+&lt;span class="k"&gt;events&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;# Говорит, сколько коннектов может обрабатывать 1 процесс&lt;/span&gt;
+  &lt;span class="c1"&gt;# Число можно узнать командой ulimit -n&lt;/span&gt;
+  &lt;span class="kn"&gt;worker_connections&lt;/span&gt;  &lt;span class="mi"&gt;1024&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="k"&gt;http&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="c1"&gt;# Дополнительную информацию можно получить тут&lt;/span&gt;
+  &lt;span class="c1"&gt;# http://nginx.org/ru/docs/http/ngx_http_core_module.html&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Соответствие MIME типов файлов их расширениям&lt;/span&gt;
+  &lt;span class="kn"&gt;include&lt;/span&gt;       &lt;span class="s"&gt;/etc/nginx/mime.types&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Тип по умолчанию — бинарный файл без формата&lt;/span&gt;
+  &lt;span class="kn"&gt;default_type&lt;/span&gt;  &lt;span class="s"&gt;application/octet-stream&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Лог файл, где будут храниться логи доступа к ресурсам сайта&lt;/span&gt;
+  &lt;span class="kn"&gt;access_log&lt;/span&gt; &lt;span class="s"&gt;/var/log/nginx/access.log&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Если вам это неважно, можно отключить ведение этих логов&lt;/span&gt;
+  &lt;span class="c1"&gt;#access_log  off;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Отдаем файлы напрямую, без лишего копирования веб-сервером&lt;/span&gt;
+  &lt;span class="kn"&gt;sendfile&lt;/span&gt;     &lt;span class="no"&gt;on&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Выводим данные полными пакетами &lt;/span&gt;
+  &lt;span class="kn"&gt;tcp_nopush&lt;/span&gt;   &lt;span class="no"&gt;on&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Убираем задержку при передаче последнего пакета, если соединение не закрывается&lt;/span&gt;
+  &lt;span class="kn"&gt;tcp_nodelay&lt;/span&gt;  &lt;span class="no"&gt;on&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Для отдачи относительно больших файлов,&lt;/span&gt;
+  &lt;span class="c1"&gt;# будем использовать прямое чтение, без обращения в кэш ОС&lt;/span&gt;
+  &lt;span class="kn"&gt;directio&lt;/span&gt;     &lt;span class="mi"&gt;5m&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Настройки в секции позволяют повысить производительность&lt;/span&gt;
+  &lt;span class="c1"&gt;# При неожиданном поведении, следует увеличить числа&lt;/span&gt;
+  &lt;span class="c1"&gt;# Снизим таймаут отдачи body клиенту&lt;/span&gt;
+  &lt;span class="kn"&gt;client_body_timeout&lt;/span&gt;    &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Снизим таймаут отдачи заголовков клиенту &lt;/span&gt;
+  &lt;span class="kn"&gt;client_header_timeout&lt;/span&gt;  &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Установим время жизни соединения клиента, а также будем возвращать соответствующий заголовок&lt;/span&gt;
+  &lt;span class="kn"&gt;keepalive_timeout&lt;/span&gt;      &lt;span class="mi"&gt;5&lt;/span&gt; &lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Установим время ожидания ответа клиенту&lt;/span&gt;
+  &lt;span class="kn"&gt;send_timeout&lt;/span&gt;           &lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Секция позволяет снизить вред от атаки типа &amp;quot;переполнение буфера&amp;quot;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Нужно быть аккуратнее с числами, иначе можно столкнуться с неожиданным поведением&lt;/span&gt;
+  &lt;span class="c1"&gt;# Размер буфера для body запроса клиента&lt;/span&gt;
+  &lt;span class="kn"&gt;client_body_buffer_size&lt;/span&gt;      &lt;span class="s"&gt;1K&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Размер буфера для заголовка запроса клиента&lt;/span&gt;
+  &lt;span class="c1"&gt;# Нужно увеличить размер, если собираемся принимать кастомные заголовки или большие куки&lt;/span&gt;
+  &lt;span class="kn"&gt;client_header_buffer_size&lt;/span&gt;    &lt;span class="mi"&gt;1k&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Если не будем поддерживать загрузку файлов через POST, установим максимальный размер body&lt;/span&gt;
+  &lt;span class="kn"&gt;client_max_body_size&lt;/span&gt;         &lt;span class="mi"&gt;1k&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Установим максимальное количество и размер этих буферов для чтения заголовков клиента&lt;/span&gt;
+  &lt;span class="kn"&gt;large_client_header_buffers&lt;/span&gt;  &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="mi"&gt;1k&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Не посылать номер версии nginx в заголовках&lt;/span&gt;
+  &lt;span class="kn"&gt;server_tokens&lt;/span&gt;  &lt;span class="no"&gt;off&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Запретить помещать наши страницы во фреймы&lt;/span&gt;
+  &lt;span class="kn"&gt;add_header&lt;/span&gt;     &lt;span class="s"&gt;X-Frame-Options&lt;/span&gt; &lt;span class="s"&gt;SAMEORIGIN&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Отключаем content-type sniffing &lt;/span&gt;
+  &lt;span class="c1"&gt;# https://www.owasp.org/index.php/List_of_useful_HTTP_headers&lt;/span&gt;
+  &lt;span class="kn"&gt;add_header&lt;/span&gt;     &lt;span class="s"&gt;X-Content-Type-Options&lt;/span&gt; &lt;span class="s"&gt;nosniff&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Включаем XSS фильтер в браузерах&lt;/span&gt;
+  &lt;span class="kn"&gt;add_header&lt;/span&gt;     &lt;span class="s"&gt;X-XSS-Protection&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="kn"&gt;mode=block&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Включаем сжатие трафика&lt;/span&gt;
+  &lt;span class="c1"&gt;# http://nginx.org/ru/docs/http/ngx_http_gzip_module.html&lt;/span&gt;
+  &lt;span class="kn"&gt;gzip&lt;/span&gt;               &lt;span class="no"&gt;on&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; 
+  &lt;span class="c1"&gt;# Разрешаем сжатие трафика для всех проксированных запросов&lt;/span&gt;
+  &lt;span class="kn"&gt;gzip_proxied&lt;/span&gt;       &lt;span class="s"&gt;any&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Устанавливаем минимальную длину ответа, при которой нужно применять сжатие&lt;/span&gt;
+  &lt;span class="kn"&gt;gzip_min_length&lt;/span&gt;    &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Минимальная версия http для запроса, начиная с которой нужно применять сжатие&lt;/span&gt;
+  &lt;span class="kn"&gt;gzip_http_version&lt;/span&gt;  &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="s"&gt;.0&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Число и размер буферов, в которые будет сжиматься ответ&lt;/span&gt;
+  &lt;span class="kn"&gt;gzip_buffers&lt;/span&gt;       &lt;span class="mi"&gt;16&lt;/span&gt; &lt;span class="mi"&gt;8k&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# Уровень компрессии&lt;/span&gt;
+  &lt;span class="kn"&gt;gzip_comp_level&lt;/span&gt;    &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="c1"&gt;# MIME-типы, для которых применять сжатие&lt;/span&gt;
+  &lt;span class="kn"&gt;gzip_types&lt;/span&gt;         &lt;span class="s"&gt;text/plain&lt;/span&gt; &lt;span class="s"&gt;text/css&lt;/span&gt; &lt;span class="s"&gt;application/json&lt;/span&gt; &lt;span class="s"&gt;text/javascript&lt;/span&gt; &lt;span class="s"&gt;application/x-javascript&lt;/span&gt; &lt;span class="s"&gt;text/xml&lt;/span&gt; &lt;span class="s"&gt;application/xml&lt;/span&gt; &lt;span class="s"&gt;application/xml+rss&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+  &lt;span class="c1"&gt;# Подключаем дополнительные конфиги с хостами&lt;/span&gt;
+  &lt;span class="kn"&gt;include&lt;/span&gt; &lt;span class="s"&gt;/etc/nginx/conf.d/*.conf&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Теперь создадим хост:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;mkdir /etc/nginx/conf.d &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; nano /etc/nginx/conf.d/home.conf
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Пример конфига для отдачи статики. Делает ЧПУ&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;удаляет .html и&amp;nbsp;слеш в&amp;nbsp;конце урлов).&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kn"&gt;listen&lt;/span&gt;       &lt;span class="mi"&gt;80&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;server_name&lt;/span&gt;  &lt;span class="s"&gt;localhost&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="kn"&gt;index&lt;/span&gt; &lt;span class="s"&gt;index.html&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Путь до корня хоста в файловой системt&lt;/span&gt;
+    &lt;span class="kn"&gt;root&lt;/span&gt; &lt;span class="s"&gt;/var/www&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Удаляем слеш в конце урлов&lt;/span&gt;
+    &lt;span class="kn"&gt;rewrite&lt;/span&gt; &lt;span class="s"&gt;^/(.*)/&lt;/span&gt;$ &lt;span class="s"&gt;/&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="s"&gt;permanent&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="c1"&gt;# Пути до кастомных страниц с ошибками&lt;/span&gt;
+    &lt;span class="kn"&gt;error_page&lt;/span&gt; &lt;span class="mi"&gt;404&lt;/span&gt; &lt;span class="s"&gt;/404.html&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;error_page&lt;/span&gt; &lt;span class="mi"&gt;500&lt;/span&gt; &lt;span class="mi"&gt;502&lt;/span&gt; &lt;span class="mi"&gt;503&lt;/span&gt; &lt;span class="mi"&gt;504&lt;/span&gt; &lt;span class="s"&gt;/50x.html&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+    &lt;span class="kn"&gt;location&lt;/span&gt; &lt;span class="s"&gt;/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="c1"&gt;# Удаляем /index для директорий&lt;/span&gt;
+        &lt;span class="kn"&gt;rewrite&lt;/span&gt; &lt;span class="s"&gt;^/(.*)/index&lt;/span&gt;$ &lt;span class="s"&gt;/&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt; &lt;span class="s"&gt;permanent&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+
+        &lt;span class="c1"&gt;# $uri/index.html для отдачи index.html из директории&lt;/span&gt;
+        &lt;span class="c1"&gt;# $uri.html для отдачи .html файловой&lt;/span&gt;
+        &lt;span class="c1"&gt;# $uri во всех остальных случаях будет искать файлы по имени как есть&lt;/span&gt;
+        &lt;span class="kn"&gt;try_files&lt;/span&gt; &lt;span class="nv"&gt;$uri/index.html&lt;/span&gt; &lt;span class="nv"&gt;$uri.html&lt;/span&gt; &lt;span class="nv"&gt;$uri&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;Скачаем и&amp;nbsp;добавим в&amp;nbsp;автозагрузку скрипт управления демоном nginx:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;wget http://git.io/vs5QS -O /etc/init.d/nginx
+chmod &lt;span class="m"&gt;755&lt;/span&gt; /etc/init.d/nginx &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; insserv -v /etc/init.d/nginx
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;И&amp;nbsp;стартуем сервер:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;/etc/init.d/nginx start
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Wed, 26 Aug 2015 17:00:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-26:blog/nginx-setup</guid><category>nginx</category><category>nix</category></item><item><title>Делаем Raspberry Pi доступным из интернета при динамичном IP</title><link>http://dkharitonov.me/blog/yandex-dns-for-raspberry-pi</link><description>&lt;p&gt;Если вы&amp;nbsp;хотите сделать пай доступным извне по&amp;nbsp;доменному имени, у&amp;nbsp;вас не&amp;nbsp;статичный&amp;nbsp;IP и&amp;nbsp;есть, собственно, домен, который можно делегировать, то, как вариант, предлагаю воспользоваться сервисом от&amp;nbsp;Яндекса&amp;nbsp;&amp;mdash; &lt;a href="https://pdd.yandex.ru"&gt;Почта для домена&lt;/a&gt;. Помимо предоставления почты Яндекс позволяет настраивать DNS параметры домена через REST API&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;бесплатно).&lt;/p&gt;
 &lt;p&gt;Этим мы&amp;nbsp;и&amp;nbsp;воспользуемся, написав соответствующий скрипт, который будет автоматически обновлять&amp;nbsp;IP адрес пая в&amp;nbsp;DNS Яндекса. Для начала, конечно, домен должен быть делегирован Яндексу. &lt;a href="https://yandex.ru/support/pdd/hosting.xml"&gt;Тут&lt;/a&gt; написано как это сделать.&lt;/p&gt;
 &lt;p&gt;Создадим скрипт:&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;mkdir ~/bin &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class="nb"&gt;cd&lt;/span&gt; ~/bin &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; nano ya_dns
@@ -136,6 +615,7 @@
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
+&lt;p&gt;Этот ман собирался мной в&amp;nbsp;течение длительного времени использования Raspberry Pi&amp;nbsp;Model B. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа &lt;a href="https://syncthing.net"&gt;syncthing&lt;/a&gt;, XBMC, торрентокачалки &lt;nobr&gt;и т. п.&lt;/nobr&gt; В&amp;nbsp;общем, для домашнего использования.&lt;/p&gt;
 &lt;h3 id="toc_63316041064523f3b4740b01343c43e6"&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/h3&gt;
 &lt;p&gt;Детально про используемый образ можно почитать &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst"&gt;в&amp;nbsp;репозитории проекта&lt;/a&gt;. Для начала необходимо узнать номер последней версии образа &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest"&gt;тут&lt;/a&gt;.&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
@@ -231,7 +711,7 @@ diskutil eject /dev/diskX
 ssh root@pi.ip.addr.ess
 
 &lt;span class="c"&gt;# Обновим пакеты&lt;/span&gt;
-apt-get update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get dist-upgrade &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get upgrade
+apt-get -y update &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y dist-upgrade &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y autoremove &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get -y autoclean
 
 &lt;span class="c"&gt;# Обновим ядро и прошивку&lt;/span&gt;
 &lt;span class="c"&gt;# Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)&lt;/span&gt;
@@ -559,7 +1039,7 @@ sed -i &lt;span class="s1"&gt;&amp;#39;s/(the &amp;quot;Additional&amp;quot; blo
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
 &lt;h3 id="toc_b94a67aec6e2351c725ca095b39816cd"&gt;Настраиваем фаервол&lt;/h3&gt;
-&lt;p&gt;Рекомендую не&amp;nbsp;полениться и&amp;nbsp;сконфигурировать фаервол&amp;nbsp;&amp;mdash; это хороший способ повысить безопасность системы. Установим &lt;code&gt;iptables&lt;/code&gt;&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;самый популярный фаервол на&amp;nbsp;Debian подобных системах).&lt;/p&gt;
+&lt;p&gt;Рекомендую не&amp;nbsp;полениться и&amp;nbsp;сконфигурировать фаервол&amp;nbsp;&amp;mdash; это хороший способ повысить безопасность системы. Установим &lt;code&gt;iptables&lt;/code&gt;&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;утилиту для управления параметрами фаервола).&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
 2
 3
@@ -633,7 +1113,7 @@ COMMIT
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;p&gt;Также необходимо задать правила фаерволу перед поднятием сетевых интерфейсов:&lt;/p&gt;
+&lt;p&gt;Также необходимо задать правила фаерволу &lt;em&gt;перед&lt;/em&gt; поднятием сетевых интерфейсов:&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
 2&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Немного правим файл /etc/network/interfaces&lt;/span&gt;
 sed -i &lt;span class="s1"&gt;&amp;#39;s/iface lo inet loopback/iface lo inet loopback\npre-up iptables-restore &amp;lt; \/etc\/iptables.rules/g&amp;#39;&lt;/span&gt; /etc/network/interfaces

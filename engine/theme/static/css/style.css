@@ -99,6 +99,7 @@
   line-height: 1.333;
 }
 .post .body .toc {
+  margin-bottom: 0.75em;
   color: #666;
 }
 .post .body .toc a, .post .body .toc a:visited {
