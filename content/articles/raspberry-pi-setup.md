@@ -5,7 +5,9 @@ Slug: raspberry-pi-setup
 
 [TOC]
 
-Этот ман собирался мной в течение длительного времени использования Raspberry Pi Model B. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа [syncthing] [syncthing], XBMC, торрентокачалки и т.п. В общем, для домашнего использования.
+**UPD:** Обновлено для Raspberry Pi 2.
+
+Этот ман собирался мной в течение длительного времени использования Raspberry Pi. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа [syncthing] [syncthing], XBMC, торрентокачалки и т.п. В общем, для домашнего использования.
 
 ### Скачиваем и конфигурируем образ 
 
@@ -83,7 +85,7 @@ Slug: raspberry-pi-setup
 ### Настраиваем SSH
 
 Если смогли успешно войти под пользователем `pi` на предыдущем шаге, можно приступить к дальшейшей настройке. Усилим безопасность системы.
-    
+
     #!bash
     # Запретим входить под рутом
     sudo sed -i 's/PermitRootLogin yes/PermitRootLogin no/g' /etc/ssh/sshd_config
@@ -148,8 +150,8 @@ Slug: raspberry-pi-setup
     # Разгоняем (подробно можно почитать тут http://elinux.org/RPiconfig)
     echo "arm_freq=1000" >> /boot/config.txt
     echo "core_freq=500" >> /boot/config.txt
-    echo "sdram_freq=600" >> /boot/config.txt
-    echo "over_voltage=6" >> /boot/config.txt
+    echo "sdram_freq=500" >> /boot/config.txt
+    echo "over_voltage=2" >> /boot/config.txt
 
     # Форсируем Turbo режим в первые 60 секунд работы
     echo "initial_turbo=60" >> /boot/config.txt
@@ -258,7 +260,7 @@ Slug: raspberry-pi-setup
 
     #!bash
     # Устанавливаем iptables
-    apt-get install iptables
+    apt-get install -y iptables
 
     # Скачиваем скрипт для управления демоном
     wget http://git.io/vs7i5 -O /etc/init.d/iptables
@@ -286,7 +288,7 @@ Slug: raspberry-pi-setup
 
     # SSH 
     -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-    
+
     # ... остальные нужные вам правила. По iptables очень много информации в сети
 
     # Все остальное отклонять. Эти две инструкции должны быть в конце файла
@@ -324,13 +326,17 @@ Slug: raspberry-pi-setup
     # Можете посмотреть номер последней релизной версии тут
     # https://github.com/fail2ban/fail2ban/releases
     cd /tmp
-    wget https://github.com/fail2ban/fail2ban/archive/0.9.2.tar.gz -O fail2ban.tar.gz
+    wget https://github.com/fail2ban/fail2ban/archive/0.9.3.tar.gz -O fail2ban.tar.gz
 
     # Разархивируем
     mkdir fail2ban && tar -xzvf fail2ban.tar.gz -C ./fail2ban --strip-components=1 && cd fail2ban
 
     # Установим
     python setup.py install
+
+    # Если iptables версии ниже 1.4.20 (проверить можно командой `iptables --version`)
+    # необходимо выполнить эту команду
+    sed -i 's/lockingopt = -w/lockingopt = /g' /etc/fail2ban/action.d/iptables-common.conf
 
     # Скопируем скрипт для управления fail2ban демоном
     cp ./files/debian-initd /etc/init.d/fail2ban
@@ -357,10 +363,10 @@ Slug: raspberry-pi-setup
     # Бан на сутки
     bantime     = 86400
 
-Наконец, запустим fail2ban:
+Наконец, перезагрузимся:
 
     #!bash
-    /etc/init.d/fail2ban start
+    reboot
 
 Логи, чтобы посмотреть успешно прошло или нет, лежат тут:
 

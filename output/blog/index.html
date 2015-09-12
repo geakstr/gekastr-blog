@@ -67,10 +67,12 @@
     </h2>
     
 </header>
-<div class="body"><p>В&nbsp;данной заметке я&nbsp;покажу, как скомпилировать nginx из&nbsp;исходников с&nbsp;необходимыми модулями, а&nbsp;также достаточно тонко настроить параметры сервера. Некоторые вещи в&nbsp;конфиге специфичны и&nbsp;подойдут далеко не&nbsp;для всех задач, так что аккуратно и&nbsp;внимательно с&nbsp;этапом настройки. Эта конфигурация хорошо подойдет для использования на&nbsp;Raspberry Pi. </p>
-<p>Получим рута и&nbsp;создадим файл скрипта:</p>
+<div class="body"><p>В&nbsp;данной заметке я&nbsp;покажу как скомпилировать nginx из&nbsp;исходников с&nbsp;необходимыми модулями, а&nbsp;также довольно тонко настроить параметры сервера. Некоторые вещи в&nbsp;конфиге специфичны и&nbsp;подойдут далеко не&nbsp;для всех задач, так что аккуратно и&nbsp;внимательно с&nbsp;этапом настройки. Эта конфигурация хорошо подойдет для использования на&nbsp;Raspberry Pi. </p>
+<p>Получим рута, доставим необходимые для сборки пакеты и&nbsp;создадим файл скрипта:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="codehilite"><pre>su root
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre>su root
+apt-get -y install curl wget build-essential libz-dev libssl-dev
 nano /tmp/build_nginx.sh
 </pre></div>
 </td></tr></table>
@@ -154,13 +156,10 @@ nano /tmp/build_nginx.sh
 76
 77
 78
-79
-80
-81
-82</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c">#!/usr/bin/env bash</span>
+79</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c">#!/usr/bin/env bash</span>
 
-<span class="c"># Скрипт взят тут https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24</span>
-<span class="c"># и почти полностью его копирует, с некоторыми модификациями</span>
+<span class="c"># Почти полная копия скрипта https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24</span>
+<span class="c"># с некоторыми модификациями</span>
 
 <span class="nb">export </span><span class="nv">VERSION_PCRE</span><span class="o">=</span>pcre-8.37
 <span class="c"># Посмотрите номер последней версии openssl здесь https://www.openssl.org/news/changelog.html</span>
@@ -180,9 +179,6 @@ nano /tmp/build_nginx.sh
 rm -rf build
 rm -rf /etc/nginx-default
 mkdir build
-
-<span class="c"># Для сборки нужны следующие пакеты </span>
-apt-get -y install curl wget build-essential libz-dev libssl-dev
 
 <span class="c"># Качаем исходники</span>
 wget -P ./build <span class="nv">$SOURCE_PCRE$VERSION_PCRE</span>.tar.gz
@@ -481,7 +477,7 @@ nano /etc/nginx/nginx.conf
 </pre></div>
 </td></tr></table>
 
-<p>Пример конфига для отдачи статики. Делает ЧПУ<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>удаляет .html и&nbsp;слеш в&nbsp;конце урлов).</p>
+<p>Пример конфига для отдачи статики:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -507,17 +503,19 @@ nano /etc/nginx/nginx.conf
 23
 24
 25
-26</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">server</span> <span class="p">{</span>
+26
+27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">server</span> <span class="p">{</span>
     <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
     <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
 
+    <span class="c1"># По умолчанию будем искать файл index.html</span>
     <span class="kn">index</span> <span class="s">index.html</span><span class="p">;</span>
 
-    <span class="c1"># Путь до корня хоста в файловой системt</span>
+    <span class="c1"># Путь до корня хоста в файловой системы</span>
     <span class="kn">root</span> <span class="s">/var/www</span><span class="p">;</span>
 
-    <span class="c1"># Удаляем слеш в конце урлов</span>
-    <span class="kn">rewrite</span> <span class="s">^/(.*)/</span>$ <span class="s">/</span><span class="nv">$1</span> <span class="s">permanent</span><span class="p">;</span>
+    <span class="c1"># Удаляем .html из адреса</span>
+    <span class="kn">rewrite</span> <span class="s">^(/.+).html</span>$ <span class="nv">$scheme://$host$1</span> <span class="s">permanent</span><span class="p">;</span>
 
     <span class="c1"># Пути до кастомных страниц с ошибками</span>
     <span class="kn">error_page</span> <span class="mi">404</span> <span class="s">/404.html</span><span class="p">;</span>
@@ -528,7 +526,7 @@ nano /etc/nginx/nginx.conf
         <span class="kn">rewrite</span> <span class="s">^/(.*)/index</span>$ <span class="s">/</span><span class="nv">$1</span> <span class="s">permanent</span><span class="p">;</span>
 
         <span class="c1"># $uri/index.html для отдачи index.html из директории</span>
-        <span class="c1"># $uri.html для отдачи .html файловой</span>
+        <span class="c1"># $uri.html для отдачи .html файлов</span>
         <span class="c1"># $uri во всех остальных случаях будет искать файлы по имени как есть</span>
         <span class="kn">try_files</span> <span class="nv">$uri/index.html</span> <span class="nv">$uri.html</span> <span class="nv">$uri</span> <span class="p">=</span><span class="mi">404</span><span class="p">;</span>
     <span class="p">}</span>
@@ -691,7 +689,7 @@ chmod <span class="m">755</span> /etc/init.d/nginx <span class="o">&amp;&amp;</s
 </article>
 <article class="post">
 <header class="header">
-        <div class="readtime"><i class="sprite sprite-clock"></i> 19 мин. на прочтение</div>
+        <div class="readtime"><i class="sprite sprite-clock"></i> 20 мин. на прочтение</div>
     <h2 class="title">
         <a href="/blog/raspberry-pi-setup" rel="bookmark">Вдумчивая настройка Raspberry Pi</a>
     </h2>
@@ -719,7 +717,8 @@ chmod <span class="m">755</span> /etc/init.d/nginx <span class="o">&amp;&amp;</s
 </li>
 </ul>
 </div>
-<p>Этот ман собирался мной в&nbsp;течение длительного времени использования Raspberry Pi&nbsp;Model B. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа <a href="https://syncthing.net">syncthing</a>, XBMC, торрентокачалки <nobr>и т. п.</nobr> В&nbsp;общем, для домашнего использования.</p>
+<p><strong>UPD:</strong> Обновлено для Raspberry Pi&nbsp;2.</p>
+<p>Этот ман собирался мной в&nbsp;течение длительного времени использования Raspberry Pi. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа <a href="https://syncthing.net">syncthing</a>, XBMC, торрентокачалки <nobr>и т. п.</nobr> В&nbsp;общем, для домашнего использования.</p>
 <h3 id="toc_63316041064523f3b4740b01343c43e6">Скачиваем и&nbsp;конфигурируем образ</h3>
 <p>Детально про используемый образ можно почитать <a href="https://github.com/debian-pi/raspbian-ua-netinst">в&nbsp;репозитории проекта</a>. Для начала необходимо узнать номер последней версии образа <a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest">тут</a>.</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -964,8 +963,8 @@ sudo /etc/init.d/ssh restart
 <span class="c"># Разгоняем (подробно можно почитать тут http://elinux.org/RPiconfig)</span>
 <span class="nb">echo</span> <span class="s2">&quot;arm_freq=1000&quot;</span> &gt;&gt; /boot/config.txt
 <span class="nb">echo</span> <span class="s2">&quot;core_freq=500&quot;</span> &gt;&gt; /boot/config.txt
-<span class="nb">echo</span> <span class="s2">&quot;sdram_freq=600&quot;</span> &gt;&gt; /boot/config.txt
-<span class="nb">echo</span> <span class="s2">&quot;over_voltage=6&quot;</span> &gt;&gt; /boot/config.txt
+<span class="nb">echo</span> <span class="s2">&quot;sdram_freq=500&quot;</span> &gt;&gt; /boot/config.txt
+<span class="nb">echo</span> <span class="s2">&quot;over_voltage=2&quot;</span> &gt;&gt; /boot/config.txt
 
 <span class="c"># Форсируем Turbo режим в первые 60 секунд работы</span>
 <span class="nb">echo</span> <span class="s2">&quot;initial_turbo=60&quot;</span> &gt;&gt; /boot/config.txt
@@ -1150,7 +1149,7 @@ sed -i <span class="s1">&#39;s/(the &quot;Additional&quot; block)/(the &quot;Add
 4
 5
 6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Устанавливаем iptables</span>
-apt-get install iptables
+apt-get install -y iptables
 
 <span class="c"># Скачиваем скрипт для управления демоном</span>
 wget http://git.io/vs7i5 -O /etc/init.d/iptables
@@ -1253,7 +1252,11 @@ sed -i <span class="s1">&#39;s/iface lo inet loopback/iface lo inet loopback\npr
 20
 21
 22
-23</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Если не хотим заморачиваться с установкой последней версии fail2ban</span>
+23
+24
+25
+26
+27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Если не хотим заморачиваться с установкой последней версии fail2ban</span>
 <span class="c"># то просто ставим пакет и переходим к следующему шагу</span>
 apt-get install -y fail2ban
 
@@ -1265,13 +1268,17 @@ apt-get install -y python
 <span class="c"># Можете посмотреть номер последней релизной версии тут</span>
 <span class="c"># https://github.com/fail2ban/fail2ban/releases</span>
 <span class="nb">cd</span> /tmp
-wget https://github.com/fail2ban/fail2ban/archive/0.9.2.tar.gz -O fail2ban.tar.gz
+wget https://github.com/fail2ban/fail2ban/archive/0.9.3.tar.gz -O fail2ban.tar.gz
 
 <span class="c"># Разархивируем</span>
 mkdir fail2ban <span class="o">&amp;&amp;</span> tar -xzvf fail2ban.tar.gz -C ./fail2ban --strip-components<span class="o">=</span><span class="m">1</span> <span class="o">&amp;&amp;</span> <span class="nb">cd </span>fail2ban
 
 <span class="c"># Установим</span>
 python setup.py install
+
+<span class="c"># Если iptables версии ниже 1.4.20 (проверить можно командой `iptables --version`)</span>
+<span class="c"># необходимо выполнить эту команду</span>
+sed -i <span class="s1">&#39;s/lockingopt = -w/lockingopt = /g&#39;</span> /etc/fail2ban/action.d/iptables-common.conf
 
 <span class="c"># Скопируем скрипт для управления fail2ban демоном</span>
 cp ./files/debian-initd /etc/init.d/fail2ban
@@ -1316,8 +1323,8 @@ chmod <span class="m">755</span> /etc/init.d/fail2ban <span class="o">&amp;&amp;
 </pre></div>
 </td></tr></table>
 
-<p>Наконец, запустим fail2ban:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>/etc/init.d/fail2ban start
+<p>Наконец, перезагрузимся:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>reboot
 </pre></div>
 </td></tr></table>
 

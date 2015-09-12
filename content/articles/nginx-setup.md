@@ -4,12 +4,13 @@ Tags: nginx, nix
 Slug: nginx-setup
 Status: published
 
-В данной заметке я покажу, как скомпилировать nginx из исходников с необходимыми модулями, а также достаточно тонко настроить параметры сервера. Некоторые вещи в конфиге специфичны и подойдут далеко не для всех задач, так что аккуратно и внимательно с этапом настройки. Эта конфигурация хорошо подойдет для использования на Raspberry Pi. 
+В данной заметке я покажу как скомпилировать nginx из исходников с необходимыми модулями, а также довольно тонко настроить параметры сервера. Некоторые вещи в конфиге специфичны и подойдут далеко не для всех задач, так что аккуратно и внимательно с этапом настройки. Эта конфигурация хорошо подойдет для использования на Raspberry Pi. 
 
-Получим рута и создадим файл скрипта:
+Получим рута, доставим необходимые для сборки пакеты и создадим файл скрипта:
     
     #!bash
     su root
+    apt-get -y install curl wget build-essential libz-dev libssl-dev
     nano /tmp/build_nginx.sh
 
 Тело скрипта: 
@@ -17,8 +18,8 @@ Status: published
     #!bash
     #!/usr/bin/env bash
 
-    # Скрипт взят тут https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24
-    # и почти полностью его копирует, с некоторыми модификациями
+    # Почти полная копия скрипта https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24
+    # с некоторыми модификациями
 
     export VERSION_PCRE=pcre-8.37
     # Посмотрите номер последней версии openssl здесь https://www.openssl.org/news/changelog.html
@@ -38,10 +39,7 @@ Status: published
     rm -rf build
     rm -rf /etc/nginx-default
     mkdir build
-
-    # Для сборки нужны следующие пакеты 
-    apt-get -y install curl wget build-essential libz-dev libssl-dev
-
+    
     # Качаем исходники
     wget -P ./build $SOURCE_PCRE$VERSION_PCRE.tar.gz
     wget -P ./build $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz --no-check-certificate
@@ -230,20 +228,21 @@ Status: published
     #!bash
     mkdir /etc/nginx/conf.d && nano /etc/nginx/conf.d/home.conf
 
-Пример конфига для отдачи статики. Делает ЧПУ (удаляет .html и слеш в конце урлов).
+Пример конфига для отдачи статики:
 
     #!nginx
     server {
         listen       80;
         server_name  localhost;
 
+        # По умолчанию будем искать файл index.html
         index index.html;
 
-        # Путь до корня хоста в файловой системt
+        # Путь до корня хоста в файловой системы
         root /var/www;
 
-        # Удаляем слеш в конце урлов
-        rewrite ^/(.*)/$ /$1 permanent;
+        # Удаляем .html из адреса
+        rewrite ^(/.+)\.html$ $scheme://$host$1 permanent;
 
         # Пути до кастомных страниц с ошибками
         error_page 404 /404.html;
@@ -254,7 +253,7 @@ Status: published
             rewrite ^/(.*)/index$ /$1 permanent;
 
             # $uri/index.html для отдачи index.html из директории
-            # $uri.html для отдачи .html файловой
+            # $uri.html для отдачи .html файлов
             # $uri во всех остальных случаях будет искать файлы по имени как есть
             try_files $uri/index.html $uri.html $uri =404;
         }

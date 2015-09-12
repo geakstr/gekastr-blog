@@ -66,10 +66,12 @@
       <h2 class="title"><em>Грамотно собираем и конфигурируем nginx</em></h2>
       
     </header>
-    <div class="body"><p>В&nbsp;данной заметке я&nbsp;покажу, как скомпилировать nginx из&nbsp;исходников с&nbsp;необходимыми модулями, а&nbsp;также достаточно тонко настроить параметры сервера. Некоторые вещи в&nbsp;конфиге специфичны и&nbsp;подойдут далеко не&nbsp;для всех задач, так что аккуратно и&nbsp;внимательно с&nbsp;этапом настройки. Эта конфигурация хорошо подойдет для использования на&nbsp;Raspberry Pi. </p>
-<p>Получим рута и&nbsp;создадим файл скрипта:</p>
+    <div class="body"><p>В&nbsp;данной заметке я&nbsp;покажу как скомпилировать nginx из&nbsp;исходников с&nbsp;необходимыми модулями, а&nbsp;также довольно тонко настроить параметры сервера. Некоторые вещи в&nbsp;конфиге специфичны и&nbsp;подойдут далеко не&nbsp;для всех задач, так что аккуратно и&nbsp;внимательно с&nbsp;этапом настройки. Эта конфигурация хорошо подойдет для использования на&nbsp;Raspberry Pi. </p>
+<p>Получим рута, доставим необходимые для сборки пакеты и&nbsp;создадим файл скрипта:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="codehilite"><pre>su root
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre>su root
+apt-get -y install curl wget build-essential libz-dev libssl-dev
 nano /tmp/build_nginx.sh
 </pre></div>
 </td></tr></table>
@@ -153,13 +155,10 @@ nano /tmp/build_nginx.sh
 76
 77
 78
-79
-80
-81
-82</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c">#!/usr/bin/env bash</span>
+79</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c">#!/usr/bin/env bash</span>
 
-<span class="c"># Скрипт взят тут https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24</span>
-<span class="c"># и почти полностью его копирует, с некоторыми модификациями</span>
+<span class="c"># Почти полная копия скрипта https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24</span>
+<span class="c"># с некоторыми модификациями</span>
 
 <span class="nb">export </span><span class="nv">VERSION_PCRE</span><span class="o">=</span>pcre-8.37
 <span class="c"># Посмотрите номер последней версии openssl здесь https://www.openssl.org/news/changelog.html</span>
@@ -179,9 +178,6 @@ nano /tmp/build_nginx.sh
 rm -rf build
 rm -rf /etc/nginx-default
 mkdir build
-
-<span class="c"># Для сборки нужны следующие пакеты </span>
-apt-get -y install curl wget build-essential libz-dev libssl-dev
 
 <span class="c"># Качаем исходники</span>
 wget -P ./build <span class="nv">$SOURCE_PCRE$VERSION_PCRE</span>.tar.gz
@@ -480,7 +476,7 @@ nano /etc/nginx/nginx.conf
 </pre></div>
 </td></tr></table>
 
-<p>Пример конфига для отдачи статики. Делает ЧПУ<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>удаляет .html и&nbsp;слеш в&nbsp;конце урлов).</p>
+<p>Пример конфига для отдачи статики:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -506,17 +502,19 @@ nano /etc/nginx/nginx.conf
 23
 24
 25
-26</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">server</span> <span class="p">{</span>
+26
+27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">server</span> <span class="p">{</span>
     <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
     <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
 
+    <span class="c1"># По умолчанию будем искать файл index.html</span>
     <span class="kn">index</span> <span class="s">index.html</span><span class="p">;</span>
 
-    <span class="c1"># Путь до корня хоста в файловой системt</span>
+    <span class="c1"># Путь до корня хоста в файловой системы</span>
     <span class="kn">root</span> <span class="s">/var/www</span><span class="p">;</span>
 
-    <span class="c1"># Удаляем слеш в конце урлов</span>
-    <span class="kn">rewrite</span> <span class="s">^/(.*)/</span>$ <span class="s">/</span><span class="nv">$1</span> <span class="s">permanent</span><span class="p">;</span>
+    <span class="c1"># Удаляем .html из адреса</span>
+    <span class="kn">rewrite</span> <span class="s">^(/.+).html</span>$ <span class="nv">$scheme://$host$1</span> <span class="s">permanent</span><span class="p">;</span>
 
     <span class="c1"># Пути до кастомных страниц с ошибками</span>
     <span class="kn">error_page</span> <span class="mi">404</span> <span class="s">/404.html</span><span class="p">;</span>
@@ -527,7 +525,7 @@ nano /etc/nginx/nginx.conf
         <span class="kn">rewrite</span> <span class="s">^/(.*)/index</span>$ <span class="s">/</span><span class="nv">$1</span> <span class="s">permanent</span><span class="p">;</span>
 
         <span class="c1"># $uri/index.html для отдачи index.html из директории</span>
-        <span class="c1"># $uri.html для отдачи .html файловой</span>
+        <span class="c1"># $uri.html для отдачи .html файлов</span>
         <span class="c1"># $uri во всех остальных случаях будет искать файлы по имени как есть</span>
         <span class="kn">try_files</span> <span class="nv">$uri/index.html</span> <span class="nv">$uri.html</span> <span class="nv">$uri</span> <span class="p">=</span><span class="mi">404</span><span class="p">;</span>
     <span class="p">}</span>
