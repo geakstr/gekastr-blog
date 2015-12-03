@@ -97,7 +97,7 @@ nano /tmp/build_nginx.sh
 &lt;span class="c"&gt;# Посмотрите номер последней версии openssl здесь https://www.openssl.org/news/changelog.html&lt;/span&gt;
 &lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;VERSION_OPENSSL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;openssl-1.0.2d
 &lt;span class="c"&gt;# Номер последней версии nginx здесь http://nginx.org/en/download.html&lt;/span&gt;
-&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;VERSION_NGINX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;nginx-1.9.4
+&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;VERSION_NGINX&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;nginx-1.9.7
 
 &lt;span class="c"&gt;# Адреса откуда качать исходники&lt;/span&gt;
 &lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;SOURCE_OPENSSL&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;https://www.openssl.org/source/
@@ -466,15 +466,50 @@ nano /etc/nginx/nginx.conf
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;p&gt;Скачаем и&amp;nbsp;добавим в&amp;nbsp;автозагрузку скрипт управления демоном nginx:&lt;/p&gt;
-&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
-2&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;wget http://git.io/vs5QS -O /etc/init.d/nginx
-chmod &lt;span class="m"&gt;755&lt;/span&gt; /etc/init.d/nginx &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; insserv -v /etc/init.d/nginx
+&lt;p&gt;Добавим в&amp;nbsp;автозагрузку скрипт управления демоном nginx:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;nano /lib/systemd/system/nginx.service
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
-&lt;p&gt;И&amp;nbsp;стартуем сервер:&lt;/p&gt;
-&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;/etc/init.d/nginx start
+&lt;p&gt;Вставим туда следующее:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="o"&gt;[&lt;/span&gt;Unit&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;Description&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;The NGINX HTTP and reverse proxy server
+&lt;span class="nv"&gt;After&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;syslog.target network.target remote-fs.target nss-lookup.target
+
+&lt;span class="o"&gt;[&lt;/span&gt;Service&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;Type&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;forking
+&lt;span class="nv"&gt;PIDFile&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/run/nginx.pid
+&lt;span class="nv"&gt;ExecStartPre&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/usr/sbin/nginx -t
+&lt;span class="nv"&gt;ExecStart&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/usr/sbin/nginx
+&lt;span class="nv"&gt;ExecReload&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/bin/kill -s HUP &lt;span class="nv"&gt;$MAINPID&lt;/span&gt;
+&lt;span class="nv"&gt;ExecStop&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/bin/kill -s QUIT &lt;span class="nv"&gt;$MAINPID&lt;/span&gt;
+&lt;span class="nv"&gt;PrivateTmp&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nb"&gt;true&lt;/span&gt;
+
+&lt;span class="o"&gt;[&lt;/span&gt;Install&lt;span class="o"&gt;]&lt;/span&gt;
+&lt;span class="nv"&gt;WantedBy&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;multi-user.target
+&lt;/pre&gt;&lt;/div&gt;
+&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
+
+&lt;p&gt;И&amp;nbsp;инициализируем:&lt;/p&gt;
+&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
+2
+3&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;systemctl daemon-reload
+systemctl &lt;span class="nb"&gt;enable &lt;/span&gt;nginx.service
+systemctl start nginx.service
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Дмитрий Харитонов</dc:creator><pubDate>Wed, 26 Aug 2015 17:00:00 +0300</pubDate><guid>tag:dkharitonov.me,2015-08-26:blog/nginx-setup</guid><category>nginx</category><category>nix</category></item><item><title>Делаем Raspberry Pi доступным из интернета при динамичном IP</title><link>http://dkharitonov.me/blog/yandex-dns-for-raspberry-pi</link><description>&lt;p&gt;Если вы&amp;nbsp;хотите сделать пай доступным извне по&amp;nbsp;доменному имени, у&amp;nbsp;вас не&amp;nbsp;статичный&amp;nbsp;IP и&amp;nbsp;есть, собственно, домен, который можно делегировать, то, как вариант, предлагаю воспользоваться сервисом от&amp;nbsp;Яндекса&amp;nbsp;&amp;mdash; &lt;a href="https://pdd.yandex.ru"&gt;Почта для домена&lt;/a&gt;. Помимо предоставления почты Яндекс позволяет настраивать DNS параметры домена через REST API&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;бесплатно).&lt;/p&gt;
 &lt;p&gt;Этим мы&amp;nbsp;и&amp;nbsp;воспользуемся, написав соответствующий скрипт, который будет автоматически обновлять&amp;nbsp;IP адрес пая в&amp;nbsp;DNS Яндекса. Для начала, конечно, домен должен быть делегирован Яндексу. &lt;a href="https://yandex.ru/support/pdd/hosting.xml"&gt;Тут&lt;/a&gt; написано как это сделать.&lt;/p&gt;
@@ -614,6 +649,7 @@ chmod &lt;span class="m"&gt;755&lt;/span&gt; /etc/init.d/nginx &lt;span class="o
 &lt;/ul&gt;
 &lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;UPD:&lt;/strong&gt; Обновлено для Raspberry Pi&amp;nbsp;2.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;UPD2:&lt;/strong&gt; Обновлено для Debian Jessie&lt;/p&gt;
 &lt;p&gt;Этот ман собирался мной в&amp;nbsp;течение длительного времени использования Raspberry Pi. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа &lt;a href="https://syncthing.net"&gt;syncthing&lt;/a&gt;, XBMC, торрентокачалки &lt;nobr&gt;и т. п.&lt;/nobr&gt; В&amp;nbsp;общем, для домашнего использования.&lt;/p&gt;
 &lt;h3 id="toc_63316041064523f3b4740b01343c43e6"&gt;Скачиваем и&amp;nbsp;конфигурируем образ&lt;/h3&gt;
 &lt;p&gt;Детально про используемый образ можно почитать &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst"&gt;в&amp;nbsp;репозитории проекта&lt;/a&gt;. Для начала необходимо узнать номер последней версии образа &lt;a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest"&gt;тут&lt;/a&gt;.&lt;/p&gt;
@@ -631,8 +667,7 @@ chmod &lt;span class="m"&gt;755&lt;/span&gt; /etc/init.d/nginx &lt;span class="o
 12
 13
 14
-15
-16&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Замените &amp;lt;version-number&amp;gt; на номер версии&lt;/span&gt;
+15&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Замените &amp;lt;version-number&amp;gt; на номер версии&lt;/span&gt;
 &lt;span class="nv"&gt;rpi_inst_v&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;v&amp;lt;version-number&amp;gt;
 
 &lt;span class="c"&gt;# Скачиваем образ&lt;/span&gt;
@@ -645,8 +680,7 @@ unzip raspbian-ua-netinst-&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="
 &lt;span class="c"&gt;# Укажем пароль (свой) для root пользователя&lt;/span&gt;
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;rootpw=&amp;lt;password&amp;gt;&amp;quot;&lt;/span&gt; &amp;gt; ./installer-config.txt
 
-&lt;span class="c"&gt;# (опционально) Указываем имя дистрибутива и дополнительные нужные вам пакеты&lt;/span&gt;
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;release=wheezy&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; ./installer-config.txt
+&lt;span class="c"&gt;# (опционально) Указываем дополнительные нужные вам пакеты&lt;/span&gt;
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;packages=sudo,curl,nano&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; ./installer-config.txt
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
@@ -907,7 +941,7 @@ apt-get install -y raspi-copies-and-fills
 sed -i &lt;span class="s1"&gt;&amp;#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&amp;#39;&lt;/span&gt; /etc/network/interfaces
 &lt;span class="c"&gt;# На что-то вроде такого, но специфичного для вашей сети&lt;/span&gt;
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;iface eth0 inet static&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
-&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;address 192.168.1.100&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
+&lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;address 192.168.1.107&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;gateway 192.168.1.1&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;netmask 255.255.255.0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
 &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;network 192.168.1.0&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; /etc/network/interfaces
@@ -1039,21 +1073,6 @@ sed -i &lt;span class="s1"&gt;&amp;#39;s/(the &amp;quot;Additional&amp;quot; blo
 
 &lt;h3 id="toc_b94a67aec6e2351c725ca095b39816cd"&gt;Настраиваем фаервол&lt;/h3&gt;
 &lt;p&gt;Рекомендую не&amp;nbsp;полениться и&amp;nbsp;сконфигурировать фаервол&amp;nbsp;&amp;mdash; это хороший способ повысить безопасность системы. Установим &lt;code&gt;iptables&lt;/code&gt;&lt;span style="margin-right:0.3em;"&gt; &lt;/span&gt;&lt;span style="margin-left:-0.3em;"&gt;(&lt;/span&gt;утилиту для управления параметрами фаервола).&lt;/p&gt;
-&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
-2
-3
-4
-5
-6&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Устанавливаем iptables&lt;/span&gt;
-apt-get install -y iptables
-
-&lt;span class="c"&gt;# Скачиваем скрипт для управления демоном&lt;/span&gt;
-wget http://git.io/vs7i5 -O /etc/init.d/iptables
-chmod &lt;span class="m"&gt;755&lt;/span&gt; /etc/init.d/iptables &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; insserv -v /etc/init.d/iptables
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
-&lt;p&gt;Теперь зададим несколько базовых правил &lt;code&gt;nano /etc/iptables.rules&lt;/code&gt;:&lt;/p&gt;
 &lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt; 1
  2
  3
@@ -1070,57 +1089,23 @@ chmod &lt;span class="m"&gt;755&lt;/span&gt; /etc/init.d/iptables &lt;span class
 14
 15
 16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;*filter
+17&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Устанавливаем iptables&lt;/span&gt;
+apt-get install -y iptables
 
-&lt;span class="c"&gt;# Принимаем все пакеты для loopback трафика&lt;/span&gt;
--A INPUT -i lo -j ACCEPT -m comment --comment &lt;span class="s2"&gt;&amp;quot;Allow all loopback traffic&amp;quot;&lt;/span&gt;
+&lt;span class="c"&gt;# Скачиваем скрипты для systemd&lt;/span&gt;
+&lt;span class="nb"&gt;cd&lt;/span&gt; /tmp
+git clone https://github.com/geakstr/systemd-iptables.git
+&lt;span class="nb"&gt;cd &lt;/span&gt;systemd-iptables
+cp -r etc/iptables /etc/iptables
+cp -r etc/systemd/system/iptables.service /etc/systemd/system/
 
-&lt;span class="c"&gt;# Запрещаем все, что на 127 сети и не использует loopback трафик&lt;/span&gt;
--A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT -m comment --comment &lt;span class="s2"&gt;&amp;quot;Drop all traffic to 127 that doesnt use lo&amp;quot;&lt;/span&gt;
+&lt;span class="c"&gt;# Внимательно настраиваем правила для фаервола (по iptables очень много информации в сети)&lt;/span&gt;
+nano /etc/iptables/iptables.rules
 
-&lt;span class="c"&gt;# Принимаем все входящие пакеты от уже установленных соединений&lt;/span&gt;
--A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT -m comment --comment &lt;span class="s2"&gt;&amp;quot;Allow all incoming on established connections&amp;quot;&lt;/span&gt;
-
-&lt;span class="c"&gt;# Разрешаем весь исходящий трафик&lt;/span&gt;
--A OUTPUT -j ACCEPT -m comment --comment &lt;span class="s2"&gt;&amp;quot;Accept all outgoing&amp;quot;&lt;/span&gt;
-
-&lt;span class="c"&gt;# Разрешаем Ping&lt;/span&gt;
--A INPUT -p icmp -m icmp --icmp-type &lt;span class="m"&gt;8&lt;/span&gt; -j ACCEPT -m comment --comment &lt;span class="s2"&gt;&amp;quot;Allow Ping&amp;quot;&lt;/span&gt;
-
-&lt;span class="c"&gt;# SSH &lt;/span&gt;
--A INPUT -p tcp -m tcp --dport &lt;span class="m"&gt;22&lt;/span&gt; -j ACCEPT
-
-&lt;span class="c"&gt;# ... остальные нужные вам правила. По iptables очень много информации в сети&lt;/span&gt;
-
-&lt;span class="c"&gt;# Все остальное отклонять. Эти две инструкции должны быть в конце файла&lt;/span&gt;
--A INPUT -j REJECT -m comment --comment &lt;span class="s2"&gt;&amp;quot;Reject all incoming&amp;quot;&lt;/span&gt;
--A FORWARD -j REJECT -m comment --comment &lt;span class="s2"&gt;&amp;quot;Reject all forwarded&amp;quot;&lt;/span&gt;
-
-&lt;span class="c"&gt;# Говорим фаерволу применить инструкции&lt;/span&gt;
-COMMIT
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
-&lt;p&gt;Также необходимо задать правила фаерволу &lt;em&gt;перед&lt;/em&gt; поднятием сетевых интерфейсов:&lt;/p&gt;
-&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1
-2&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;&lt;span class="c"&gt;# Немного правим файл /etc/network/interfaces&lt;/span&gt;
-sed -i &lt;span class="s1"&gt;&amp;#39;s/iface lo inet loopback/iface lo inet loopback\npre-up iptables-restore &amp;lt; \/etc\/iptables.rules/g&amp;#39;&lt;/span&gt; /etc/network/interfaces
-&lt;/pre&gt;&lt;/div&gt;
-&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
-
-&lt;p&gt;Наконец, стартуем фаервол:&lt;/p&gt;
-&lt;table class="codehilitetable"&gt;&lt;tr&gt;&lt;td class="linenos"&gt;&lt;div class="linenodiv"&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/div&gt;&lt;/td&gt;&lt;td class="code"&gt;&lt;div class="codehilite"&gt;&lt;pre&gt;/etc/init.d/iptables start
+&lt;span class="c"&gt;# Запускаем это всё&lt;/span&gt;
+systemctl daemon-reload
+systemctl &lt;span class="nb"&gt;enable &lt;/span&gt;iptables.service
+systemctl start iptables.service
 &lt;/pre&gt;&lt;/div&gt;
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 

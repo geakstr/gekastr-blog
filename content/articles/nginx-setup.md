@@ -25,7 +25,7 @@ Status: published
     # Посмотрите номер последней версии openssl здесь https://www.openssl.org/news/changelog.html
     export VERSION_OPENSSL=openssl-1.0.2d
     # Номер последней версии nginx здесь http://nginx.org/en/download.html
-    export VERSION_NGINX=nginx-1.9.4
+    export VERSION_NGINX=nginx-1.9.7
 
     # Адреса откуда качать исходники
     export SOURCE_OPENSSL=https://www.openssl.org/source/
@@ -259,13 +259,33 @@ Status: published
         }
     }
 
-Скачаем и добавим в автозагрузку скрипт управления демоном nginx:
+Добавим в автозагрузку скрипт управления демоном nginx:
 
     #!bash
-    wget http://git.io/vs5QS -O /etc/init.d/nginx
-    chmod 755 /etc/init.d/nginx && insserv -v /etc/init.d/nginx
+    nano /lib/systemd/system/nginx.service
 
-И стартуем сервер:
+Вставим туда следующее:
 
     #!bash
-    /etc/init.d/nginx start
+    [Unit]
+    Description=The NGINX HTTP and reverse proxy server
+    After=syslog.target network.target remote-fs.target nss-lookup.target
+
+    [Service]
+    Type=forking
+    PIDFile=/run/nginx.pid
+    ExecStartPre=/usr/sbin/nginx -t
+    ExecStart=/usr/sbin/nginx
+    ExecReload=/bin/kill -s HUP $MAINPID
+    ExecStop=/bin/kill -s QUIT $MAINPID
+    PrivateTmp=true
+
+    [Install]
+    WantedBy=multi-user.target
+
+И инициализируем:
+
+    #!bash
+    systemctl daemon-reload
+    systemctl enable nginx.service
+    systemctl start nginx.service

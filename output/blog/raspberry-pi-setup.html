@@ -62,7 +62,7 @@
 <section id="content" class="article-page-content">
   <article class="post full-post">
     <header class="header">
-          <div class="readtime"><i class="sprite sprite-clock"></i> 20 мин. на прочтение</div>
+          <div class="readtime"><i class="sprite sprite-clock"></i> 18 мин. на прочтение</div>
       <h2 class="title"><em>Вдумчивая настройка Raspberry Pi</em></h2>
       
     </header>
@@ -89,6 +89,7 @@
 </ul>
 </div>
 <p><strong>UPD:</strong> Обновлено для Raspberry Pi&nbsp;2.</p>
+<p><strong>UPD2:</strong> Обновлено для Debian Jessie</p>
 <p>Этот ман собирался мной в&nbsp;течение длительного времени использования Raspberry Pi. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа <a href="https://syncthing.net">syncthing</a>, XBMC, торрентокачалки <nobr>и т. п.</nobr> В&nbsp;общем, для домашнего использования.</p>
 <h3 id="toc_63316041064523f3b4740b01343c43e6">Скачиваем и&nbsp;конфигурируем образ</h3>
 <p>Детально про используемый образ можно почитать <a href="https://github.com/debian-pi/raspbian-ua-netinst">в&nbsp;репозитории проекта</a>. Для начала необходимо узнать номер последней версии образа <a href="https://github.com/debian-pi/raspbian-ua-netinst/releases/latest">тут</a>.</p>
@@ -106,8 +107,7 @@
 12
 13
 14
-15
-16</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Замените &lt;version-number&gt; на номер версии</span>
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Замените &lt;version-number&gt; на номер версии</span>
 <span class="nv">rpi_inst_v</span><span class="o">=</span>v&lt;version-number&gt;
 
 <span class="c"># Скачиваем образ</span>
@@ -120,8 +120,7 @@ unzip raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v<
 <span class="c"># Укажем пароль (свой) для root пользователя</span>
 <span class="nb">echo</span> <span class="s2">&quot;rootpw=&lt;password&gt;&quot;</span> &gt; ./installer-config.txt
 
-<span class="c"># (опционально) Указываем имя дистрибутива и дополнительные нужные вам пакеты</span>
-<span class="nb">echo</span> <span class="s2">&quot;release=wheezy&quot;</span> &gt;&gt; ./installer-config.txt
+<span class="c"># (опционально) Указываем дополнительные нужные вам пакеты</span>
 <span class="nb">echo</span> <span class="s2">&quot;packages=sudo,curl,nano&quot;</span> &gt;&gt; ./installer-config.txt
 </pre></div>
 </td></tr></table>
@@ -382,7 +381,7 @@ apt-get install -y raspi-copies-and-fills
 sed -i <span class="s1">&#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&#39;</span> /etc/network/interfaces
 <span class="c"># На что-то вроде такого, но специфичного для вашей сети</span>
 <span class="nb">echo</span> <span class="s2">&quot;iface eth0 inet static&quot;</span> &gt;&gt; /etc/network/interfaces
-<span class="nb">echo</span> <span class="s2">&quot;address 192.168.1.100&quot;</span> &gt;&gt; /etc/network/interfaces
+<span class="nb">echo</span> <span class="s2">&quot;address 192.168.1.107&quot;</span> &gt;&gt; /etc/network/interfaces
 <span class="nb">echo</span> <span class="s2">&quot;gateway 192.168.1.1&quot;</span> &gt;&gt; /etc/network/interfaces
 <span class="nb">echo</span> <span class="s2">&quot;netmask 255.255.255.0&quot;</span> &gt;&gt; /etc/network/interfaces
 <span class="nb">echo</span> <span class="s2">&quot;network 192.168.1.0&quot;</span> &gt;&gt; /etc/network/interfaces
@@ -514,21 +513,6 @@ sed -i <span class="s1">&#39;s/(the &quot;Additional&quot; block)/(the &quot;Add
 
 <h3 id="toc_b94a67aec6e2351c725ca095b39816cd">Настраиваем фаервол</h3>
 <p>Рекомендую не&nbsp;полениться и&nbsp;сконфигурировать фаервол&nbsp;&mdash; это хороший способ повысить безопасность системы. Установим <code>iptables</code><span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>утилиту для управления параметрами фаервола).</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Устанавливаем iptables</span>
-apt-get install -y iptables
-
-<span class="c"># Скачиваем скрипт для управления демоном</span>
-wget http://git.io/vs7i5 -O /etc/init.d/iptables
-chmod <span class="m">755</span> /etc/init.d/iptables <span class="o">&amp;&amp;</span> insserv -v /etc/init.d/iptables
-</pre></div>
-</td></tr></table>
-
-<p>Теперь зададим несколько базовых правил <code>nano /etc/iptables.rules</code>:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -545,57 +529,23 @@ chmod <span class="m">755</span> /etc/init.d/iptables <span class="o">&amp;&amp;
 14
 15
 16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28</pre></div></td><td class="code"><div class="codehilite"><pre>*filter
+17</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Устанавливаем iptables</span>
+apt-get install -y iptables
 
-<span class="c"># Принимаем все пакеты для loopback трафика</span>
--A INPUT -i lo -j ACCEPT -m comment --comment <span class="s2">&quot;Allow all loopback traffic&quot;</span>
+<span class="c"># Скачиваем скрипты для systemd</span>
+<span class="nb">cd</span> /tmp
+git clone https://github.com/geakstr/systemd-iptables.git
+<span class="nb">cd </span>systemd-iptables
+cp -r etc/iptables /etc/iptables
+cp -r etc/systemd/system/iptables.service /etc/systemd/system/
 
-<span class="c"># Запрещаем все, что на 127 сети и не использует loopback трафик</span>
--A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT -m comment --comment <span class="s2">&quot;Drop all traffic to 127 that doesnt use lo&quot;</span>
+<span class="c"># Внимательно настраиваем правила для фаервола (по iptables очень много информации в сети)</span>
+nano /etc/iptables/iptables.rules
 
-<span class="c"># Принимаем все входящие пакеты от уже установленных соединений</span>
--A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT -m comment --comment <span class="s2">&quot;Allow all incoming on established connections&quot;</span>
-
-<span class="c"># Разрешаем весь исходящий трафик</span>
--A OUTPUT -j ACCEPT -m comment --comment <span class="s2">&quot;Accept all outgoing&quot;</span>
-
-<span class="c"># Разрешаем Ping</span>
--A INPUT -p icmp -m icmp --icmp-type <span class="m">8</span> -j ACCEPT -m comment --comment <span class="s2">&quot;Allow Ping&quot;</span>
-
-<span class="c"># SSH </span>
--A INPUT -p tcp -m tcp --dport <span class="m">22</span> -j ACCEPT
-
-<span class="c"># ... остальные нужные вам правила. По iptables очень много информации в сети</span>
-
-<span class="c"># Все остальное отклонять. Эти две инструкции должны быть в конце файла</span>
--A INPUT -j REJECT -m comment --comment <span class="s2">&quot;Reject all incoming&quot;</span>
--A FORWARD -j REJECT -m comment --comment <span class="s2">&quot;Reject all forwarded&quot;</span>
-
-<span class="c"># Говорим фаерволу применить инструкции</span>
-COMMIT
-</pre></div>
-</td></tr></table>
-
-<p>Также необходимо задать правила фаерволу <em>перед</em> поднятием сетевых интерфейсов:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Немного правим файл /etc/network/interfaces</span>
-sed -i <span class="s1">&#39;s/iface lo inet loopback/iface lo inet loopback\npre-up iptables-restore &lt; \/etc\/iptables.rules/g&#39;</span> /etc/network/interfaces
-</pre></div>
-</td></tr></table>
-
-<p>Наконец, стартуем фаервол:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>/etc/init.d/iptables start
+<span class="c"># Запускаем это всё</span>
+systemctl daemon-reload
+systemctl <span class="nb">enable </span>iptables.service
+systemctl start iptables.service
 </pre></div>
 </td></tr></table>
 

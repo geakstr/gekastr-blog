@@ -7,6 +7,8 @@ Slug: raspberry-pi-setup
 
 **UPD:** Обновлено для Raspberry Pi 2.
 
+**UPD2:** Обновлено для Debian Jessie
+
 Этот ман собирался мной в течение длительного времени использования Raspberry Pi. Такая конфигурация подходит для организации простого веб-сервера, установки туда программ типа [syncthing] [syncthing], XBMC, торрентокачалки и т.п. В общем, для домашнего использования.
 
 ### Скачиваем и конфигурируем образ 
@@ -27,8 +29,7 @@ Slug: raspberry-pi-setup
     # Укажем пароль (свой) для root пользователя
     echo "rootpw=<password>" > ./installer-config.txt
 
-    # (опционально) Указываем имя дистрибутива и дополнительные нужные вам пакеты
-    echo "release=wheezy" >> ./installer-config.txt
+    # (опционально) Указываем дополнительные нужные вам пакеты
     echo "packages=sudo,curl,nano" >> ./installer-config.txt
 
 ### Записываем образ на SD карту
@@ -178,7 +179,7 @@ Slug: raspberry-pi-setup
     sed -i 's/iface eth0 inet dhcp/#iface eth0 inet dhcp/g' /etc/network/interfaces
     # На что-то вроде такого, но специфичного для вашей сети
     echo "iface eth0 inet static" >> /etc/network/interfaces
-    echo "address 192.168.1.100" >> /etc/network/interfaces
+    echo "address 192.168.1.107" >> /etc/network/interfaces
     echo "gateway 192.168.1.1" >> /etc/network/interfaces
     echo "netmask 255.255.255.0" >> /etc/network/interfaces
     echo "network 192.168.1.0" >> /etc/network/interfaces
@@ -262,52 +263,20 @@ Slug: raspberry-pi-setup
     # Устанавливаем iptables
     apt-get install -y iptables
 
-    # Скачиваем скрипт для управления демоном
-    wget http://git.io/vs7i5 -O /etc/init.d/iptables
-    chmod 755 /etc/init.d/iptables && insserv -v /etc/init.d/iptables
+    # Скачиваем скрипты для systemd
+    cd /tmp
+    git clone https://github.com/geakstr/systemd-iptables.git
+    cd systemd-iptables
+    cp -r etc/iptables /etc/iptables
+    cp -r etc/systemd/system/iptables.service /etc/systemd/system/
 
-Теперь зададим несколько базовых правил `nano /etc/iptables.rules`:
+    # Внимательно настраиваем правила для фаервола (по iptables очень много информации в сети)
+    nano /etc/iptables/iptables.rules
 
-    #!bash
-    *filter
-
-    # Принимаем все пакеты для loopback трафика
-    -A INPUT -i lo -j ACCEPT -m comment --comment "Allow all loopback traffic"
-
-    # Запрещаем все, что на 127 сети и не использует loopback трафик
-    -A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT -m comment --comment "Drop all traffic to 127 that doesnt use lo"
-
-    # Принимаем все входящие пакеты от уже установленных соединений
-    -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT -m comment --comment "Allow all incoming on established connections"
-
-    # Разрешаем весь исходящий трафик
-    -A OUTPUT -j ACCEPT -m comment --comment "Accept all outgoing"
-
-    # Разрешаем Ping
-    -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT -m comment --comment "Allow Ping"
-
-    # SSH 
-    -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-
-    # ... остальные нужные вам правила. По iptables очень много информации в сети
-
-    # Все остальное отклонять. Эти две инструкции должны быть в конце файла
-    -A INPUT -j REJECT -m comment --comment "Reject all incoming"
-    -A FORWARD -j REJECT -m comment --comment "Reject all forwarded"
-
-    # Говорим фаерволу применить инструкции
-    COMMIT
-
-Также необходимо задать правила фаерволу _перед_ поднятием сетевых интерфейсов:
-
-    #!bash
-    # Немного правим файл /etc/network/interfaces
-    sed -i 's/iface lo inet loopback/iface lo inet loopback\\npre-up iptables-restore < \\/etc\\/iptables.rules/g' /etc/network/interfaces
-
-Наконец, стартуем фаервол:
-
-    #!bash
-    /etc/init.d/iptables start
+    # Запускаем это всё
+    systemctl daemon-reload
+    systemctl enable iptables.service
+    systemctl start iptables.service
 
 #### Баним ботов пачками с помощью fail2ban
 

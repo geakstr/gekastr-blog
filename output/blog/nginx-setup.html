@@ -62,7 +62,7 @@
 <section id="content" class="article-page-content">
   <article class="post full-post">
     <header class="header">
-          <div class="readtime"><i class="sprite sprite-clock"></i> 12 мин. на прочтение</div>
+          <div class="readtime"><i class="sprite sprite-clock"></i> 13 мин. на прочтение</div>
       <h2 class="title"><em>Грамотно собираем и конфигурируем nginx</em></h2>
       
     </header>
@@ -164,7 +164,7 @@ nano /tmp/build_nginx.sh
 <span class="c"># Посмотрите номер последней версии openssl здесь https://www.openssl.org/news/changelog.html</span>
 <span class="nb">export </span><span class="nv">VERSION_OPENSSL</span><span class="o">=</span>openssl-1.0.2d
 <span class="c"># Номер последней версии nginx здесь http://nginx.org/en/download.html</span>
-<span class="nb">export </span><span class="nv">VERSION_NGINX</span><span class="o">=</span>nginx-1.9.4
+<span class="nb">export </span><span class="nv">VERSION_NGINX</span><span class="o">=</span>nginx-1.9.7
 
 <span class="c"># Адреса откуда качать исходники</span>
 <span class="nb">export </span><span class="nv">SOURCE_OPENSSL</span><span class="o">=</span>https://www.openssl.org/source/
@@ -533,15 +533,50 @@ nano /etc/nginx/nginx.conf
 </pre></div>
 </td></tr></table>
 
-<p>Скачаем и&nbsp;добавим в&nbsp;автозагрузку скрипт управления демоном nginx:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="codehilite"><pre>wget http://git.io/vs5QS -O /etc/init.d/nginx
-chmod <span class="m">755</span> /etc/init.d/nginx <span class="o">&amp;&amp;</span> insserv -v /etc/init.d/nginx
+<p>Добавим в&nbsp;автозагрузку скрипт управления демоном nginx:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>nano /lib/systemd/system/nginx.service
 </pre></div>
 </td></tr></table>
 
-<p>И&nbsp;стартуем сервер:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>/etc/init.d/nginx start
+<p>Вставим туда следующее:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">[</span>Unit<span class="o">]</span>
+<span class="nv">Description</span><span class="o">=</span>The NGINX HTTP and reverse proxy server
+<span class="nv">After</span><span class="o">=</span>syslog.target network.target remote-fs.target nss-lookup.target
+
+<span class="o">[</span>Service<span class="o">]</span>
+<span class="nv">Type</span><span class="o">=</span>forking
+<span class="nv">PIDFile</span><span class="o">=</span>/run/nginx.pid
+<span class="nv">ExecStartPre</span><span class="o">=</span>/usr/sbin/nginx -t
+<span class="nv">ExecStart</span><span class="o">=</span>/usr/sbin/nginx
+<span class="nv">ExecReload</span><span class="o">=</span>/bin/kill -s HUP <span class="nv">$MAINPID</span>
+<span class="nv">ExecStop</span><span class="o">=</span>/bin/kill -s QUIT <span class="nv">$MAINPID</span>
+<span class="nv">PrivateTmp</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="o">[</span>Install<span class="o">]</span>
+<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
+</pre></div>
+</td></tr></table>
+
+<p>И&nbsp;инициализируем:</p>
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="codehilite"><pre>systemctl daemon-reload
+systemctl <span class="nb">enable </span>nginx.service
+systemctl start nginx.service
 </pre></div>
 </td></tr></table></div>
     <footer class="meta">
