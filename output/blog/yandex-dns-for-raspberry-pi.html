@@ -121,51 +121,51 @@
 43
 44
 45
-46</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c">#!/usr/bin/env bash</span>
+46</pre></div></td><td class="code"><div class="codehilite"><pre><span class="ch">#!/usr/bin/env bash</span>
 
-<span class="c"># Использование:</span>
-<span class="c"># ./ya_dns &lt;id&gt; &lt;domain&gt; &lt;subdomain&gt; &lt;ttl&gt;</span>
+<span class="c1"># Использование:</span>
+<span class="c1"># ./ya_dns &lt;id&gt; &lt;domain&gt; &lt;subdomain&gt; &lt;ttl&gt;</span>
 
-<span class="c"># Получим токен для доступа к API</span>
-<span class="c"># Нужно заменить &lt;yourdomain.com&gt; на имя домена</span>
-<span class="c"># https://pddimp.yandex.ru/token/index.xml?domain=&lt;yourdomain.com&gt;</span>
+<span class="c1"># Получим токен для доступа к API</span>
+<span class="c1"># Нужно заменить &lt;yourdomain.com&gt; на имя домена</span>
+<span class="c1"># https://pddimp.yandex.ru/token/index.xml?domain=&lt;yourdomain.com&gt;</span>
 <span class="nv">token</span><span class="o">=</span><span class="s2">&quot;&lt;put token here&gt;&quot;</span>
 
-<span class="c"># Посмотреть информацию о DNS параметрах тут</span>
-<span class="c"># Необходимо найти A запись для нужного домена/поддомена.</span>
-<span class="c"># Для использования скрипта нужно узнать следующее: id, domain, subdomain, ttl</span>
-<span class="c"># https://pddimp.yandex.ru/nsapi/get_domain_records.xml?token=&lt;your_token_here&gt;&amp;domain=&lt;yourdomain.com&gt;</span>
+<span class="c1"># Посмотреть информацию о DNS параметрах тут</span>
+<span class="c1"># Необходимо найти A запись для нужного домена/поддомена.</span>
+<span class="c1"># Для использования скрипта нужно узнать следующее: id, domain, subdomain, ttl</span>
+<span class="c1"># https://pddimp.yandex.ru/nsapi/get_domain_records.xml?token=&lt;your_token_here&gt;&amp;domain=&lt;yourdomain.com&gt;</span>
 
-<span class="c"># Подробнее про редактирование записи по API можно почитать тут:</span>
-<span class="c"># https://tech.yandex.ru/pdd/doc/reference/dns-edit-docpage/</span>
+<span class="c1"># Подробнее про редактирование записи по API можно почитать тут:</span>
+<span class="c1"># https://tech.yandex.ru/pdd/doc/reference/dns-edit-docpage/</span>
 
 <span class="nv">args</span><span class="o">=(</span><span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span><span class="o">)</span>
 
-<span class="c"># Тут будем хранить IP</span>
+<span class="c1"># Тут будем хранить IP</span>
 <span class="nv">ip_file</span><span class="o">=</span><span class="s2">&quot;/tmp/cur_ip.txt&quot;</span>
 
-<span class="nv">old_ip</span><span class="o">=</span><span class="k">$(</span>cat <span class="nv">$ip_file</span><span class="k">)</span>
+<span class="nv">old_ip</span><span class="o">=</span><span class="k">$(</span>cat $ip_file<span class="k">)</span>
 
-<span class="c"># Получим текущий IP</span>
+<span class="c1"># Получим текущий IP</span>
 <span class="nv">cur_ip</span><span class="o">=</span><span class="k">$(</span>/usr/bin/curl -sL http://icanhazip.com<span class="k">)</span>
 
-<span class="c"># Если IP изменился с прошлого раза</span>
-<span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$cur_ip</span><span class="s2">&quot;</span> !<span class="o">=</span> <span class="s2">&quot;</span><span class="nv">$old_ip</span><span class="s2">&quot;</span> <span class="o">]</span>
+<span class="c1"># Если IP изменился с прошлого раза</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$c</span><span class="s2">ur_ip&quot;</span> !<span class="o">=</span> <span class="s2">&quot;</span>$<span class="s2">old_ip&quot;</span> <span class="o">]</span>
 <span class="k">then</span>
-  <span class="c"># Сохраним новый IP</span>
-  <span class="nb">echo</span> <span class="nv">$cur_ip</span> &gt; <span class="nv">$ip_file</span>
+  <span class="c1"># Сохраним новый IP</span>
+  <span class="nb">echo</span> <span class="nv">$c</span>ur_ip &gt; $ip_file
 
   <span class="nv">record_id</span><span class="o">=</span><span class="si">${</span><span class="nv">args</span><span class="p">[0]</span><span class="si">}</span>
   <span class="nv">domain</span><span class="o">=</span><span class="si">${</span><span class="nv">args</span><span class="p">[1]</span><span class="si">}</span>
   <span class="nv">subdomain</span><span class="o">=</span><span class="si">${</span><span class="nv">args</span><span class="p">[2]</span><span class="si">}</span>
   <span class="nv">ttl</span><span class="o">=</span><span class="si">${</span><span class="nv">args</span><span class="p">[3]</span><span class="si">}</span>
 
-  <span class="c"># Обновим IP на яндексе</span>
+  <span class="c1"># Обновим IP на яндексе</span>
   <span class="nv">ya_pdd_url</span><span class="o">=</span><span class="s2">&quot;https://pddimp.yandex.ru/nsapi/edit_a_record.xml?&quot;</span>
   <span class="nv">query_url</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ya_pdd_url</span><span class="si">}</span><span class="s2">token=</span><span class="si">${</span><span class="nv">token</span><span class="si">}</span><span class="s2">&amp;record_id=</span><span class="si">${</span><span class="nv">record_id</span><span class="si">}</span><span class="s2">&amp;domain=</span><span class="si">${</span><span class="nv">domain</span><span class="si">}</span><span class="s2">&amp;subdomain=</span><span class="si">${</span><span class="nv">subdomain</span><span class="si">}</span><span class="s2">&amp;ttl=</span><span class="si">${</span><span class="nv">ttl</span><span class="si">}</span><span class="s2">&amp;content=</span><span class="si">${</span><span class="nv">cur_ip</span><span class="si">}</span><span class="s2">&quot;</span>
-  <span class="nv">ya_pdd_response</span><span class="o">=</span><span class="k">$(</span>/usr/bin/curl -sL <span class="nv">$query_url</span><span class="k">)</span>
+  <span class="nv">ya_pdd_response</span><span class="o">=</span><span class="k">$(</span>/usr/bin/curl -sL $query_url<span class="k">)</span>
 
-  <span class="c">#echo $ya_pdd_response</span>
+  <span class="c1">#echo $ya_pdd_response</span>
 <span class="k">fi</span>
 </pre></div>
 </td></tr></table>
@@ -177,7 +177,7 @@
 
 <p>Остается добавить его на&nbsp;запуск по&nbsp;расписанию: <code>crontab -e</code></p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Запускать каждые 5 минут</span>
+2</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Запускать каждые 5 минут</span>
 */5 * * * * /home/pi/bin/ya_dns &lt;id&gt; &lt;domain&gt; &lt;subdomain&gt; &lt;ttl&gt;
 </pre></div>
 </td></tr></table>

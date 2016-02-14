@@ -107,20 +107,20 @@
 12
 13
 14
-15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Замените &lt;version-number&gt; на номер версии</span>
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Замените &lt;version-number&gt; на номер версии</span>
 <span class="nv">rpi_inst_v</span><span class="o">=</span>v&lt;version-number&gt;
 
-<span class="c"># Скачиваем образ</span>
-wget https://github.com/debian-pi/raspbian-ua-netinst/releases/download/<span class="nv">$rpi_inst_v</span>/raspbian-ua-netinst-<span class="nv">$rpi_inst_v</span>.zip
+<span class="c1"># Скачиваем образ</span>
+wget https://github.com/debian-pi/raspbian-ua-netinst/releases/download/$rpi_inst_v/raspbian-ua-netinst-$rpi_inst_v.zip
 
-<span class="c"># Разархивируем</span>
+<span class="c1"># Разархивируем</span>
 unzip raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v</span><span class="si">}</span>.zip -d ./raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v</span><span class="si">}</span>
-<span class="nb">cd </span>raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v</span><span class="si">}</span>
+<span class="nb">cd</span> raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v</span><span class="si">}</span>
 
-<span class="c"># Укажем пароль (свой) для root пользователя</span>
+<span class="c1"># Укажем пароль (свой) для root пользователя</span>
 <span class="nb">echo</span> <span class="s2">&quot;rootpw=&lt;password&gt;&quot;</span> &gt; ./installer-config.txt
 
-<span class="c"># (опционально) Указываем дополнительные нужные вам пакеты</span>
+<span class="c1"># (опционально) Указываем дополнительные нужные вам пакеты</span>
 <span class="nb">echo</span> <span class="s2">&quot;packages=sudo,curl,nano&quot;</span> &gt;&gt; ./installer-config.txt
 </pre></div>
 </td></tr></table>
@@ -137,16 +137,16 @@ unzip raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v<
  8
  9
 10
-11</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Узнаём имя карточки (/dev/diskX, где X — число)</span>
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Узнаём имя карточки (/dev/diskX, где X — число)</span>
 diskutil list
 
-<span class="c"># Форматируем в FAT 32</span>
+<span class="c1"># Форматируем в FAT 32</span>
 diskutil eraseDisk FAT32 RPI MBRFormat /dev/diskX
 
-<span class="c"># Копируем образ на карточку</span>
+<span class="c1"># Копируем образ на карточку</span>
 cp -R ./* /Volumes/RPI
 
-<span class="c"># И извлекаем её</span>
+<span class="c1"># И извлекаем её</span>
 diskutil eject /dev/diskX
 </pre></div>
 </td></tr></table>
@@ -180,33 +180,33 @@ diskutil eject /dev/diskX
 25
 26
 27
-28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Заходим на пай (пароль тот, что указали вначале)</span>
+28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Заходим на пай (пароль тот, что указали вначале)</span>
 ssh root@pi.ip.addr.ess
 
-<span class="c"># Обновим пакеты</span>
+<span class="c1"># Обновим пакеты</span>
 apt-get -y update <span class="o">&amp;&amp;</span> apt-get -y dist-upgrade <span class="o">&amp;&amp;</span> apt-get -y autoremove <span class="o">&amp;&amp;</span> apt-get -y autoclean
 
-<span class="c"># Обновим ядро и прошивку</span>
-<span class="c"># Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)</span>
-<span class="c"># Вместо этого воспользуемся пакетом raspberrypi-bootloader.</span>
-<span class="c"># Он включает в себя ядро и прошивку. Это пакет проекта raspberry pi на github (https://github.com/raspberrypi/linux)</span>
+<span class="c1"># Обновим ядро и прошивку</span>
+<span class="c1"># Не используйте утилиту rpi-update, она не работает с этим образом (https://github.com/debian-pi/raspbian-ua-netinst/issues/267)</span>
+<span class="c1"># Вместо этого воспользуемся пакетом raspberrypi-bootloader.</span>
+<span class="c1"># Он включает в себя ядро и прошивку. Это пакет проекта raspberry pi на github (https://github.com/raspberrypi/linux)</span>
 apt-get install -y raspberrypi-bootloader
 sed -i <span class="s1">&#39;s/kernel=/#kernel=/g&#39;</span> /boot/config.txt
 sed -i <span class="s1">&#39;s/initramfs /#initramfs /g&#39;</span> /boot/config.txt
 
-<span class="c"># Сконфигурируем локали и временную зону</span>
+<span class="c1"># Сконфигурируем локали и временную зону</span>
 dpkg-reconfigure locales
 dpkg-reconfigure tzdata
 
-<span class="c"># Добавим нового пользователя</span>
+<span class="c1"># Добавим нового пользователя</span>
 groupadd pi
 useradd pi -m -K <span class="nv">UMASK</span><span class="o">=</span><span class="m">0066</span> -s /bin/bash -g pi -G users,ssh,sudo
 passwd pi
 
-<span class="c"># Перезагрузимся, чтобы изменения вступили в силу</span>
+<span class="c1"># Перезагрузимся, чтобы изменения вступили в силу</span>
 reboot
 
-<span class="c"># Теперь можно зайти на пай под новым пользователем</span>
+<span class="c1"># Теперь можно зайти на пай под новым пользователем</span>
 ssh pi@pi.ip.addr.ess
 </pre></div>
 </td></tr></table>
@@ -225,18 +225,18 @@ ssh pi@pi.ip.addr.ess
 10
 11
 12
-13</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Запретим входить под рутом</span>
+13</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Запретим входить под рутом</span>
 sudo sed -i <span class="s1">&#39;s/PermitRootLogin yes/PermitRootLogin no/g&#39;</span> /etc/ssh/sshd_config
 
-<span class="c"># Можно разрешить сессии только определенным юзерам</span>
-<span class="c"># [ОПАСНАЯ ОПЦИЯ, проверьте правильность имен несколько раз]</span>
+<span class="c1"># Можно разрешить сессии только определенным юзерам</span>
+<span class="c1"># [ОПАСНАЯ ОПЦИЯ, проверьте правильность имен несколько раз]</span>
 <span class="nb">echo</span> <span class="s2">&quot;AllowUsers root pi&quot;</span> <span class="p">|</span> sudo tee --append /etc/ssh/sshd_config
 
-<span class="c"># Можно ограничить время бездействия пользовательской сессии (здесь 5 минут)</span>
+<span class="c1"># Можно ограничить время бездействия пользовательской сессии (здесь 5 минут)</span>
 <span class="nb">echo</span> <span class="s2">&quot;ClientAliveInterval 300&quot;</span> <span class="p">|</span> sudo tee --append /etc/ssh/sshd_config &gt; /dev/null
 <span class="nb">echo</span> <span class="s2">&quot;ClientAliveCountMax 0&quot;</span> <span class="p">|</span> sudo tee --append /etc/ssh/sshd_config &gt; /dev/null
 
-<span class="c"># Перезапустим SSH демон</span>
+<span class="c1"># Перезапустим SSH демон</span>
 sudo /etc/init.d/ssh restart
 </pre></div>
 </td></tr></table>
@@ -269,33 +269,33 @@ sudo /etc/init.d/ssh restart
 25
 26
 27
-28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># На _своей_ машине сгенерируем ключ (если еще этого не делали)</span>
-<span class="c"># Не оставляем пароль ключа пустым</span>
+28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># На _своей_ машине сгенерируем ключ (если еще этого не делали)</span>
+<span class="c1"># Не оставляем пароль ключа пустым</span>
 mkdir .ssh
 ssh-keygen -t rsa -C <span class="s2">&quot;your_email@example.com&quot;</span>
 ssh-add ~/.ssh/id_rsa
-<span class="c"># Скопируем свой _публичный_ ключ в буфер обмена</span>
+<span class="c1"># Скопируем свой _публичный_ ключ в буфер обмена</span>
 pbcopy &lt; ~/.ssh/id_rsa.pub
 
-<span class="c"># Дальнейшие действия делаем на пае под пользователем pi</span>
+<span class="c1"># Дальнейшие действия делаем на пае под пользователем pi</span>
 mkdir ~/.ssh
 
-<span class="c"># Сюда вставим в новую строку скопированный публичный ключ</span>
+<span class="c1"># Сюда вставим в новую строку скопированный публичный ключ</span>
 nano ~/.ssh/authorized_keys
 
-<span class="c"># Выставим правильные права</span>
+<span class="c1"># Выставим правильные права</span>
 chmod <span class="m">700</span> ~/.ssh/
 chmod <span class="m">600</span> ~/.ssh/authorized_keys
 
-<span class="c"># Пробуем выйти и зайти опять, должно пустить без пароля</span>
+<span class="c1"># Пробуем выйти и зайти опять, должно пустить без пароля</span>
 
-<span class="c"># Можно запретить вход по паролю, разрешить только по ключу</span>
-<span class="c"># Нужно помнить, что в случае, если у нас не останется</span>
-<span class="c"># ни одного авторизованного на пае ключа, по SSH войти не сможем</span>
+<span class="c1"># Можно запретить вход по паролю, разрешить только по ключу</span>
+<span class="c1"># Нужно помнить, что в случае, если у нас не останется</span>
+<span class="c1"># ни одного авторизованного на пае ключа, по SSH войти не сможем</span>
 sudo sed -i <span class="s1">&#39;s/#PasswordAuthentication yes/PasswordAuthentication no/g&#39;</span> /etc/ssh/sshd_config
 sudo sed -i <span class="s1">&#39;s/UsePAM yes/UsePAM no/g&#39;</span> /etc/ssh/sshd_config
 
-<span class="c"># Перезапустим SSH демон</span>
+<span class="c1"># Перезапустим SSH демон</span>
 sudo /etc/init.d/ssh restart
 </pre></div>
 </td></tr></table>
@@ -321,25 +321,25 @@ sudo /etc/init.d/ssh restart
 17
 18
 19
-20</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Выделяем минимальное количество видеопамяти</span>
+20</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Выделяем минимальное количество видеопамяти</span>
 <span class="nb">echo</span> <span class="s2">&quot;gpu_mem=16&quot;</span> &gt;&gt; /boot/config.txt
 
-<span class="c"># Выключаем модуль камеры</span>
+<span class="c1"># Выключаем модуль камеры</span>
 <span class="nb">echo</span> <span class="s2">&quot;start_x=0&quot;</span> &gt;&gt; /boot/config.txt
 
-<span class="c"># Выключаем так называемые &quot;вылеты развертки&quot;, они не актуальны для современных телевизоров</span>
+<span class="c1"># Выключаем так называемые &quot;вылеты развертки&quot;, они не актуальны для современных телевизоров</span>
 <span class="nb">echo</span> <span class="s2">&quot;disable_overscan=1&quot;</span> &gt;&gt; /boot/config.txt
 
-<span class="c"># Разгоняем (подробно можно почитать тут http://elinux.org/RPiconfig)</span>
+<span class="c1"># Разгоняем (подробно можно почитать тут http://elinux.org/RPiconfig)</span>
 <span class="nb">echo</span> <span class="s2">&quot;arm_freq=1000&quot;</span> &gt;&gt; /boot/config.txt
 <span class="nb">echo</span> <span class="s2">&quot;core_freq=500&quot;</span> &gt;&gt; /boot/config.txt
 <span class="nb">echo</span> <span class="s2">&quot;sdram_freq=500&quot;</span> &gt;&gt; /boot/config.txt
 <span class="nb">echo</span> <span class="s2">&quot;over_voltage=2&quot;</span> &gt;&gt; /boot/config.txt
 
-<span class="c"># Форсируем Turbo режим в первые 60 секунд работы</span>
+<span class="c1"># Форсируем Turbo режим в первые 60 секунд работы</span>
 <span class="nb">echo</span> <span class="s2">&quot;initial_turbo=60&quot;</span> &gt;&gt; /boot/config.txt
 
-<span class="c"># Делает так, чтобы пай разгонялся только при необходимости</span>
+<span class="c1"># Делает так, чтобы пай разгонялся только при необходимости</span>
 <span class="nb">echo</span> <span class="s2">&quot;force_turbo=0&quot;</span> &gt;&gt; /boot/config.txt
 </pre></div>
 </td></tr></table>
@@ -365,21 +365,21 @@ sudo /etc/init.d/ssh restart
 18
 19
 20
-21</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Улучшает производительность генератора случайных чисел</span>
+21</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Улучшает производительность генератора случайных чисел</span>
 apt-get install -y rng-tools
 
-<span class="c"># Будет выдано сообщение о том, что скрипт не смог стартовать.</span>
-<span class="c"># Ничего страшного, необходимый модуль станет доступен после перезагрузки</span>
-<span class="nb">echo </span>bcm2708-rng &gt;&gt; /etc/modules
+<span class="c1"># Будет выдано сообщение о том, что скрипт не смог стартовать.</span>
+<span class="c1"># Ничего страшного, необходимый модуль станет доступен после перезагрузки</span>
+<span class="nb">echo</span> bcm2708-rng &gt;&gt; /etc/modules
 
-<span class="c"># Улучшает производительность служб управления памятью</span>
+<span class="c1"># Улучшает производительность служб управления памятью</span>
 apt-get install -y raspi-copies-and-fills
 
-<span class="c"># Можно настроить сеть на статику</span>
-<span class="c"># [ОСТОРОЖНО, нужно быть уверенным в написанном, иначе можно потерять доступ по SSH]</span>
-<span class="c"># Заменяем dhcp</span>
+<span class="c1"># Можно настроить сеть на статику</span>
+<span class="c1"># [ОСТОРОЖНО, нужно быть уверенным в написанном, иначе можно потерять доступ по SSH]</span>
+<span class="c1"># Заменяем dhcp</span>
 sed -i <span class="s1">&#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&#39;</span> /etc/network/interfaces
-<span class="c"># На что-то вроде такого, но специфичного для вашей сети</span>
+<span class="c1"># На что-то вроде такого, но специфичного для вашей сети</span>
 <span class="nb">echo</span> <span class="s2">&quot;iface eth0 inet static&quot;</span> &gt;&gt; /etc/network/interfaces
 <span class="nb">echo</span> <span class="s2">&quot;address 192.168.1.107&quot;</span> &gt;&gt; /etc/network/interfaces
 <span class="nb">echo</span> <span class="s2">&quot;gateway 192.168.1.1&quot;</span> &gt;&gt; /etc/network/interfaces
@@ -405,21 +405,21 @@ sed -i <span class="s1">&#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&#39;
 13
 14
 15
-16</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Оставляем один getty, т.к. работаем в основном по SSH</span>
+16</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Оставляем один getty, т.к. работаем в основном по SSH</span>
 sed -i <span class="s1">&#39;/[2-6]:23:respawn:\/sbin\/getty 38400 tty[2-6]/s%^%#%g&#39;</span> /etc/inittab
 sed -i <span class="s1">&#39;/T0:23:respawn:\/sbin\/getty -L ttyAMA0 115200 vt100/s%^%#%g&#39;</span> /etc/inittab
 
-<span class="c"># Выключаем ipv6</span>
+<span class="c1"># Выключаем ipv6</span>
 <span class="nb">echo</span> <span class="s2">&quot;net.ipv6.conf.all.disable_ipv6=1&quot;</span> &gt; /etc/sysctl.d/disableipv6.conf
 sed -i <span class="s1">&#39;/::/s%^%#%g&#39;</span> /etc/hosts
 
-<span class="c"># Выключаем неиспользуемые модули ядра</span>
+<span class="c1"># Выключаем неиспользуемые модули ядра</span>
 <span class="nb">echo</span> <span class="s2">&quot;blacklist ipv6&quot;</span> &gt;&gt; /etc/modprobe.d/raspi-blacklist.conf
 <span class="nb">echo</span> <span class="s2">&quot;blacklist spi-bcm2708&quot;</span> &gt;&gt; /etc/modprobe.d/raspi-blacklist.conf
 <span class="nb">echo</span> <span class="s2">&quot;blacklist i2c-bcm2708&quot;</span> &gt;&gt; /etc/modprobe.d/raspi-blacklist.conf
 chmod <span class="m">644</span> /etc/modprobe.d/raspi-blacklist.conf
 
-<span class="c"># Планировщик ввода/вывода &quot;noop&quot; лучше подходит для флеш памяти</span>
+<span class="c1"># Планировщик ввода/вывода &quot;noop&quot; лучше подходит для флеш памяти</span>
 sed -i <span class="s1">&#39;s/deadline/noop/g&#39;</span> /boot/cmdline.txt
 </pre></div>
 </td></tr></table>
@@ -442,23 +442,23 @@ sed -i <span class="s1">&#39;s/deadline/noop/g&#39;</span> /boot/cmdline.txt
 15
 16
 17
-18</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># noatime и nodiratime отключают запись информации</span>
-<span class="c"># о последнем времени доступа к файлам и директориям</span>
+18</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># noatime и nodiratime отключают запись информации</span>
+<span class="c1"># о последнем времени доступа к файлам и директориям</span>
 sed -i <span class="s1">&#39;s/errors=remount-ro,noatime /errors=remount-ro,noatime,nodiratime /g&#39;</span> /etc/fstab
 
-<span class="c"># Разрешаем автоматически восстанавливать файловые системы при загрузке,</span>
-<span class="c"># если с ними что-то не так</span>
+<span class="c1"># Разрешаем автоматически восстанавливать файловые системы при загрузке,</span>
+<span class="c1"># если с ними что-то не так</span>
 sed -i <span class="s2">&quot;s/#FSCKFIX=no/FSCKFIX=yes/g&quot;</span> /etc/default/rcS
 
-<span class="c"># Каждые 3 перезагрузки проверяем главный раздел файловой системы</span>
+<span class="c1"># Каждые 3 перезагрузки проверяем главный раздел файловой системы</span>
 tune2fs -c <span class="m">3</span> /dev/mmcblk0p2
 
-<span class="c"># writeback тип записи в журнал дает больше производительности.</span>
-<span class="c"># однако при падении системы данные могут потеряться</span>
-<span class="c"># [ВЫПОЛНЯТЬ ТОЛЬКО С ПОНИМАНИЕМ РИСКОВ]</span>
+<span class="c1"># writeback тип записи в журнал дает больше производительности.</span>
+<span class="c1"># однако при падении системы данные могут потеряться</span>
+<span class="c1"># [ВЫПОЛНЯТЬ ТОЛЬКО С ПОНИМАНИЕМ РИСКОВ]</span>
 tune2fs -o journal_data_writeback /dev/mmcblk0p2
 
-<span class="c"># Перезагружаемся</span>
+<span class="c1"># Перезагружаемся</span>
 reboot
 </pre></div>
 </td></tr></table>
@@ -486,27 +486,27 @@ reboot
 19
 20
 21
-22</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Скачиваем и устанавливаем ramlog</span>
+22</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Скачиваем и устанавливаем ramlog</span>
 <span class="nb">cd</span> /tmp
 wget http://www.tremende.com/ramlog/download/ramlog_2.0.0_all.deb
 apt-get install -y lsof rsync <span class="o">&amp;&amp;</span> dpkg -i ramlog_2.0.0_all.deb
 
-<span class="c"># Задаем максимальный объем логов в памяти</span>
+<span class="c1"># Задаем максимальный объем логов в памяти</span>
 sed -i <span class="s1">&#39;s/TMPFS_RAMFS_SIZE=\t/TMPFS_RAMFS_SIZE=40m\t/g&#39;</span> /etc/default/ramlog
 
-<span class="c"># Говорим, что ramlog надо запускать/останавливать до/после rsyslog</span>
+<span class="c1"># Говорим, что ramlog надо запускать/останавливать до/после rsyslog</span>
 sed -i <span class="s1">&#39;s/# Provides: ramlog/# Provides: ramlog\n# X-Start-Before: rsyslog\n# X-Stop-After: rsyslog/g&#39;</span> /etc/init.d/ramlog
 
-<span class="c"># Дадим знать об этом автозагрузке</span>
+<span class="c1"># Дадим знать об этом автозагрузке</span>
 insserv -v /etc/init.d/ramlog
 
-<span class="c"># Теперь нужно 2 (!) раза перезагрузить пай</span>
+<span class="c1"># Теперь нужно 2 (!) раза перезагрузить пай</span>
 reboot
 
-<span class="c"># Проверить состояние ramlog можно так</span>
+<span class="c1"># Проверить состояние ramlog можно так</span>
 /etc/init.d/ramlog status
 
-<span class="c"># Напоследок уберем абсолютно неважные логи крона про успешную авторизацию</span>
+<span class="c1"># Напоследок уберем абсолютно неважные логи крона про успешную авторизацию</span>
 sed -i <span class="s1">&#39;s/(the &quot;Additional&quot; block)/(the &quot;Additional&quot; block)\nsession [success=1 default=ignore] pam_succeed_if.so service in cron quiet use_uid/g&#39;</span> /etc/pam.d/common-session-noninteractive
 </pre></div>
 </td></tr></table>
@@ -529,22 +529,22 @@ sed -i <span class="s1">&#39;s/(the &quot;Additional&quot; block)/(the &quot;Add
 14
 15
 16
-17</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Устанавливаем iptables</span>
+17</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Устанавливаем iptables</span>
 apt-get install -y iptables
 
-<span class="c"># Скачиваем скрипты для systemd</span>
+<span class="c1"># Скачиваем скрипты для systemd</span>
 <span class="nb">cd</span> /tmp
 git clone https://github.com/geakstr/systemd-iptables.git
-<span class="nb">cd </span>systemd-iptables
+<span class="nb">cd</span> systemd-iptables
 cp -r etc/iptables /etc/iptables
 cp -r etc/systemd/system/iptables.service /etc/systemd/system/
 
-<span class="c"># Внимательно настраиваем правила для фаервола (по iptables очень много информации в сети)</span>
+<span class="c1"># Внимательно настраиваем правила для фаервола (по iptables очень много информации в сети)</span>
 nano /etc/iptables/iptables.rules
 
-<span class="c"># Запускаем это всё</span>
+<span class="c1"># Запускаем это всё</span>
 systemctl daemon-reload
-systemctl <span class="nb">enable </span>iptables.service
+systemctl <span class="nb">enable</span> iptables.service
 systemctl start iptables.service
 </pre></div>
 </td></tr></table>
@@ -577,31 +577,31 @@ systemctl start iptables.service
 24
 25
 26
-27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c"># Если не хотим заморачиваться с установкой последней версии fail2ban</span>
-<span class="c"># то просто ставим пакет и переходим к следующему шагу</span>
+27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Если не хотим заморачиваться с установкой последней версии fail2ban</span>
+<span class="c1"># то просто ставим пакет и переходим к следующему шагу</span>
 apt-get install -y fail2ban
 
-<span class="c"># Если хотим, будем ставить свежую версию из репозитория</span>
-<span class="c"># fail2ban написан на питоне, поэтому нужно его установить</span>
+<span class="c1"># Если хотим, будем ставить свежую версию из репозитория</span>
+<span class="c1"># fail2ban написан на питоне, поэтому нужно его установить</span>
 apt-get install -y python
 
-<span class="c"># Скачаем сам fail2ban</span>
-<span class="c"># Можете посмотреть номер последней релизной версии тут</span>
-<span class="c"># https://github.com/fail2ban/fail2ban/releases</span>
+<span class="c1"># Скачаем сам fail2ban</span>
+<span class="c1"># Можете посмотреть номер последней релизной версии тут</span>
+<span class="c1"># https://github.com/fail2ban/fail2ban/releases</span>
 <span class="nb">cd</span> /tmp
 wget https://github.com/fail2ban/fail2ban/archive/0.9.3.tar.gz -O fail2ban.tar.gz
 
-<span class="c"># Разархивируем</span>
-mkdir fail2ban <span class="o">&amp;&amp;</span> tar -xzvf fail2ban.tar.gz -C ./fail2ban --strip-components<span class="o">=</span><span class="m">1</span> <span class="o">&amp;&amp;</span> <span class="nb">cd </span>fail2ban
+<span class="c1"># Разархивируем</span>
+mkdir fail2ban <span class="o">&amp;&amp;</span> tar -xzvf fail2ban.tar.gz -C ./fail2ban --strip-components<span class="o">=</span><span class="m">1</span> <span class="o">&amp;&amp;</span> <span class="nb">cd</span> fail2ban
 
-<span class="c"># Установим</span>
+<span class="c1"># Установим</span>
 python setup.py install
 
-<span class="c"># Если iptables версии ниже 1.4.20 (проверить можно командой `iptables --version`)</span>
-<span class="c"># необходимо выполнить эту команду</span>
+<span class="c1"># Если iptables версии ниже 1.4.20 (проверить можно командой `iptables --version`)</span>
+<span class="c1"># необходимо выполнить эту команду</span>
 sed -i <span class="s1">&#39;s/lockingopt = -w/lockingopt = /g&#39;</span> /etc/fail2ban/action.d/iptables-common.conf
 
-<span class="c"># Скопируем скрипт для управления fail2ban демоном</span>
+<span class="c1"># Скопируем скрипт для управления fail2ban демоном</span>
 cp ./files/debian-initd /etc/init.d/fail2ban
 chmod <span class="m">755</span> /etc/init.d/fail2ban <span class="o">&amp;&amp;</span> insserv -v /etc/init.d/fail2ban
 </pre></div>
@@ -625,21 +625,21 @@ chmod <span class="m">755</span> /etc/init.d/fail2ban <span class="o">&amp;&amp;
 15
 16
 17</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">[</span>DEFAULT<span class="o">]</span>
-<span class="c"># Игнорировать запросы из нашей сети</span>
+<span class="c1"># Игнорировать запросы из нашей сети</span>
 <span class="nv">ignoreip</span> <span class="o">=</span> 192.168.1.0/24
 
-<span class="c"># Наблюдаем за авторизацией по ssh</span>
-<span class="c"># Я выставляю очень жесткие настройки, может быть разумнее сделать лояльнее</span>
+<span class="c1"># Наблюдаем за авторизацией по ssh</span>
+<span class="c1"># Я выставляю очень жесткие настройки, может быть разумнее сделать лояльнее</span>
 <span class="o">[</span>ssh<span class="o">]</span>
 <span class="nv">enabled</span>  <span class="o">=</span> <span class="nb">true</span>
 <span class="nv">port</span>     <span class="o">=</span> ssh
 <span class="nv">filter</span>   <span class="o">=</span> sshd
 <span class="nv">logpath</span>  <span class="o">=</span> /var/log/auth.log
-<span class="c"># Наблюдать за IP в течение часа</span>
+<span class="c1"># Наблюдать за IP в течение часа</span>
 <span class="nv">findtime</span>    <span class="o">=</span> 3600
-<span class="c"># Если 3 попытки входа неудачны</span>
+<span class="c1"># Если 3 попытки входа неудачны</span>
 <span class="nv">maxretry</span>    <span class="o">=</span> 3
-<span class="c"># Бан на сутки</span>
+<span class="c1"># Бан на сутки</span>
 <span class="nv">bantime</span>     <span class="o">=</span> 86400
 </pre></div>
 </td></tr></table>

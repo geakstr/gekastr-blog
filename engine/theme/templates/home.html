@@ -9,7 +9,39 @@
     {% endassets %}
     <link rel="shortcut icon" href="/favicon.ico"/>
 </head>
-<body><table style="width: 100%; height: 80%;"><tr><td style="vertical-align: middle; text-align: center">
+<body>
+
+<div class="content">
+  <h1 class="name"><img src="/imgs/ava.png" />{{ AUTHOR }}</h1>
+  <div class="about">
+    <p>Разрабатываю приложения и веб-сервисы, интересуюсь разработкой под мобильные платформы. Люблю простые решения, эффективный дизайн кода, вещей, продуктов и вообще. Делаю работу в срок. Играю на гитаре, катаюсь на MTB, иногда пишу <a href="https://dkharitonov.me/blog" rel="me">в блог</a>.</p>
+    <p>Мои резюме в <a href="https://moikrug.ru/geakstr" rel="me">моём круге</a>, <a href="http://hh.ru/resume/e89afd38ff02f080960039ed1f4e4857306d70" rel="me">headhunter</a> и <a href="https://www.linkedin.com/in/geakstr" rel="me">linkedin</a>. Активно использую <a href="https://github.com/geakstr" rel="me">github</a> (большая часть работы в приватных репозиториях).</p>
+    <p>Предпочитаю <strong>java</strong>/<strong>node.js</strong> на сервере, <strong>react</strong> и <strong>redux</strong> на клиенте, для небольших скриптов <strong>bash</strong>/<strong>python</strong>. Работаю с <strong>mysql</strong>, <strong>oracle db</strong> и немного <strong>mongo</strong>. Умею всякие модные штуки вроде <strong>webpack</strong>, <strong>babel</strong> и <strong>sass</strong>. Знаю о средствах для devops типа <strong>docker</strong> и <strong>ansible</strong>. </p>
+    <p class="point">Почта <a href="mailto:geakstr@me.com" class="u-email email" rel="me"><span class="p-nickname nickname">geakstr</span>@me.com</a>, <a href="https://telegram.me/geakstr" rel="me">телеграм</a>, <a href="https://www.facebook.com/geakstr" rel="me">facebook</a> и <a href="https://vk.com/geakstr" rel="me">вконтакте</a> для связи.</p>
+    <hr/>
+  </div>
+  <div class="works">
+    <h2 class="title">Делаю</h2>
+    <p>Пока учусь в магистратуре и готовых публичных проектов еще нет. Работаю в университете, занимаюсь разработкой и поддержкой систем управления учебным процессом и деятельностью учреждения. За время работы сделал:</p>
+    <ul>
+      <li>систему приема абитуриентов (автоматизированное фотографирование, занесение информации об абитуриенте в БД);</li>
+      <li>сервис синхронизации бухгалтерии университета с банком для отображения информации в банковских терминалах;</li>
+      <li>систему сбора статистики о контингенте университета и учебном процессе.</li>
+    </ul>
+    <p>Помимо основной работы занимаюсь личными (<a href="https://github.com/geakstr" rel="me">github</a>) и заказными проектами, например:</p>
+    <div class="work">
+      <p>Приложение на планшеты под Android, использующее встроенные (акселерометр, гироскоп, датчик освещенности, микрофон) и внешний датчики для сбора различных показателей об окружающей среде в режиме реального времени. Связь с внешним датчиком осуществляется по Bluetooth.</p>
+      <p>Проект планировался кроссплатформенный и в краткие сроки, поэтому большая часть UI сделана в WebView. На данный момент в замороженном состоянии.</p>
+      <p><a href="/imgs/works/android_stat_detectors_1.png" class="nodecor"><img src="/imgs/works/android_stat_detectors_1_min.png" style="margin-right: 22px;" /></a><a href="/imgs/works/android_stat_detectors_2.png" class="nodecor"><img src="/imgs/works/android_stat_detectors_2_min.png" /></a></p>
+    </div>
+    <div class="work">
+      <p>Являюсь фанатом майнкрафта и время от времени пишу свой <a href="https://github.com/geakstr/voxel-moxel">движок-клон на Java и OpenGL</a>. На данный момент есть примитивная генерация мира шумом Перлина, возможность летать, ставить и удалять блоки. До коллизий, освещения и теней не добрался.</p>
+      <p><a href="/imgs/works/voxel_moxel_1.png" class="nodecor"><img src="/imgs/works/voxel_moxel_1_min.png" style="margin-right: 22px;" /></a><a href="/imgs/works/voxel_moxel_2.png" class="nodecor"><img src="/imgs/works/voxel_moxel_2_min.png" /></a></p>
+    </div>
+  </div>
+</div>
+<!--
+<table style="width: 100%; height: 80%;"><tr><td style="vertical-align: middle; text-align: center">
 
 <div id="content">
 <nav id="menu"><ul>
@@ -19,13 +51,13 @@
 </ul></nav>
 
 <div id="text" class="vcard h-card">
-<p>Разрабатываю приложения и веб-сервисы, интересуюсь разработкой под мобильные платформы. 
-Ценю ясность и минималистичность в дизайне кода, вещей, продуктов и вообще. 
+<p>Разрабатываю приложения и веб-сервисы, интересуюсь разработкой под мобильные платформы.
+Ценю ясность и минималистичность в дизайне кода, вещей, продуктов и вообще.
 Мой <a href="https://github.com/geakstr" rel="me">github.com/geakstr</a> и развернутое <a href="/cv#ru" rel="me">CV</a>.</p>
-<p>Мне 22, люблю музыку, играю на гитаре и катаюсь на велосипеде. 
+<p>Мне 22, люблю музыку, играю на гитаре и катаюсь на велосипеде.
 Иногда пишу в <a href="https://twitter.com/geakstr">twitter.com/geakstr</a>.</p>
-<p>Почта <a href="mailto:geakstr@me.com" class="u-email email" rel="me">geakstr@me.com</a>, 
-<a href="https://www.facebook.com/geakstr" rel="me">facebook.com/geakstr</a> и 
+<p>Почта <a href="mailto:geakstr@me.com" class="u-email email" rel="me">geakstr@me.com</a>,
+<a href="https://www.facebook.com/geakstr" rel="me">facebook.com/geakstr</a> и
 <a href="http://vk.com/geakstr" rel="me">vk.com/geakstr</a> для связи.</p>
 </div>
 
@@ -35,6 +67,7 @@
 </div>
 
 </td></tr></table>
+-->
 {% include 'ya_metrika.html' %}
 </body>
 </html>

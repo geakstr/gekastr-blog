@@ -1,48 +1,90 @@
-html, body {
-  width: 100%;
-  height: 100%;
+body {
+  width: 800px;
+  margin: 44px auto;
+  font-family: Monaco, Consolas, monospace;
 }
 
-/* Actually, styles */
-#content {
-  max-width: 640px;
-  margin: 1em auto 3em auto;
-  font-size: 1.125em;
+.content {
+  font-size: 0.875em;
+  line-height: 1.571;
 }
-#content #menu {
-  margin-bottom: 0.75em;
-  padding: 0 0.5em 0.75em 0.5em;
-  border-bottom: 1px solid #efefef;
-  text-align: center;
-}
-#content #menu li {
-  display: inline-block;
-}
-#content h1 {
+
+.name {
+  position: relative;
+  margin-bottom: 22px;
   font-weight: 700;
-  color: #A40000;
 }
-#text {
-  padding: 0 0.5em 0 0.5em;
-  line-height: 1.5;
-  text-align: left;
+
+.name img {
+  position: absolute;
+  top: -11px;
+  left: -60px;
+  width: 44px;
+  height: 44px;
+  border-radius: 300px;
 }
-#text p {
-  margin-bottom: 1em;
+
+.content p, .content ul {
+  position: relative;
+  margin-bottom: 16px;
 }
-#footer {
-  margin-top: 1em;
+
+.content ul {
+  list-style: circle outside;
 }
-@media only screen and (max-width:800px) {
-  body {
-    border-top: 1px solid #A40000;
-  }
-  #content #menu {
-    text-align: left;
-  }
-  #footer .fork-bomb {
-    left: 0;
-    width: auto;
-    margin-left: 0.5em;
-  }
+
+.content p + ul {
+  margin-top: -8px;
+}
+
+.content p:last-child {
+  margin-bottom: 0;
+}
+
+.content li {
+  margin-bottom: 6px;
+}
+
+.content li:last-child {
+  margin-bottom: 0;
+}
+
+.content p.point:before {
+  position: absolute;
+  top: 0;
+  left: -33px;
+  width: 33px;
+  text-align: center;
+  color: #89C540;
+  font-size: 0.714em;
+  line-height: 2;
+  content: "•";
+}
+
+.content hr {
+  margin: 22px 0;
+  border: none;
+  border-top: 1px dotted #eee;
+  height: 0;
+}
+
+.works .title {
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.works .work {
+  width: 850px;
+  margin: 22px 0 22px -22px;
+  padding: 22px;
+  background: #efefef;
+  border-radius: 3px 3px 3px 3px;
+}
+
+.works .work img {
+  border-radius: 3px;
+}
+
+.works .work img:hover {
+  box-shadow: 0 11px 11px rgba(0, 0, 0, 0.1);
 }
