@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru_ru">
 <head>
       <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
@@ -70,7 +70,7 @@
 <p>Получим рута, доставим необходимые для сборки пакеты и&nbsp;создадим файл скрипта:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="codehilite"><pre>su root
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>su root
 apt-get -y install curl wget build-essential libz-dev libssl-dev
 nano /tmp/build_nginx.sh
 </pre></div>
@@ -155,7 +155,7 @@ nano /tmp/build_nginx.sh
 76
 77
 78
-79</pre></div></td><td class="code"><div class="codehilite"><pre><span class="ch">#!/usr/bin/env bash</span>
+79</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
 
 <span class="c1"># Почти полная копия скрипта https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24</span>
 <span class="c1"># с некоторыми модификациями</span>
@@ -238,7 +238,7 @@ mv /etc/nginx-$today /etc/nginx
 </td></tr></table>
 
 <p>Запустим процесс компиляции и&nbsp;пойдем пить чай. Много чая.</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>chmod +x /tmp/build_nginx.sh <span class="o">&amp;&amp;</span> /tmp/build_nginx.sh
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>chmod +x /tmp/build_nginx.sh <span class="o">&amp;&amp;</span> /tmp/build_nginx.sh
 </pre></div>
 </td></tr></table>
 
@@ -251,7 +251,7 @@ mv /etc/nginx-$today /etc/nginx
 6
 7
 8
-9</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Создадим пользователя, от которого будет запускаться nginx</span>
+9</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Создадим пользователя, от которого будет запускаться nginx</span>
 useradd nginx
 groupadd nginx
 usermod -g nginx -G www-data nginx
@@ -268,7 +268,7 @@ chown -R www-data:www-data /var/www
 2
 3
 4
-5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Скопируем дефолтные конфиги</span>
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Скопируем дефолтные конфиги</span>
 cp -R /etc/nginx-default /etc/nginx
 
 <span class="c1"># И начнем править</span>
@@ -372,7 +372,7 @@ nano /etc/nginx/nginx.conf
 93
 94
 95
-96</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Пользователь, от которого будет запускаться nginx</span>
+96</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Пользователь, от которого будет запускаться nginx</span>
 <span class="k">user</span>              <span class="s">nginx</span><span class="p">;</span>
 
 <span class="c1"># Рекомендуется выставлять по количеству ядер в системе</span>
@@ -472,7 +472,7 @@ nano /etc/nginx/nginx.conf
 </td></tr></table>
 
 <p>Теперь создадим хост:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>mkdir /etc/nginx/conf.d <span class="o">&amp;&amp;</span> nano /etc/nginx/conf.d/home.conf
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>mkdir /etc/nginx/conf.d <span class="o">&amp;&amp;</span> nano /etc/nginx/conf.d/home.conf
 </pre></div>
 </td></tr></table>
 
@@ -503,7 +503,7 @@ nano /etc/nginx/nginx.conf
 24
 25
 26
-27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">server</span> <span class="p">{</span>
+27</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="k">server</span> <span class="p">{</span>
     <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
     <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
 
@@ -534,7 +534,7 @@ nano /etc/nginx/nginx.conf
 </td></tr></table>
 
 <p>Добавим в&nbsp;автозагрузку скрипт управления демоном nginx:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>nano /lib/systemd/system/nginx.service
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>nano /lib/systemd/system/nginx.service
 </pre></div>
 </td></tr></table>
 
@@ -553,7 +553,7 @@ nano /etc/nginx/nginx.conf
 12
 13
 14
-15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">[</span>Unit<span class="o">]</span>
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="o">[</span>Unit<span class="o">]</span>
 <span class="nv">Description</span><span class="o">=</span>The NGINX HTTP and reverse proxy server
 <span class="nv">After</span><span class="o">=</span>syslog.target network.target remote-fs.target nss-lookup.target
 
@@ -574,7 +574,7 @@ nano /etc/nginx/nginx.conf
 <p>И&nbsp;инициализируем:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="codehilite"><pre>systemctl daemon-reload
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>systemctl daemon-reload
 systemctl <span class="nb">enable</span> nginx.service
 systemctl start nginx.service
 </pre></div>
@@ -584,7 +584,7 @@ systemctl start nginx.service
           <a class="tag nodecor" href="/blog/tags/nginx">#<u>nginx</u></a>
           <a class="tag nodecor" href="/blog/tags/nix">#<u>nix</u></a>
         </p>
-      <p><time datetime="2015-08-26T17:00:00+03:00">26 августа 2015</time></p>
+      <p><time datetime="2015-08-26T17:00:00+03:00">Wed 26 August 2015</time></p>
     </footer>
   </article>
 </section>

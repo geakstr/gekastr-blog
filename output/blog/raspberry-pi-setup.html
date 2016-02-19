@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru_ru">
 <head>
       <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
@@ -107,7 +107,7 @@
 12
 13
 14
-15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Замените &lt;version-number&gt; на номер версии</span>
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Замените &lt;version-number&gt; на номер версии</span>
 <span class="nv">rpi_inst_v</span><span class="o">=</span>v&lt;version-number&gt;
 
 <span class="c1"># Скачиваем образ</span>
@@ -137,7 +137,7 @@ unzip raspbian-ua-netinst-<span class="si">${</span><span class="nv">rpi_inst_v<
  8
  9
 10
-11</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Узнаём имя карточки (/dev/diskX, где X — число)</span>
+11</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Узнаём имя карточки (/dev/diskX, где X — число)</span>
 diskutil list
 
 <span class="c1"># Форматируем в FAT 32</span>
@@ -180,7 +180,7 @@ diskutil eject /dev/diskX
 25
 26
 27
-28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Заходим на пай (пароль тот, что указали вначале)</span>
+28</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Заходим на пай (пароль тот, что указали вначале)</span>
 ssh root@pi.ip.addr.ess
 
 <span class="c1"># Обновим пакеты</span>
@@ -225,7 +225,7 @@ ssh pi@pi.ip.addr.ess
 10
 11
 12
-13</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Запретим входить под рутом</span>
+13</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Запретим входить под рутом</span>
 sudo sed -i <span class="s1">&#39;s/PermitRootLogin yes/PermitRootLogin no/g&#39;</span> /etc/ssh/sshd_config
 
 <span class="c1"># Можно разрешить сессии только определенным юзерам</span>
@@ -269,7 +269,7 @@ sudo /etc/init.d/ssh restart
 25
 26
 27
-28</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># На _своей_ машине сгенерируем ключ (если еще этого не делали)</span>
+28</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># На _своей_ машине сгенерируем ключ (если еще этого не делали)</span>
 <span class="c1"># Не оставляем пароль ключа пустым</span>
 mkdir .ssh
 ssh-keygen -t rsa -C <span class="s2">&quot;your_email@example.com&quot;</span>
@@ -321,7 +321,7 @@ sudo /etc/init.d/ssh restart
 17
 18
 19
-20</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Выделяем минимальное количество видеопамяти</span>
+20</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Выделяем минимальное количество видеопамяти</span>
 <span class="nb">echo</span> <span class="s2">&quot;gpu_mem=16&quot;</span> &gt;&gt; /boot/config.txt
 
 <span class="c1"># Выключаем модуль камеры</span>
@@ -365,7 +365,7 @@ sudo /etc/init.d/ssh restart
 18
 19
 20
-21</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Улучшает производительность генератора случайных чисел</span>
+21</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Улучшает производительность генератора случайных чисел</span>
 apt-get install -y rng-tools
 
 <span class="c1"># Будет выдано сообщение о том, что скрипт не смог стартовать.</span>
@@ -405,7 +405,7 @@ sed -i <span class="s1">&#39;s/iface eth0 inet dhcp/#iface eth0 inet dhcp/g&#39;
 13
 14
 15
-16</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Оставляем один getty, т.к. работаем в основном по SSH</span>
+16</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Оставляем один getty, т.к. работаем в основном по SSH</span>
 sed -i <span class="s1">&#39;/[2-6]:23:respawn:\/sbin\/getty 38400 tty[2-6]/s%^%#%g&#39;</span> /etc/inittab
 sed -i <span class="s1">&#39;/T0:23:respawn:\/sbin\/getty -L ttyAMA0 115200 vt100/s%^%#%g&#39;</span> /etc/inittab
 
@@ -442,7 +442,7 @@ sed -i <span class="s1">&#39;s/deadline/noop/g&#39;</span> /boot/cmdline.txt
 15
 16
 17
-18</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># noatime и nodiratime отключают запись информации</span>
+18</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># noatime и nodiratime отключают запись информации</span>
 <span class="c1"># о последнем времени доступа к файлам и директориям</span>
 sed -i <span class="s1">&#39;s/errors=remount-ro,noatime /errors=remount-ro,noatime,nodiratime /g&#39;</span> /etc/fstab
 
@@ -486,7 +486,7 @@ reboot
 19
 20
 21
-22</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Скачиваем и устанавливаем ramlog</span>
+22</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Скачиваем и устанавливаем ramlog</span>
 <span class="nb">cd</span> /tmp
 wget http://www.tremende.com/ramlog/download/ramlog_2.0.0_all.deb
 apt-get install -y lsof rsync <span class="o">&amp;&amp;</span> dpkg -i ramlog_2.0.0_all.deb
@@ -529,7 +529,7 @@ sed -i <span class="s1">&#39;s/(the &quot;Additional&quot; block)/(the &quot;Add
 14
 15
 16
-17</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Устанавливаем iptables</span>
+17</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Устанавливаем iptables</span>
 apt-get install -y iptables
 
 <span class="c1"># Скачиваем скрипты для systemd</span>
@@ -577,7 +577,7 @@ systemctl start iptables.service
 24
 25
 26
-27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Если не хотим заморачиваться с установкой последней версии fail2ban</span>
+27</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Если не хотим заморачиваться с установкой последней версии fail2ban</span>
 <span class="c1"># то просто ставим пакет и переходим к следующему шагу</span>
 apt-get install -y fail2ban
 
@@ -624,7 +624,7 @@ chmod <span class="m">755</span> /etc/init.d/fail2ban <span class="o">&amp;&amp;
 14
 15
 16
-17</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">[</span>DEFAULT<span class="o">]</span>
+17</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="o">[</span>DEFAULT<span class="o">]</span>
 <span class="c1"># Игнорировать запросы из нашей сети</span>
 <span class="nv">ignoreip</span> <span class="o">=</span> 192.168.1.0/24
 
@@ -645,12 +645,12 @@ chmod <span class="m">755</span> /etc/init.d/fail2ban <span class="o">&amp;&amp;
 </td></tr></table>
 
 <p>Наконец, перезагрузимся:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>reboot
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>reboot
 </pre></div>
 </td></tr></table>
 
 <p>Логи, чтобы посмотреть успешно прошло или нет, лежат тут:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>cat /var/log/fail2ban.log
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>cat /var/log/fail2ban.log
 </pre></div>
 </td></tr></table>
 
@@ -660,7 +660,7 @@ chmod <span class="m">755</span> /etc/init.d/fail2ban <span class="o">&amp;&amp;
           <a class="tag nodecor" href="/blog/tags/rpi">#<u>rpi</u></a>
           <a class="tag nodecor" href="/blog/tags/nix">#<u>nix</u></a>
         </p>
-      <p><time datetime="2015-08-24T23:30:00+03:00">24 августа 2015</time></p>
+      <p><time datetime="2015-08-24T23:30:00+03:00">Mon 24 August 2015</time></p>
     </footer>
   </article>
 </section>

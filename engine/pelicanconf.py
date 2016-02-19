@@ -7,7 +7,7 @@ AUTHOR = u'Дмитрий Харитонов'
 SITENAME = u'Forkbomb Blog'
 SITEURL = 'http://dkharitonov.me'
 TIMEZONE = 'Europe/Moscow'
-DEFAULT_LANG = u'ru'
+DEFAULT_LANG = u'ru_RU'
 
 USE_FOLDER_AS_CATEGORY = False
 DISPLAY_PAGES_ON_MENU = False
@@ -45,7 +45,7 @@ THEME = './theme'
 THEME_STATIC_PATHS = ['static']
 CSS_FILE = 'style.css'
 
-import md5 
+import md5
 def my_slugify(value, sep):
     m = md5.new()
     m.update(value.encode("UTF-8"))

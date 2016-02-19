@@ -1,11 +1,14 @@
 body {
-  width: 800px;
-  margin: 44px auto;
-  font-family: Monaco, Consolas, monospace;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 22px 0;
+  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, 'Courier New', monospace;
+  color: #333;
+  border-top: 3px solid #eee;
 }
 
 .content {
-  font-size: 0.875em;
+  font-size: 1em;
   line-height: 1.571;
 }
 
@@ -68,6 +71,11 @@ body {
   height: 0;
 }
 
+.about strong {
+  font-weight: 400;
+  color: #000;
+}
+
 .works .title {
   font-weight: 700;
   margin-bottom: 16px;
@@ -83,8 +91,53 @@ body {
 
 .works .work img {
   border-radius: 3px;
+  width: 48%;
+}
+
+.works .work img:first-child {
+  margin-right: 4%;
 }
 
 .works .work img:hover {
   box-shadow: 0 11px 11px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 800px) {
+  body {
+    border-top: none;
+    width: 95%;
+  }
+
+  .name {;
+    margin-top: -22px;
+  }
+
+  .name img {
+    position: relative;
+    top: 18px;
+    left: -6px;
+    width: 44px;
+    height: 44px;
+    margin-right: 5px;
+    border-radius: 300px;
+  }
+
+  .works .work {
+    width: 100%;
+    margin: 0 0 16px 0;
+    padding: 11px;
+    background: #efefef;
+  }
+
+  .works .work:last-child {
+    margin-bottom: 0;
+  }
+
+  .works .work img {
+    width: 100%;
+  }
+
+  .works .work img:first-child {
+    margin-right: 0;
+  }
 }
