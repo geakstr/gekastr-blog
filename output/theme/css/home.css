@@ -54,14 +54,11 @@ body {
 
 .content p.point:before {
   position: absolute;
-  top: 0;
-  left: -33px;
-  width: 33px;
+  top: -2px;
+  left: -28px;
+  width: 28px;
   text-align: center;
-  color: #89C540;
-  font-size: 0.714em;
-  line-height: 2;
-  content: "•";
+  content: "★";
 }
 
 .content hr {
@@ -94,7 +91,7 @@ body {
   width: 48%;
 }
 
-.works .work img:first-child {
+.works .work a:first-child img {
   margin-right: 4%;
 }
 
@@ -102,7 +99,7 @@ body {
   box-shadow: 0 11px 11px rgba(0, 0, 0, 0.1);
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 960px) {
   body {
     border-top: none;
     width: 95%;

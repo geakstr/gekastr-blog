@@ -71,7 +71,7 @@
     <div class="body"><p>Если вы&nbsp;хотите сделать пай доступным извне по&nbsp;доменному имени, у&nbsp;вас не&nbsp;статичный&nbsp;IP и&nbsp;есть, собственно, домен, который можно делегировать, то, как вариант, предлагаю воспользоваться сервисом от&nbsp;Яндекса&nbsp;&mdash; <a href="https://pdd.yandex.ru">Почта для домена</a>. Помимо предоставления почты Яндекс позволяет настраивать DNS параметры домена через REST API<span style="margin-right:0.3em;"> </span><span style="margin-left:-0.3em;">(</span>бесплатно).</p>
 <p>Этим мы&nbsp;и&nbsp;воспользуемся, написав соответствующий скрипт, который будет автоматически обновлять&nbsp;IP адрес пая в&nbsp;DNS Яндекса. Для начала, конечно, домен должен быть делегирован Яндексу. <a href="https://yandex.ru/support/pdd/hosting.xml">Тут</a> написано как это сделать.</p>
 <p>Создадим скрипт:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>mkdir ~/bin <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/bin <span class="o">&amp;&amp;</span> nano ya_dns
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>mkdir ~/bin <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~/bin <span class="o">&amp;&amp;</span> nano ya_dns
 </pre></div>
 </td></tr></table>
 
@@ -121,7 +121,7 @@
 43
 44
 45
-46</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+46</pre></div></td><td class="code"><div class="codehilite"><pre><span class="ch">#!/usr/bin/env bash</span>
 
 <span class="c1"># Использование:</span>
 <span class="c1"># ./ya_dns &lt;id&gt; &lt;domain&gt; &lt;subdomain&gt; &lt;ttl&gt;</span>
@@ -171,13 +171,13 @@
 </td></tr></table>
 
 <p>Делаем скрипт исполняемым <code>chmod +x ./ya_dns</code>, и&nbsp;используем так: </p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>./ya_dns &lt;id&gt; &lt;domain&gt; &lt;subdomain&gt; &lt;ttl&gt;
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>./ya_dns &lt;id&gt; &lt;domain&gt; &lt;subdomain&gt; &lt;ttl&gt;
 </pre></div>
 </td></tr></table>
 
 <p>Остается добавить его на&nbsp;запуск по&nbsp;расписанию: <code>crontab -e</code></p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Запускать каждые 5 минут</span>
+2</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Запускать каждые 5 минут</span>
 */5 * * * * /home/pi/bin/ya_dns &lt;id&gt; &lt;domain&gt; &lt;subdomain&gt; &lt;ttl&gt;
 </pre></div>
 </td></tr></table>
