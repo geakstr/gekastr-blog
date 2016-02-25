@@ -7,7 +7,7 @@ AUTHOR = u'Дмитрий Харитонов'
 SITENAME = u'Forkbomb Blog'
 SITEURL = 'http://dkharitonov.me'
 TIMEZONE = 'Europe/Moscow'
-DEFAULT_LANG = u'ru_RU'
+DEFAULT_LANG = u'ru'
 
 USE_FOLDER_AS_CATEGORY = False
 DISPLAY_PAGES_ON_MENU = False
