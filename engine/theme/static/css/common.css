@@ -40,7 +40,7 @@ ol li {
   list-style-type: decimal;
 }
 pre, code {
-  font-family: 'Consolas', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-family: 'PT Mono', monospace;
 }
 sup, sub {
   position: relative;

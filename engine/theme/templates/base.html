@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width"/>
     <title>{% block title %}{% endblock title %}</title>
+    <link href="https://fonts.googleapis.com/css?family=PT+Mono&subset=latin,cyrillic" rel="stylesheet" type="text/css"/>
     {% assets filters="cssmin", output="css/blog.min.css", "css/reset.css", "css/common.css", "css/pygment.css", "css/style.css" %}
     <link rel="stylesheet" href="/{{ ASSET_URL }}">
     {% endassets %}

@@ -2,7 +2,7 @@ body {
   max-width: 800px;
   margin: 0 auto;
   padding: 22px 0;
-  font-family: Monaco, Menlo, 'Ubuntu Mono', Consolas, 'Courier New', monospace;
+  font-family: 'PT Mono', monospace;
   color: #333;
   border-top: 3px solid #eee;
 }
@@ -54,10 +54,11 @@ body {
 
 .content p.point:before {
   position: absolute;
-  top: -2px;
+  top: 2px;
   left: -28px;
   width: 28px;
   text-align: center;
+  font-size: 12px;
   content: "★";
 }
 
