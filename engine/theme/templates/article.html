@@ -27,7 +27,7 @@
       {% if article.readtime %}
           <div class="readtime"><i class="sprite sprite-clock"></i> {{article.readtime.minutes}} мин. на прочтение</div>
       {% endif %}
-      <h2 class="title"><em>{{ article.title }}</em></h2>
+      <h2 class="title">{{ article.title }}</h2>
       {% import 'translations.html' as translations with context %}
       {{ translations.translations_for(article) }}
     </header>
