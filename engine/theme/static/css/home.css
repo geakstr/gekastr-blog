@@ -106,7 +106,7 @@ body {
     width: 95%;
   }
 
-  .name {;
+  .name {
     margin-top: -22px;
   }
 
@@ -130,7 +130,9 @@ body {
   .works .work:last-child {
     margin-bottom: 0;
   }
+}
 
+@media screen and (max-width: 480px) {
   .works .work img {
     width: 100%;
   }

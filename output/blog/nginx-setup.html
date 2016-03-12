@@ -73,7 +73,7 @@
 <p>Получим рута, доставим необходимые для сборки пакеты и&nbsp;создадим файл скрипта:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="codehilite"><pre>su root
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>su root
 apt-get -y install curl wget build-essential libz-dev libssl-dev
 nano /tmp/build_nginx.sh
 </pre></div>
@@ -158,7 +158,7 @@ nano /tmp/build_nginx.sh
 76
 77
 78
-79</pre></div></td><td class="code"><div class="codehilite"><pre><span class="ch">#!/usr/bin/env bash</span>
+79</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
 
 <span class="c1"># Почти полная копия скрипта https://gist.github.com/MattWilcox/402e2e8aa2e1c132ee24</span>
 <span class="c1"># с некоторыми модификациями</span>
@@ -183,47 +183,47 @@ rm -rf /etc/nginx-default
 mkdir build
 
 <span class="c1"># Качаем исходники</span>
-wget -P ./build $SOURCE_PCRE$VERSION_PCRE.tar.gz
-wget -P ./build $SOURCE_OPENSSL$VERSION_OPENSSL.tar.gz --no-check-certificate
-wget -P ./build $SOURCE_NGINX$VERSION_NGINX.tar.gz
+wget -P ./build <span class="nv">$SOURCE_PCRE$VERSION_PCRE</span>.tar.gz
+wget -P ./build <span class="nv">$SOURCE_OPENSSL$VERSION_OPENSSL</span>.tar.gz --no-check-certificate
+wget -P ./build <span class="nv">$SOURCE_NGINX$VERSION_NGINX</span>.tar.gz
 
 <span class="c1"># Разархивируем их</span>
 <span class="nb">cd</span> build
-tar xzf $VERSION_NGINX.tar.gz
-tar xzf $VERSION_OPENSSL.tar.gz
-tar xzf $VERSION_PCRE.tar.gz
+tar xzf <span class="nv">$VERSION_NGINX</span>.tar.gz
+tar xzf <span class="nv">$VERSION_OPENSSL</span>.tar.gz
+tar xzf <span class="nv">$VERSION_PCRE</span>.tar.gz
 <span class="nb">cd</span> ../
 
 <span class="c1"># Указываем директории, в которых будем компилить nginx и openssl</span>
 <span class="nb">export</span> <span class="nv">BPATH</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/build
-<span class="nb">export</span> <span class="nv">STATICLIBSSL</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$B</span><span class="s2">PATH/staticlibssl&quot;</span>
+<span class="nb">export</span> <span class="nv">STATICLIBSSL</span><span class="o">=</span><span class="s2">&quot;</span><span class="nv">$BPATH</span><span class="s2">/staticlibssl&quot;</span>
 
 <span class="c1"># Компилим openssl</span>
-<span class="nb">cd</span> <span class="nv">$B</span>PATH/$VERSION_OPENSSL
-rm -rf <span class="s2">&quot;</span>$<span class="s2">STATICLIBSSL&quot;</span>
-mkdir <span class="s2">&quot;</span>$<span class="s2">STATICLIBSSL&quot;</span>
+<span class="nb">cd</span> <span class="nv">$BPATH</span>/<span class="nv">$VERSION_OPENSSL</span>
+rm -rf <span class="s2">&quot;</span><span class="nv">$STATICLIBSSL</span><span class="s2">&quot;</span>
+mkdir <span class="s2">&quot;</span><span class="nv">$STATICLIBSSL</span><span class="s2">&quot;</span>
 make clean
-./config --prefix<span class="o">=</span>$STATICLIBSSL no-shared <span class="se">\</span>
+./config --prefix<span class="o">=</span><span class="nv">$STATICLIBSSL</span> no-shared <span class="se">\</span>
 <span class="o">&amp;&amp;</span> make depend <span class="se">\</span>
 <span class="o">&amp;&amp;</span> make <span class="se">\</span>
 <span class="o">&amp;&amp;</span> make install_sw
 
 <span class="c1"># Бекапим текущие исходники nginx</span>
-mv /etc/nginx /etc/nginx-$today
+mv /etc/nginx /etc/nginx-<span class="nv">$today</span>
 
 <span class="c1"># Собираем nginx</span>
 <span class="c1"># Указан небольшой перечень модулей. Если вам нужны дополнительные, список можно посмотреть здесь</span>
 <span class="c1"># http://wiki.nginx.org/Modules</span>
-<span class="nb">cd</span> <span class="nv">$B</span>PATH/$VERSION_NGINX
-mkdir -p <span class="nv">$B</span>PATH/nginx
-./configure --with-cc-opt<span class="o">=</span><span class="s2">&quot;-I </span>$<span class="s2">STATICLIBSSL/include -I/usr/include&quot;</span> <span class="se">\</span>
---with-ld-opt<span class="o">=</span><span class="s2">&quot;-L </span>$<span class="s2">STATICLIBSSL/lib -Wl,-rpath=</span>$<span class="s2">STATICLIBSSL/lib -lssl -lcrypto -ldl -lz&quot;</span> <span class="se">\</span>
+<span class="nb">cd</span> <span class="nv">$BPATH</span>/<span class="nv">$VERSION_NGINX</span>
+mkdir -p <span class="nv">$BPATH</span>/nginx
+./configure --with-cc-opt<span class="o">=</span><span class="s2">&quot;-I </span><span class="nv">$STATICLIBSSL</span><span class="s2">/include -I/usr/include&quot;</span> <span class="se">\</span>
+--with-ld-opt<span class="o">=</span><span class="s2">&quot;-L </span><span class="nv">$STATICLIBSSL</span><span class="s2">/lib -Wl,-rpath=</span><span class="nv">$STATICLIBSSL</span><span class="s2">/lib -lssl -lcrypto -ldl -lz&quot;</span> <span class="se">\</span>
 --sbin-path<span class="o">=</span>/usr/sbin/nginx <span class="se">\</span>
 --conf-path<span class="o">=</span>/etc/nginx/nginx.conf <span class="se">\</span>
 --pid-path<span class="o">=</span>/var/run/nginx.pid <span class="se">\</span>
 --error-log-path<span class="o">=</span>/var/log/nginx/error.log <span class="se">\</span>
 --http-log-path<span class="o">=</span>/var/log/nginx/access.log <span class="se">\</span>
---with-pcre<span class="o">=</span><span class="nv">$B</span>PATH/$VERSION_PCRE <span class="se">\</span>
+--with-pcre<span class="o">=</span><span class="nv">$BPATH</span>/<span class="nv">$VERSION_PCRE</span> <span class="se">\</span>
 --with-http_ssl_module <span class="se">\</span>
 --with-file-aio <span class="se">\</span>
 --with-http_gzip_static_module <span class="se">\</span>
@@ -236,12 +236,12 @@ mkdir -p <span class="nv">$B</span>PATH/nginx
 mv /etc/nginx /etc/nginx-default
 
 <span class="c1"># Вернем конфиги из бекапа</span>
-mv /etc/nginx-$today /etc/nginx
+mv /etc/nginx-<span class="nv">$today</span> /etc/nginx
 </pre></div>
 </td></tr></table>
 
 <p>Запустим процесс компиляции и&nbsp;пойдем пить чай. Много чая.</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>chmod +x /tmp/build_nginx.sh <span class="o">&amp;&amp;</span> /tmp/build_nginx.sh
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>chmod +x /tmp/build_nginx.sh <span class="o">&amp;&amp;</span> /tmp/build_nginx.sh
 </pre></div>
 </td></tr></table>
 
@@ -254,7 +254,7 @@ mv /etc/nginx-$today /etc/nginx
 6
 7
 8
-9</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Создадим пользователя, от которого будет запускаться nginx</span>
+9</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Создадим пользователя, от которого будет запускаться nginx</span>
 useradd nginx
 groupadd nginx
 usermod -g nginx -G www-data nginx
@@ -271,7 +271,7 @@ chown -R www-data:www-data /var/www
 2
 3
 4
-5</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Скопируем дефолтные конфиги</span>
+5</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Скопируем дефолтные конфиги</span>
 cp -R /etc/nginx-default /etc/nginx
 
 <span class="c1"># И начнем править</span>
@@ -375,7 +375,7 @@ nano /etc/nginx/nginx.conf
 93
 94
 95
-96</pre></div></td><td class="code"><div class="codehilite"><pre><span class="c1"># Пользователь, от которого будет запускаться nginx</span>
+96</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="c1"># Пользователь, от которого будет запускаться nginx</span>
 <span class="k">user</span>              <span class="s">nginx</span><span class="p">;</span>
 
 <span class="c1"># Рекомендуется выставлять по количеству ядер в системе</span>
@@ -475,7 +475,7 @@ nano /etc/nginx/nginx.conf
 </td></tr></table>
 
 <p>Теперь создадим хост:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>mkdir /etc/nginx/conf.d <span class="o">&amp;&amp;</span> nano /etc/nginx/conf.d/home.conf
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>mkdir /etc/nginx/conf.d <span class="o">&amp;&amp;</span> nano /etc/nginx/conf.d/home.conf
 </pre></div>
 </td></tr></table>
 
@@ -506,7 +506,7 @@ nano /etc/nginx/nginx.conf
 24
 25
 26
-27</pre></div></td><td class="code"><div class="codehilite"><pre><span class="k">server</span> <span class="p">{</span>
+27</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="k">server</span> <span class="p">{</span>
     <span class="kn">listen</span>       <span class="mi">80</span><span class="p">;</span>
     <span class="kn">server_name</span>  <span class="s">localhost</span><span class="p">;</span>
 
@@ -537,7 +537,7 @@ nano /etc/nginx/nginx.conf
 </td></tr></table>
 
 <p>Добавим в&nbsp;автозагрузку скрипт управления демоном nginx:</p>
-<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre>nano /lib/systemd/system/nginx.service
+<table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>nano /lib/systemd/system/nginx.service
 </pre></div>
 </td></tr></table>
 
@@ -556,7 +556,7 @@ nano /etc/nginx/nginx.conf
 12
 13
 14
-15</pre></div></td><td class="code"><div class="codehilite"><pre><span class="o">[</span>Unit<span class="o">]</span>
+15</pre></div></td><td class="code"><div class="codehilite"><pre><span></span><span class="o">[</span>Unit<span class="o">]</span>
 <span class="nv">Description</span><span class="o">=</span>The NGINX HTTP and reverse proxy server
 <span class="nv">After</span><span class="o">=</span>syslog.target network.target remote-fs.target nss-lookup.target
 
@@ -565,8 +565,8 @@ nano /etc/nginx/nginx.conf
 <span class="nv">PIDFile</span><span class="o">=</span>/run/nginx.pid
 <span class="nv">ExecStartPre</span><span class="o">=</span>/usr/sbin/nginx -t
 <span class="nv">ExecStart</span><span class="o">=</span>/usr/sbin/nginx
-<span class="nv">ExecReload</span><span class="o">=</span>/bin/kill -s HUP $MAINPID
-<span class="nv">ExecStop</span><span class="o">=</span>/bin/kill -s QUIT $MAINPID
+<span class="nv">ExecReload</span><span class="o">=</span>/bin/kill -s HUP <span class="nv">$MAINPID</span>
+<span class="nv">ExecStop</span><span class="o">=</span>/bin/kill -s QUIT <span class="nv">$MAINPID</span>
 <span class="nv">PrivateTmp</span><span class="o">=</span><span class="nb">true</span>
 
 <span class="o">[</span>Install<span class="o">]</span>
@@ -577,7 +577,7 @@ nano /etc/nginx/nginx.conf
 <p>И&nbsp;инициализируем:</p>
 <table class="codehilitetable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="codehilite"><pre>systemctl daemon-reload
+3</pre></div></td><td class="code"><div class="codehilite"><pre><span></span>systemctl daemon-reload
 systemctl <span class="nb">enable</span> nginx.service
 systemctl start nginx.service
 </pre></div>
