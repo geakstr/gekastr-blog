@@ -120,6 +120,14 @@ body {
     border-radius: 300px;
   }
 
+  .content ul {
+    list-style: circle inside;
+  }
+
+  .content p.point:before {
+    display: none;
+  }
+
   .works .work {
     width: 100%;
     margin: 0 0 16px 0;
